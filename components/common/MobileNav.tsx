@@ -4,32 +4,26 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "../ui/button";
 import Link from "next/link";
 import { Menu } from "lucide-react";
 
-const MobileNav = ({ handleLogin }: { handleLogin: () => void }) => {
+const MobileNav = () => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button className="flex md:hidden" variant={"ghost"} size={"icon"}>
-          <Menu />
-        </Button>
+      <DropdownMenuTrigger className="flex md:hidden">
+        <div className="p-2 border-[1px] rounded-md">
+          <Menu size={18} />
+        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <Button variant="ghost" onClick={handleLogin}>
-            Log in
-          </Button>
+          <Link href="/login">Log in</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Button variant="ghost">
-            <Link href="/register">Create account</Link>
-          </Button>
+          <Link href="/register">Create account</Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-    
   );
 };
 

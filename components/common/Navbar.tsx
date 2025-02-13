@@ -10,10 +10,6 @@ import MobileNav from "./MobileNav";
 export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  //   Login Handler
-  function handleLogin() {
-    setIsLoggedIn(true);
-  }
   //   Logout handler
   function handleLogout() {
     setIsLoggedIn(false);
@@ -32,8 +28,8 @@ export default function Navbar() {
               {/* Desktop Navbar */}
               <div className="hidden md:flex items-center space-x-4">
                 <DarkModeToggle />
-                <Button variant="ghost" onClick={handleLogin}>
-                  Log in
+                <Button variant="ghost">
+                  <Link href="/login">Log in</Link>
                 </Button>
                 <Button>
                   <Link href="/register">Create account</Link>
@@ -42,7 +38,7 @@ export default function Navbar() {
               {/* Mobile Navbar */}
               <div className="flex md:hidden space-x-4 items-center">
                 <DarkModeToggle />
-                <MobileNav handleLogin={handleLogin} />
+                <MobileNav />
               </div>
             </>
           )}
