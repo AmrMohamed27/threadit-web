@@ -28,3 +28,7 @@ mutation Login($userData: LoginInput!) {
     }
   }
 }
+
+mutation logout {
+  logoutUser
+}

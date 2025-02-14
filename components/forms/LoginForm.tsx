@@ -1,5 +1,3 @@
-// TODO: Finished login and register
-
 "use client";
 import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,6 +35,7 @@ const LoginForm = () => {
           password,
         },
       },
+      refetchQueries: ["Me"],
     });
     router.push("/");
   }

@@ -9,7 +9,7 @@ export default function Footer() {
             <h3 className="mb-2 text-sm font-semibold">About</h3>
             <ul className="text-sm text-muted-foreground">
               <li>
-                <Link href="#">About Threadit</Link>
+                <Link href="/about">About Threadit</Link>
               </li>
               <li>
                 <Link href="#">Careers</Link>
