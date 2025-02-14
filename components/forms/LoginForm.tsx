@@ -10,6 +10,7 @@ import InputField from "./InputField";
 import { useLoginMutation } from "@/generated/graphql";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toErrorMap } from "@/lib/utils";
 
 const LoginForm = () => {
   // Define graphql mutation
@@ -37,6 +38,16 @@ const LoginForm = () => {
       },
       refetchQueries: ["Me"],
     });
+    // Handle errors from resolver
+    if (loginResult?.loginUser.errors) {
+      const errorMap = toErrorMap(loginResult.loginUser.errors);
+      console.log(errorMap);
+    }
+    // Handle other errors
+    if (loginError) {
+      console.error(loginError);
+    }
+    // Redirect to home page
     router.push("/");
   }
   // Show password state

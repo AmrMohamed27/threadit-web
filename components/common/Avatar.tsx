@@ -25,10 +25,8 @@ const Avatar = () => {
   // Get current logged in user
   const { user, loading: isUserLoading, error: userError } = useCurrentUser();
   // Logout mutation
-  const [
-    logoutMutation,
-    { data: logoutResult, loading: isLogoutLoading, error: logoutError },
-  ] = useLogoutMutation();
+  const [logoutMutation, { loading: isLogoutLoading, error: logoutError }] =
+    useLogoutMutation();
   // Router
   const router = useRouter();
   // render skeleton for loading
@@ -44,9 +42,9 @@ const Avatar = () => {
     await logoutMutation({
       refetchQueries: ["Me"],
     });
-    if (logoutError) console.error(logoutError);
-    if (logoutResult?.logoutUser) router.push("/");
+    router.push("/");
   };
+  if (logoutError) console.error(logoutError);
   return user ? (
     // Render user avatar with dropdown menu
     <DropdownMenu>

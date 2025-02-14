@@ -10,6 +10,7 @@ import InputField from "./InputField";
 import { useRegisterMutation } from "@/generated/graphql";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toErrorMap } from "@/lib/utils";
 
 const RegisterForm = () => {
   // Define graphql mutation
@@ -40,7 +41,18 @@ const RegisterForm = () => {
           password,
         },
       },
+      refetchQueries: ["Me"],
     });
+    // Handle errors returned from resolver
+    if (registerResult?.registerUser.errors) {
+      const errorMap = toErrorMap(registerResult.registerUser.errors);
+      console.log(errorMap);
+    }
+    // Handle other errors
+    if (registerError) {
+      console.error(registerError);
+    }
+    // Redirect to home page
     router.push("/");
   }
   // Show password state
@@ -99,7 +111,11 @@ const RegisterForm = () => {
           handleToggleShowPassword={handleToggleShowPassword}
         />
         <Button type="submit">
-          {loading ? <Loader className="animate-spin" /> : <span>Register</span>}
+          {loading ? (
+            <Loader className="animate-spin" />
+          ) : (
+            <span>Register</span>
+          )}
         </Button>
       </form>
     </Form>
