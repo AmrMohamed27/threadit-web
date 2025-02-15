@@ -10,7 +10,7 @@ import InputField from "./InputField";
 import { useLoginMutation } from "@/generated/graphql";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { LoginErrorType } from "../../../types";
+import { LoginErrorType } from "../../types";
 
 const LoginForm = () => {
   // Define graphql mutation

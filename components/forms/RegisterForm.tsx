@@ -10,7 +10,7 @@ import InputField from "./InputField";
 import { useRegisterMutation } from "@/generated/graphql";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ErrorField } from "../../../types/index";
+import { ErrorField } from "../../types/index";
 
 const RegisterForm = () => {
   // Define graphql mutation
