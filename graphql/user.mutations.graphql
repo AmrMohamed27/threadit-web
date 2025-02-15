@@ -22,13 +22,16 @@ mutation Login($userData: LoginInput!) {
       message
     }
     user {
-      name
+      createdAt
       email
+      name
+      updatedAt
+      image
       id
     }
   }
 }
 
-mutation logout {
+mutation Logout {
   logoutUser
 }

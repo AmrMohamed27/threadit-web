@@ -10,7 +10,7 @@ import InputField from "./InputField";
 import { useLoginMutation } from "@/generated/graphql";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { toErrorMap } from "@/lib/utils";
+import { LoginErrorType } from "../../../types";
 
 const LoginForm = () => {
   // Define graphql mutation
@@ -38,17 +38,6 @@ const LoginForm = () => {
       },
       refetchQueries: ["Me"],
     });
-    // Handle errors from resolver
-    if (loginResult?.loginUser.errors) {
-      const errorMap = toErrorMap(loginResult.loginUser.errors);
-      console.log(errorMap);
-    }
-    // Handle other errors
-    if (loginError) {
-      console.error(loginError);
-    }
-    // Redirect to home page
-    router.push("/");
   }
   // Show password state
   const [showPassword, setShowPassword] = useState(false);
@@ -63,11 +52,17 @@ const LoginForm = () => {
     }
     if (loginResult?.loginUser.errors) {
       for (const error of loginResult.loginUser.errors) {
-        console.error(`Error: ${error.message}\nField: ${error.field}`);
+        form.setError(error.field as LoginErrorType, {
+          message: error.message,
+        });
       }
     }
-    console.log(loginResult?.loginUser.user);
-  }, [loginError, loginResult]);
+    if (loginResult?.loginUser.user) {
+      // Redirect to home page
+      router.push("/");
+      console.log(loginResult?.loginUser.user);
+    }
+  }, [loginError, loginResult, router, form]);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

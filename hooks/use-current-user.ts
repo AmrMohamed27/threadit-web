@@ -4,25 +4,30 @@ import { useMeQuery, User } from "@/generated/graphql"; // Auto-generated GraphQ
 import { toErrorMap } from "@/lib/utils";
 
 export const useCurrentUser = () => {
-  const [user, setUser] = useState<User | null>(null);
   // state
+  const [user, setUser] = useState<User | null>(null);
   const [errorMap, setErrorMap] = useState<Record<string, string>>({});
-  const { data, error, loading } = useMeQuery({
+  const [loading, setLoading] = useState(true);
+  const {
+    data,
+    error,
+    loading: queryLoading,
+  } = useMeQuery({
     fetchPolicy: "network-only", // Ensure fresh data
     context: { credentials: "include" }, // Send cookies
   });
 
-
   useEffect(() => {
+    setLoading(queryLoading);
     if (data?.me?.user) {
       setUser(data.me.user);
     } else {
       setUser(null);
     }
     if (data?.me?.errors) {
-      setErrorMap(toErrorMap(data.me.errors))
+      setErrorMap(toErrorMap(data.me.errors));
     }
-  }, [data]);
+  }, [data, queryLoading]);
 
   return { user, loading, error, errorMap };
 };

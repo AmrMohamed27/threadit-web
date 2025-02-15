@@ -16,14 +16,15 @@ import {
 import { Button } from "../ui/button";
 import { LogOut } from "lucide-react";
 import { Skeleton } from "../ui/skeleton";
-import { useCurrentUser } from "@/hooks/use-current-user";
 import NavbarButtons from "./NavbarButtons";
 import { useLogoutMutation } from "@/generated/graphql";
 import { useRouter } from "next/navigation";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 const Avatar = () => {
   // Get current logged in user
   const { user, loading: isUserLoading, error: userError } = useCurrentUser();
+  console.log(user);
   // Logout mutation
   const [logoutMutation, { loading: isLogoutLoading, error: logoutError }] =
     useLogoutMutation();
@@ -31,7 +32,7 @@ const Avatar = () => {
   const router = useRouter();
   // render skeleton for loading
   if (isUserLoading)
-    return <Skeleton className="w-[40px] h-[40px] rounded-full"></Skeleton>;
+    return <Skeleton className="rounded-full w-[40px] h-[40px]"></Skeleton>;
   // log errors
   if (userError) {
     console.error(userError);

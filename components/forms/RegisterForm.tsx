@@ -10,7 +10,7 @@ import InputField from "./InputField";
 import { useRegisterMutation } from "@/generated/graphql";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { toErrorMap } from "@/lib/utils";
+import { ErrorField } from "../../../types/index";
 
 const RegisterForm = () => {
   // Define graphql mutation
@@ -43,17 +43,14 @@ const RegisterForm = () => {
       },
       refetchQueries: ["Me"],
     });
-    // Handle errors returned from resolver
-    if (registerResult?.registerUser.errors) {
-      const errorMap = toErrorMap(registerResult.registerUser.errors);
-      console.log(errorMap);
-    }
-    // Handle other errors
+    // Handle graphql errors
     if (registerError) {
       console.error(registerError);
     }
-    // Redirect to home page
-    router.push("/");
+    // Handle errors returned from resolver
+    if (registerResult?.registerUser.errors) {
+      form.setError("root", { message: "Invalid credentials" });
+    }
   }
   // Show password state
   const [showPassword, setShowPassword] = useState(false);
@@ -68,11 +65,20 @@ const RegisterForm = () => {
     }
     if (registerResult?.registerUser.errors) {
       for (const error of registerResult.registerUser.errors) {
-        console.error(`Error: ${error.message}\nField: ${error.field}`);
+        form.setError(
+          error.field === "name" || "email" || "password"
+            ? (error.field as ErrorField)
+            : "root",
+          { message: error.message }
+        );
       }
     }
+    if (registerResult?.registerUser.user) {
+      // Redirect to home page
+      router.push("/");
+    }
     console.log(registerResult?.registerUser.user);
-  }, [registerError, registerResult]);
+  }, [registerError, registerResult, form, router]);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
