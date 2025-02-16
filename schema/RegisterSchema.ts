@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const passwordValidation = z
+export const passwordValidation = z
   .string()
   .min(6, { message: "Password must be at least 6 characters long" })
   .regex(/[a-z]/, {

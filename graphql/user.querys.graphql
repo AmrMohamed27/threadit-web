@@ -5,12 +5,7 @@ query Me {
       message
     }
     user {
-      id
-      email
-      name
-      createdAt
-      updatedAt
-      image
+      ...FullUser
     }
   }
 }

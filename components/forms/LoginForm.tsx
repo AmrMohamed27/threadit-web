@@ -86,6 +86,7 @@ const LoginForm = () => {
         <Button type="submit">
           {loading ? <Loader className="animate-spin" /> : <span>Log in</span>}
         </Button>
+        {/* Forgot Password link */}
       </form>
     </Form>
   );

@@ -5,12 +5,7 @@ mutation Register($userData: RegisterInput!) {
       message
     }
     user {
-      createdAt
-      email
-      name
-      updatedAt
-      image
-      id
+      ...FullUser
     }
   }
 }
@@ -22,16 +17,51 @@ mutation Login($userData: LoginInput!) {
       message
     }
     user {
-      createdAt
-      email
-      name
-      updatedAt
-      image
-      id
+      ...FullUser
     }
   }
 }
 
 mutation Logout {
   logoutUser
+}
+
+mutation ConfirmUser($code: String!) {
+  confirmUser(code: $code) {
+    success
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation RequestConfirmationCode {
+  requestConfirmationCode {
+    success
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation RequestPasswordReset($email: String!) {
+  requestPasswordReset(email: $email) {
+    success
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation ResetPassword($options: ResetPasswordInput!) {
+  resetPassword(options: $options) {
+    success
+    errors {
+      field
+      message
+    }
+  }
 }

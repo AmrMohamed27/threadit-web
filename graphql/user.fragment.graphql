@@ -1,0 +1,9 @@
+fragment FullUser on User {
+  id
+  name
+  email
+  image
+  createdAt
+  updatedAt
+  confirmed
+}

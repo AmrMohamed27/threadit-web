@@ -64,7 +64,7 @@ const InputField = ({
                     }}
                     variant={"ghost"}
                     size="icon"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 hover:bg-transparent"
+                    className="top-1/2 right-2 absolute hover:bg-transparent -translate-y-1/2"
                   >
                     {showPassword ? <EyeOff /> : <Eye />}
                   </Button>
