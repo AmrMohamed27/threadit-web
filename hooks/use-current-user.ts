@@ -5,9 +5,6 @@ import { toErrorMap } from "@/lib/utils";
 
 export const useCurrentUser = () => {
   // state
-  const [user, setUser] = useState<User | null>(null);
-  const [errorMap, setErrorMap] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(true);
   const {
     data,
     error,
@@ -16,6 +13,9 @@ export const useCurrentUser = () => {
     fetchPolicy: "network-only", // Ensure fresh data
     context: { credentials: "include" }, // Send cookies
   });
+  const [user, setUser] = useState<User | null>(data?.me.user ?? null);
+  const [errorMap, setErrorMap] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(queryLoading);
 
   useEffect(() => {
     setLoading(queryLoading);

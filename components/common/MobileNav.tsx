@@ -10,8 +10,8 @@ import { Menu } from "lucide-react";
 const MobileNav = () => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex md:hidden">
-        <div className="p-2 border-[1px] rounded-md">
+      <DropdownMenuTrigger className="md:hidden flex">
+        <div className="p-2 border-[1px] rounded-full">
           <Menu size={18} />
         </div>
       </DropdownMenuTrigger>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Avatar from "./Avatar";
+import { DarkModeToggle } from "./DarkModeToggle";
 
 export default function Navbar() {
   return (
@@ -9,6 +10,7 @@ export default function Navbar() {
           Threadit
         </Link>
         <div className="flex items-center space-x-4">
+          <DarkModeToggle />
           <Avatar />
         </div>
       </div>
