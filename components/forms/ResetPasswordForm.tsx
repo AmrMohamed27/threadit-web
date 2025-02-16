@@ -7,13 +7,11 @@ import ResetPasswordSchema from "@/schema/ResetPasswordSchema";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import InputField from "./InputField";
-import {
-  useLoginMutation,
-  useResetPasswordMutation,
-} from "@/generated/graphql";
+import { useResetPasswordMutation } from "@/generated/graphql";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ResetPasswordErrorType } from "../../types";
+import { useToast } from "@/hooks/use-toast";
 
 interface Props {
   token: string;
@@ -31,13 +29,10 @@ const ResetPasswordForm = ({ token }: Props) => {
       error: resetPasswordError,
     },
   ] = useResetPasswordMutation();
-  //   Login Mutation
-  const [
-    loginMutation,
-    { data: loginResult, loading: loginLoading, error: loginError },
-  ] = useLoginMutation();
   // Router
   const router = useRouter();
+  //   Toast
+  const { toast } = useToast();
   // 1. Define your form.
   const form = useForm<z.infer<typeof ResetPasswordSchema>>({
     resolver: zodResolver(ResetPasswordSchema),
@@ -50,7 +45,7 @@ const ResetPasswordForm = ({ token }: Props) => {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof ResetPasswordSchema>) {
     const { email, newPassword } = values;
-    await resetPasswordMutation({
+    const result = await resetPasswordMutation({
       variables: {
         options: {
           email,
@@ -59,15 +54,21 @@ const ResetPasswordForm = ({ token }: Props) => {
         },
       },
     });
-    await loginMutation({
-      variables: {
-        userData: {
-          email,
-          password: newPassword,
-        },
-      },
-      refetchQueries: ["Me"],
-    });
+    // Redirect to log in page if reset password is successful
+    if (result.data?.resetPassword.success) {
+      toast({
+        title: "Password Reset Successfully",
+        description: "You can log in with your new password.",
+      });
+      router.push("/login");
+    } else if (result.data?.resetPassword.errors) {
+      const error = result.data.resetPassword.errors[0];
+      toast({
+        title: `An error occurred with ${error.field}`,
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   }
   // Show password state
   const [showPassword, setShowPassword] = useState(false);
@@ -77,16 +78,8 @@ const ResetPasswordForm = ({ token }: Props) => {
   };
 
   useEffect(() => {
-    if (loginError) {
-      console.error(loginError);
-    }
     if (resetPasswordError) {
       console.error(resetPasswordError);
-    }
-    if (loginResult?.loginUser.errors) {
-      for (const error of loginResult.loginUser.errors) {
-        console.error(error);
-      }
     }
     if (resetPasswordResult?.resetPassword.errors) {
       for (const error of resetPasswordResult.resetPassword.errors) {
@@ -95,22 +88,7 @@ const ResetPasswordForm = ({ token }: Props) => {
         });
       }
     }
-    if (
-      resetPasswordResult?.resetPassword.success &&
-      loginResult?.loginUser.user
-    ) {
-      // Redirect to home page
-      router.push("/");
-      console.log(loginResult?.loginUser.user);
-    }
-  }, [
-    loginError,
-    loginResult,
-    router,
-    form,
-    resetPasswordError,
-    resetPasswordResult,
-  ]);
+  }, [form, resetPasswordError, resetPasswordResult]);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -142,10 +120,10 @@ const ResetPasswordForm = ({ token }: Props) => {
           handleToggleShowPassword={handleToggleShowPassword}
         />
         <Button type="submit">
-          {loginLoading || resetPasswordLoading ? (
+          {resetPasswordLoading ? (
             <Loader className="animate-spin" />
           ) : (
-            <span>Log in</span>
+            <span>Save</span>
           )}
         </Button>
       </form>

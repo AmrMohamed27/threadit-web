@@ -17,6 +17,11 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type CheckTokenInput = {
+  email: Scalars['String']['input'];
+  token: Scalars['String']['input'];
+};
+
 export type ConfirmResponse = {
   __typename?: 'ConfirmResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -36,6 +41,7 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  checkToken: ConfirmResponse;
   confirmUser: ConfirmResponse;
   createPost: Post;
   deletePost: Scalars['Boolean']['output'];
@@ -46,6 +52,11 @@ export type Mutation = {
   requestPasswordReset: ConfirmResponse;
   resetPassword: ConfirmResponse;
   updatePost?: Maybe<Post>;
+};
+
+
+export type MutationCheckTokenArgs = {
+  options: CheckTokenInput;
 };
 
 
@@ -186,6 +197,13 @@ export type ResetPasswordMutationVariables = Exact<{
 
 
 export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type CheckTokenMutationVariables = Exact<{
+  options: CheckTokenInput;
+}>;
+
+
+export type CheckTokenMutation = { __typename?: 'Mutation', checkToken: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -458,6 +476,43 @@ export function useResetPasswordMutation(baseOptions?: Apollo.MutationHookOption
 export type ResetPasswordMutationHookResult = ReturnType<typeof useResetPasswordMutation>;
 export type ResetPasswordMutationResult = Apollo.MutationResult<ResetPasswordMutation>;
 export type ResetPasswordMutationOptions = Apollo.BaseMutationOptions<ResetPasswordMutation, ResetPasswordMutationVariables>;
+export const CheckTokenDocument = gql`
+    mutation CheckToken($options: CheckTokenInput!) {
+  checkToken(options: $options) {
+    success
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type CheckTokenMutationFn = Apollo.MutationFunction<CheckTokenMutation, CheckTokenMutationVariables>;
+
+/**
+ * __useCheckTokenMutation__
+ *
+ * To run a mutation, you first call `useCheckTokenMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCheckTokenMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [checkTokenMutation, { data, loading, error }] = useCheckTokenMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useCheckTokenMutation(baseOptions?: Apollo.MutationHookOptions<CheckTokenMutation, CheckTokenMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CheckTokenMutation, CheckTokenMutationVariables>(CheckTokenDocument, options);
+      }
+export type CheckTokenMutationHookResult = ReturnType<typeof useCheckTokenMutation>;
+export type CheckTokenMutationResult = Apollo.MutationResult<CheckTokenMutation>;
+export type CheckTokenMutationOptions = Apollo.BaseMutationOptions<CheckTokenMutation, CheckTokenMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {
