@@ -14,3 +14,5 @@ export type ResetPasswordErrorType =
   | "confirmNewPassword";
 
 export type RequestResetErrorType = "email" | "root" | `root.${string}`;
+
+export type ConfirmErrorType = "code" | "root" | `root.${string}`;

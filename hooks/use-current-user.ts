@@ -10,7 +10,7 @@ export const useCurrentUser = () => {
     error,
     loading: queryLoading,
   } = useMeQuery({
-    fetchPolicy: "network-only", // Ensure fresh data
+    fetchPolicy: "cache-first", // Ensure fresh data
     context: { credentials: "include" }, // Send cookies
   });
   const [user, setUser] = useState<User | null>(data?.me.user ?? null);

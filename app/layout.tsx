@@ -6,6 +6,7 @@ import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
 import ApolloProvider from "@/components/providers/apollo-provider";
 import { Toaster } from "@/components/ui/toaster";
+import ConfirmAlert from "@/components/common/ConfirmAlert";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ export default function RootLayout({
         >
           <ApolloProvider>
             <div className="flex flex-col min-h-screen">
+              <ConfirmAlert />
               <Navbar />
               <main className="flex-grow">{children}</main>
               <Footer />

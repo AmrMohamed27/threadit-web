@@ -1,12 +1,9 @@
-// TODO: Redirect if token is not valid.
 // TODO: Add Confirm User workflow.
 
 import ResetPasswordForm from "@/components/forms/ResetPasswordForm";
 import { redirect } from "next/navigation";
 import React from "react";
-import { env } from "@/env";
-import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { CheckTokenDocument, CheckTokenQuery } from "@/generated/graphql";
+import { checkToken } from "@/actions/apollo";
 
 const ResetPassword = async ({
   params,
@@ -21,22 +18,9 @@ const ResetPassword = async ({
     console.log("Email is not valid");
     redirect("/login");
   }
-  const apolloClient = new ApolloClient({
-    uri: `${env.GRAPHQL_API}`,
-    cache: new InMemoryCache(),
-    credentials: "include",
-    ssrMode: true,
-  });
-  const { data } = await apolloClient.query<CheckTokenQuery>({
-    query: CheckTokenDocument,
-    variables: {
-      options: {
-        email,
-        token,
-      },
-    },
-  });
-  if (!data.checkToken.success) {
+
+  const success = await checkToken({ token, email });
+  if (!success) {
     redirect("/login");
   }
   return (
