@@ -41,7 +41,6 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  checkToken: ConfirmResponse;
   confirmUser: ConfirmResponse;
   createPost: Post;
   deletePost: Scalars['Boolean']['output'];
@@ -52,11 +51,6 @@ export type Mutation = {
   requestPasswordReset: ConfirmResponse;
   resetPassword: ConfirmResponse;
   updatePost?: Maybe<Post>;
-};
-
-
-export type MutationCheckTokenArgs = {
-  options: CheckTokenInput;
 };
 
 
@@ -112,9 +106,15 @@ export type Post = {
 
 export type Query = {
   __typename?: 'Query';
+  checkToken: ConfirmResponse;
   getAllPosts: Array<Post>;
   getPost?: Maybe<Post>;
   me: UserResponse;
+};
+
+
+export type QueryCheckTokenArgs = {
+  options: CheckTokenInput;
 };
 
 
@@ -198,17 +198,17 @@ export type ResetPasswordMutationVariables = Exact<{
 
 export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
-export type CheckTokenMutationVariables = Exact<{
-  options: CheckTokenInput;
-}>;
-
-
-export type CheckTokenMutation = { __typename?: 'Mutation', checkToken: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
-
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = { __typename?: 'Query', me: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null } };
+
+export type CheckTokenQueryVariables = Exact<{
+  options: CheckTokenInput;
+}>;
+
+
+export type CheckTokenQuery = { __typename?: 'Query', checkToken: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export const FullUserFragmentDoc = gql`
     fragment FullUser on User {
@@ -476,43 +476,6 @@ export function useResetPasswordMutation(baseOptions?: Apollo.MutationHookOption
 export type ResetPasswordMutationHookResult = ReturnType<typeof useResetPasswordMutation>;
 export type ResetPasswordMutationResult = Apollo.MutationResult<ResetPasswordMutation>;
 export type ResetPasswordMutationOptions = Apollo.BaseMutationOptions<ResetPasswordMutation, ResetPasswordMutationVariables>;
-export const CheckTokenDocument = gql`
-    mutation CheckToken($options: CheckTokenInput!) {
-  checkToken(options: $options) {
-    success
-    errors {
-      field
-      message
-    }
-  }
-}
-    `;
-export type CheckTokenMutationFn = Apollo.MutationFunction<CheckTokenMutation, CheckTokenMutationVariables>;
-
-/**
- * __useCheckTokenMutation__
- *
- * To run a mutation, you first call `useCheckTokenMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCheckTokenMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [checkTokenMutation, { data, loading, error }] = useCheckTokenMutation({
- *   variables: {
- *      options: // value for 'options'
- *   },
- * });
- */
-export function useCheckTokenMutation(baseOptions?: Apollo.MutationHookOptions<CheckTokenMutation, CheckTokenMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CheckTokenMutation, CheckTokenMutationVariables>(CheckTokenDocument, options);
-      }
-export type CheckTokenMutationHookResult = ReturnType<typeof useCheckTokenMutation>;
-export type CheckTokenMutationResult = Apollo.MutationResult<CheckTokenMutation>;
-export type CheckTokenMutationOptions = Apollo.BaseMutationOptions<CheckTokenMutation, CheckTokenMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {
@@ -558,3 +521,47 @@ export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeSuspenseQueryHookResult = ReturnType<typeof useMeSuspenseQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const CheckTokenDocument = gql`
+    query CheckToken($options: CheckTokenInput!) {
+  checkToken(options: $options) {
+    errors {
+      field
+      message
+    }
+    success
+  }
+}
+    `;
+
+/**
+ * __useCheckTokenQuery__
+ *
+ * To run a query within a React component, call `useCheckTokenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCheckTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCheckTokenQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useCheckTokenQuery(baseOptions: Apollo.QueryHookOptions<CheckTokenQuery, CheckTokenQueryVariables> & ({ variables: CheckTokenQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CheckTokenQuery, CheckTokenQueryVariables>(CheckTokenDocument, options);
+      }
+export function useCheckTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckTokenQuery, CheckTokenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CheckTokenQuery, CheckTokenQueryVariables>(CheckTokenDocument, options);
+        }
+export function useCheckTokenSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<CheckTokenQuery, CheckTokenQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CheckTokenQuery, CheckTokenQueryVariables>(CheckTokenDocument, options);
+        }
+export type CheckTokenQueryHookResult = ReturnType<typeof useCheckTokenQuery>;
+export type CheckTokenLazyQueryHookResult = ReturnType<typeof useCheckTokenLazyQuery>;
+export type CheckTokenSuspenseQueryHookResult = ReturnType<typeof useCheckTokenSuspenseQuery>;
+export type CheckTokenQueryResult = Apollo.QueryResult<CheckTokenQuery, CheckTokenQueryVariables>;

@@ -77,7 +77,6 @@ const RegisterForm = () => {
       // Redirect to home page
       router.push("/");
     }
-    console.log(registerResult?.registerUser.user);
   }, [registerError, registerResult, form, router]);
   return (
     <Form {...form}>

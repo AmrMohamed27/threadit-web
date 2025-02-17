@@ -24,7 +24,6 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 const Avatar = () => {
   // Get current logged in user
   const { user, loading: isUserLoading, error: userError } = useCurrentUser();
-  console.log(user);
   // Logout mutation
   const [logoutMutation, { loading: isLogoutLoading, error: logoutError }] =
     useLogoutMutation();

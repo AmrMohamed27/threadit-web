@@ -22,6 +22,7 @@ interface InputFieldProps {
   type?: string;
   isTextArea?: boolean;
   showPassword?: boolean;
+  disabled?: boolean;
   handleToggleShowPassword?: () => void;
 }
 
@@ -32,8 +33,9 @@ const InputField = ({
   placeholder,
   type = "text",
   isTextArea = false,
-  showPassword,
+  showPassword = false,
   handleToggleShowPassword,
+  disabled = false,
 }: InputFieldProps) => {
   const passwordInputType = showPassword ? "text" : "password";
   return (
@@ -53,6 +55,7 @@ const InputField = ({
                   placeholder={placeholder}
                   {...field}
                   className="relative"
+                  disabled={disabled}
                 />
                 {type === "password" && (
                   <Button

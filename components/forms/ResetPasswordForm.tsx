@@ -15,11 +15,10 @@ import { useToast } from "@/hooks/use-toast";
 
 interface Props {
   token: string;
+  email: string;
 }
 
-const ResetPasswordForm = ({ token }: Props) => {
-  // Define graphql mutations
-
+const ResetPasswordForm = ({ token, email }: Props) => {
   //   Reset Password Mutation
   const [
     resetPasswordMutation,
@@ -37,14 +36,25 @@ const ResetPasswordForm = ({ token }: Props) => {
   const form = useForm<z.infer<typeof ResetPasswordSchema>>({
     resolver: zodResolver(ResetPasswordSchema),
     defaultValues: {
-      email: "",
       newPassword: "",
       confirmNewPassword: "",
     },
   });
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof ResetPasswordSchema>) {
-    const { email, newPassword } = values;
+    // Destructure values
+    const { newPassword } = values;
+    // Check if email is defined
+    if (!email) {
+      toast({
+        title: "Email not found",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+      router.push("/login");
+      return;
+    }
+    // Perform the reset password mutation
     const result = await resetPasswordMutation({
       variables: {
         options: {
@@ -70,13 +80,14 @@ const ResetPasswordForm = ({ token }: Props) => {
       });
     }
   }
-  // Show password state
+  // Show password state and toggler
   const [showPassword, setShowPassword] = useState(false);
 
   const handleToggleShowPassword = () => {
     setShowPassword((prev) => !prev);
   };
 
+  //  Handle mutation errors.
   useEffect(() => {
     if (resetPasswordError) {
       console.error(resetPasswordError);
@@ -92,13 +103,6 @@ const ResetPasswordForm = ({ token }: Props) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {/* Email */}
-        <InputField
-          control={form.control}
-          name="email"
-          label="Email"
-          placeholder="example@email.com"
-        />
         {/* New Password */}
         <InputField
           control={form.control}

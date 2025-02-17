@@ -60,7 +60,6 @@ const LoginForm = () => {
     if (loginResult?.loginUser.user) {
       // Redirect to home page
       router.push("/");
-      console.log(loginResult?.loginUser.user);
     }
   }, [loginError, loginResult, router, form]);
   return (

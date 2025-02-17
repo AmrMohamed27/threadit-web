@@ -3,7 +3,6 @@ import { env } from "./env";
 
 // Middleware to redirect users who are already logged in to the home page
 export function middleware(req: NextRequest) {
-  console.log(env.COOKIE_NAME);
   const sessionCookie = req.cookies.get(env.COOKIE_NAME);
 
   if (sessionCookie) {

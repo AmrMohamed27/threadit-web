@@ -65,13 +65,3 @@ mutation ResetPassword($options: ResetPasswordInput!) {
     }
   }
 }
-
-mutation CheckToken($options: CheckTokenInput!) {
-  checkToken(options: $options) {
-    success
-    errors {
-      field
-      message
-    }
-  }
-}

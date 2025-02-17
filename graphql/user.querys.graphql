@@ -9,3 +9,13 @@ query Me {
     }
   }
 }
+
+query CheckToken($options: CheckTokenInput!) {
+  checkToken(options: $options) {
+    errors {
+      field
+      message
+    }
+    success
+  }
+}
