@@ -1,8 +1,7 @@
 mutation Register($userData: RegisterInput!) {
   registerUser(userData: $userData) {
     errors {
-      field
-      message
+      ...FullErrorField
     }
     user {
       ...FullUser
@@ -13,8 +12,7 @@ mutation Register($userData: RegisterInput!) {
 mutation Login($userData: LoginInput!) {
   loginUser(userData: $userData) {
     errors {
-      field
-      message
+      ...FullErrorField
     }
     user {
       ...FullUser
@@ -30,8 +28,7 @@ mutation ConfirmUser($code: String!) {
   confirmUser(code: $code) {
     success
     errors {
-      field
-      message
+      ...FullErrorField
     }
   }
 }
@@ -40,8 +37,7 @@ mutation RequestConfirmationCode {
   requestConfirmationCode {
     success
     errors {
-      field
-      message
+      ...FullErrorField
     }
   }
 }
@@ -50,8 +46,7 @@ mutation RequestPasswordReset($email: String!) {
   requestPasswordReset(email: $email) {
     success
     errors {
-      field
-      message
+      ...FullErrorField
     }
   }
 }
@@ -60,8 +55,7 @@ mutation ResetPassword($options: ResetPasswordInput!) {
   resetPassword(options: $options) {
     success
     errors {
-      field
-      message
+      ...FullErrorField
     }
   }
 }

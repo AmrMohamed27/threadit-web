@@ -1,3 +1,6 @@
+// TODO: Remove cookie if session is invalid
+// TODO: Continue video
+
 "use client";
 import React from "react";
 import {

@@ -1,5 +1,6 @@
 import { FieldError } from "@/generated/graphql";
 import { clsx, type ClassValue } from "clsx";
+import { ReadonlyURLSearchParams } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -13,3 +14,13 @@ export function toErrorMap(errors: FieldError[]) {
   });
   return errorMap;
 }
+
+export const createQueryStringFn = (
+  name: string,
+  value: string,
+  searchParams: ReadonlyURLSearchParams
+) => {
+  const params = new URLSearchParams(searchParams.toString());
+  params.set(name, value);
+  return params.toString();
+};

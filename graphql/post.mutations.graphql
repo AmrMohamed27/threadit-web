@@ -1,0 +1,28 @@
+mutation CreatePost($options: CreatePostInput!) {
+  createPost(options: $options) {
+    post {
+      ...FullPost
+    }
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+
+mutation DeletePost($id: Float!) {
+  deletePost(id: $id) {
+    success
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+
+mutation UpdatePost($options: UpdatePostInput!) {
+  updatePost(options: $options) {
+    success
+    errors {
+      ...FullErrorField
+    }
+  }
+}

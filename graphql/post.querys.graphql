@@ -1,0 +1,69 @@
+query GetPostsCount {
+  getPostsCount
+}
+
+query GetAllPosts($options: GetAllPostsInput!) {
+  getAllPosts(options: $options) {
+    postsArray {
+      ...FullPost
+    }
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+
+query GetPostById($id: Int!) {
+  getPost(id: $id) {
+    post {
+      ...FullPost
+    }
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+
+query GetPostComments($postId: Int!) {
+  getPostComments(postId: $postId) {
+    commentsArray {
+      ...FullComment
+    }
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+
+query GetPostVotes($postId: Int!) {
+  getPostVotes(postId: $postId) {
+    votesArray {
+      ...FullVote
+    }
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+
+query GetUserPosts($userId: Float) {
+  getUserPosts(userId: $userId) {
+    postsArray {
+      ...FullPost
+    }
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+
+query GetUserVotedPosts {
+  getUserVotedPosts {
+    posts {
+      ...FullPost
+    }
+    errors {
+      ...FullErrorField
+    }
+  }
+}

@@ -1,0 +1,28 @@
+mutation CreateComment($options: CreateCommentInput!) {
+  createComment(options: $options) {
+    comment {
+      ...FullComment
+    }
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+
+mutation DeleteComment($id: Float!) {
+  deleteComment(id: $id) {
+    success
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+
+mutation UpdateComment($options: UpdateCommentInput!) {
+  updateComment(options: $options) {
+    success
+    errors {
+      ...FullErrorField
+    }
+  }
+}

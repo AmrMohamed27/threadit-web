@@ -1,0 +1,8 @@
+fragment FullComment on Comment {
+  id
+  content
+  createdAt
+  updatedAt
+  authorId
+  postId
+}

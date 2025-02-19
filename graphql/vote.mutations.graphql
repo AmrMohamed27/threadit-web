@@ -1,0 +1,28 @@
+mutation CreateVote($options: CreateVoteInput!) {
+  createVote(options: $options) {
+    vote {
+      ...FullVote
+    }
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+
+mutation DeleteVote($id: Int!) {
+  deleteVote(id: $id) {
+    success
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+
+mutation UpdateVote($options: UpdateVoteInput!) {
+  updateVote(options: $options) {
+    success
+    errors {
+      ...FullErrorField
+    }
+  }
+}

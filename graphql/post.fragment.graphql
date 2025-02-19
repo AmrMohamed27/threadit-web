@@ -1,0 +1,8 @@
+fragment FullPost on Post {
+      id
+      title
+      content
+      createdAt
+      updatedAt
+      authorId
+}

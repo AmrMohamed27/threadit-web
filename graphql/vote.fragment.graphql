@@ -1,0 +1,9 @@
+fragment FullVote on Vote {
+  id
+  isUpvote
+  createdAt
+  updatedAt
+  userId
+  postId
+  commentId
+}
