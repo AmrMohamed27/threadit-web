@@ -72,6 +72,12 @@ export type GetAllPostsInput = {
   page: Scalars['Float']['input'];
 };
 
+export type GetSearchResultInput = {
+  limit: Scalars['Float']['input'];
+  page: Scalars['Float']['input'];
+  searchTerm: Scalars['String']['input'];
+};
+
 export type LoginInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -180,6 +186,7 @@ export type Post = {
 
 export type PostResponse = {
   __typename?: 'PostResponse';
+  count?: Maybe<Scalars['Int']['output']>;
   errors?: Maybe<Array<FieldError>>;
   post?: Maybe<Post>;
   postsArray?: Maybe<Array<Post>>;
@@ -199,6 +206,7 @@ export type Query = {
   getUserPosts: PostResponse;
   getUserVotedPosts: VotedPostsResponse;
   me: UserResponse;
+  searchPosts: PostResponse;
 };
 
 
@@ -239,6 +247,11 @@ export type QueryGetPostVotesArgs = {
 
 export type QueryGetUserPostsArgs = {
   userId?: InputMaybe<Scalars['Float']['input']>;
+};
+
+
+export type QuerySearchPostsArgs = {
+  options: GetSearchResultInput;
 };
 
 export type RegisterInput = {
@@ -377,17 +390,12 @@ export type UpdatePostMutationVariables = Exact<{
 
 export type UpdatePostMutation = { __typename?: 'Mutation', updatePost: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
-export type GetPostsCountQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetPostsCountQuery = { __typename?: 'Query', getPostsCount: number };
-
 export type GetAllPostsQueryVariables = Exact<{
   options: GetAllPostsInput;
 }>;
 
 
-export type GetAllPostsQuery = { __typename?: 'Query', getAllPosts: { __typename?: 'PostResponse', postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetAllPostsQuery = { __typename?: 'Query', getAllPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetPostByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -421,6 +429,13 @@ export type GetUserVotedPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetUserVotedPostsQuery = { __typename?: 'Query', getUserVotedPosts: { __typename?: 'VotedPostsResponse', posts?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type SearchPostsQueryVariables = Exact<{
+  options: GetSearchResultInput;
+}>;
+
+
+export type SearchPostsQuery = { __typename?: 'Query', searchPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type FullUserFragment = { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean };
 
@@ -911,49 +926,13 @@ export function useUpdatePostMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutation>;
 export type UpdatePostMutationResult = Apollo.MutationResult<UpdatePostMutation>;
 export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<UpdatePostMutation, UpdatePostMutationVariables>;
-export const GetPostsCountDocument = gql`
-    query GetPostsCount {
-  getPostsCount
-}
-    `;
-
-/**
- * __useGetPostsCountQuery__
- *
- * To run a query within a React component, call `useGetPostsCountQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPostsCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetPostsCountQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetPostsCountQuery(baseOptions?: Apollo.QueryHookOptions<GetPostsCountQuery, GetPostsCountQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetPostsCountQuery, GetPostsCountQueryVariables>(GetPostsCountDocument, options);
-      }
-export function useGetPostsCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPostsCountQuery, GetPostsCountQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetPostsCountQuery, GetPostsCountQueryVariables>(GetPostsCountDocument, options);
-        }
-export function useGetPostsCountSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetPostsCountQuery, GetPostsCountQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetPostsCountQuery, GetPostsCountQueryVariables>(GetPostsCountDocument, options);
-        }
-export type GetPostsCountQueryHookResult = ReturnType<typeof useGetPostsCountQuery>;
-export type GetPostsCountLazyQueryHookResult = ReturnType<typeof useGetPostsCountLazyQuery>;
-export type GetPostsCountSuspenseQueryHookResult = ReturnType<typeof useGetPostsCountSuspenseQuery>;
-export type GetPostsCountQueryResult = Apollo.QueryResult<GetPostsCountQuery, GetPostsCountQueryVariables>;
 export const GetAllPostsDocument = gql`
     query GetAllPosts($options: GetAllPostsInput!) {
   getAllPosts(options: $options) {
     postsArray {
       ...FullPost
     }
+    count
     errors {
       ...FullErrorField
     }
@@ -1223,6 +1202,53 @@ export type GetUserVotedPostsQueryHookResult = ReturnType<typeof useGetUserVoted
 export type GetUserVotedPostsLazyQueryHookResult = ReturnType<typeof useGetUserVotedPostsLazyQuery>;
 export type GetUserVotedPostsSuspenseQueryHookResult = ReturnType<typeof useGetUserVotedPostsSuspenseQuery>;
 export type GetUserVotedPostsQueryResult = Apollo.QueryResult<GetUserVotedPostsQuery, GetUserVotedPostsQueryVariables>;
+export const SearchPostsDocument = gql`
+    query SearchPosts($options: GetSearchResultInput!) {
+  searchPosts(options: $options) {
+    postsArray {
+      ...FullPost
+    }
+    count
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+    ${FullPostFragmentDoc}
+${FullErrorFieldFragmentDoc}`;
+
+/**
+ * __useSearchPostsQuery__
+ *
+ * To run a query within a React component, call `useSearchPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchPostsQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useSearchPostsQuery(baseOptions: Apollo.QueryHookOptions<SearchPostsQuery, SearchPostsQueryVariables> & ({ variables: SearchPostsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchPostsQuery, SearchPostsQueryVariables>(SearchPostsDocument, options);
+      }
+export function useSearchPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchPostsQuery, SearchPostsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchPostsQuery, SearchPostsQueryVariables>(SearchPostsDocument, options);
+        }
+export function useSearchPostsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SearchPostsQuery, SearchPostsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SearchPostsQuery, SearchPostsQueryVariables>(SearchPostsDocument, options);
+        }
+export type SearchPostsQueryHookResult = ReturnType<typeof useSearchPostsQuery>;
+export type SearchPostsLazyQueryHookResult = ReturnType<typeof useSearchPostsLazyQuery>;
+export type SearchPostsSuspenseQueryHookResult = ReturnType<typeof useSearchPostsSuspenseQuery>;
+export type SearchPostsQueryResult = Apollo.QueryResult<SearchPostsQuery, SearchPostsQueryVariables>;
 export const RegisterDocument = gql`
     mutation Register($userData: RegisterInput!) {
   registerUser(userData: $userData) {

@@ -21,6 +21,9 @@ export const createQueryStringFn = (
   searchParams: ReadonlyURLSearchParams
 ) => {
   const params = new URLSearchParams(searchParams.toString());
+  if (params.has("page")) {
+    params.set("page", "1");
+  }
   params.set(name, value);
   return params.toString();
 };

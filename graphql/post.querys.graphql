@@ -1,12 +1,9 @@
-query GetPostsCount {
-  getPostsCount
-}
-
 query GetAllPosts($options: GetAllPostsInput!) {
   getAllPosts(options: $options) {
     postsArray {
       ...FullPost
     }
+    count
     errors {
       ...FullErrorField
     }
@@ -62,6 +59,18 @@ query GetUserVotedPosts {
     posts {
       ...FullPost
     }
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+
+query SearchPosts($options: GetSearchResultInput!) {
+  searchPosts(options: $options) {
+    postsArray {
+      ...FullPost
+    }
+    count
     errors {
       ...FullErrorField
     }
