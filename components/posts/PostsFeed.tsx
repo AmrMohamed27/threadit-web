@@ -55,10 +55,12 @@ const PostsFeed = () => {
   if (error) return <div>Error: {error.message}</div>;
   if (!posts) return <div>No posts found</div>;
   return (
-    <div className="flex flex-col items-center gap-4 container">
-      {posts.map((post) => (
-        <PostCard key={post.id} post={post} />
-      ))}
+    <div className="flex flex-col items-center gap-20 container">
+      <div className="flex flex-col items-center gap-4 w-full">
+        {posts.map((post) => (
+          <PostCard key={post.id} post={post} />
+        ))}
+      </div>
       <PaginationComponent totalPages={totalPages} />
     </div>
   );
