@@ -1,3 +1,5 @@
+// TODO: Fix search results not showing upvotes and comments
+// TODO: Add Share Button
 // TODO: Add post page
 // TODO: limit post content to 100 words on home page and not on post page
 import { Post } from "@/generated/graphql";
@@ -11,6 +13,7 @@ import { Skeleton } from "../ui/skeleton";
 import { timeAgo } from "@/lib/utils";
 import PostOptions from "./PostOptions";
 import Votes from "./Votes";
+import CommentsCount from "./CommentsCount";
 
 interface Props {
   post: Post;
@@ -53,6 +56,12 @@ const PostCard = ({ post }: Props) => {
           <span className="text-muted-foreground text-xs">
             {timeAgo(createdAt)}
           </span>
+          {/* Date Updated if updatedAt is different from createdAt */}
+          {updatedAt !== createdAt && (
+            <span className="text-muted-foreground text-xs">
+              (Last updated: {timeAgo(updatedAt)})
+            </span>
+          )}
         </div>
         {/* Options */}
         <PostOptions />
@@ -68,6 +77,7 @@ const PostCard = ({ post }: Props) => {
           isUpvoted={isUpvoted}
           postId={postId}
         />
+        <CommentsCount count={commentsCount ?? 0} postId={postId} />
       </div>
     </div>
   );

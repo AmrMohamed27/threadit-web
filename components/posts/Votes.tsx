@@ -70,7 +70,7 @@ const Votes = ({ upvotesCount, isUpvoted, postId }: Props) => {
     >
       {/* Upvote Button */}
       <button
-        className="hover:bg-muted-foreground/10 p-1 rounded-full"
+        className="hover:bg-muted-foreground/10 p-2 rounded-full"
         onClick={async () => {
           handleClick(VoteOptions.Upvote);
           await createVoteMutation({
@@ -94,7 +94,7 @@ const Votes = ({ upvotesCount, isUpvoted, postId }: Props) => {
       <span className="text-sm">{count}</span>
       {/* Downvote Button */}
       <button
-        className="hover:bg-muted-foreground/10 p-1 rounded-full"
+        className="hover:bg-muted-foreground/10 p-2 rounded-full"
         onClick={async () => {
           handleClick(VoteOptions.Downvote);
           await createVoteMutation({
