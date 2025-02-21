@@ -15,12 +15,15 @@ import PostOptions from "./PostOptions";
 import Votes from "./Votes";
 import CommentsCount from "./CommentsCount";
 import SharePost from "./SharePost";
+import { usePathname } from "next/navigation";
 
 interface Props {
   post: Post;
 }
 
 const PostCard = ({ post }: Props) => {
+  const pathname = usePathname();
+  const isPostPage = pathname.includes("/posts/");
   // Destructure post
   const {
     title,
@@ -70,7 +73,16 @@ const PostCard = ({ post }: Props) => {
       {/* Title */}
       <span className="font-bold text-lg">{title}</span>
       {/* Content */}
-      <p className="text-muted-foreground text-sm">{content}</p>
+      {/* Clip content to 100 words when not on post page */}
+      {content.length < 100 ? (
+        <p className="text-muted-foreground text-sm">{content}</p>
+      ) : isPostPage ? (
+        <p className="text-muted-foreground text-sm">{content}</p>
+      ) : (
+        <p className="text-muted-foreground text-sm" dir={"rtl"}>
+          {content.split(" ").slice(0, 100).join(" ") + "..."}
+        </p>
+      )}
       {/* Interactions */}
       <div className="flex flex-row items-center gap-4">
         <Votes

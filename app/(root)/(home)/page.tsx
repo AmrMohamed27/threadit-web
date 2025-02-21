@@ -36,7 +36,7 @@ export default function Home() {
         <div>Error: {error?.message ?? "An error occurred"}</div>
       ) : (
         <>
-          <PostsFeed posts={posts} count={count} />
+          <PostsFeed posts={posts} count={count} hasPagination={true} />
         </>
       )}
     </>

@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import MobileNav from "./MobileNav";
 
-const NavbarButtons = () => {
+const NavbarLoggedOut = () => {
   return (
     <>
       {/* Desktop Navbar */}
@@ -23,4 +23,4 @@ const NavbarButtons = () => {
   );
 };
 
-export default NavbarButtons;
+export default NavbarLoggedOut;

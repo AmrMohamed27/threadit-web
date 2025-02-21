@@ -1,6 +1,7 @@
 import { MessageCircle as CommentIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
+import GreyDiv from "../common/GreyDiv";
 
 interface Props {
   count: number;
@@ -9,7 +10,7 @@ interface Props {
 
 const CommentsCount = ({ count, postId }: Props) => {
   return (
-    <div className="bg-muted hover:bg-muted-foreground/30 rounded-full">
+    <GreyDiv>
       {/* Comments Button "Links to post page" */}
       <Link
         className="flex flex-row items-center gap-2 px-4 py-2"
@@ -19,7 +20,7 @@ const CommentsCount = ({ count, postId }: Props) => {
         {/* Comments Count */}
         <span className="text-sm">{count}</span>
       </Link>
-    </div>
+    </GreyDiv>
   );
 };
 

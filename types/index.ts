@@ -7,6 +7,12 @@ export type ErrorField =
   | `root.${string}`;
 export type LoginErrorType = "email" | "password" | "root" | `root.${string}`;
 
+export type CreatePostErrorType =
+  | "title"
+  | "content"
+  | "root"
+  | `root.${string}`;
+
 export type ResetPasswordErrorType =
   | "root"
   | `root.${string}`

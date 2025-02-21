@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import TextareaAutosize from "react-textarea-autosize";
 import { Control } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Eye, EyeOff } from "lucide-react";
@@ -47,7 +47,11 @@ const InputField = ({
           <FormLabel>{label}</FormLabel>
           <FormControl>
             {isTextArea ? (
-              <Textarea placeholder={placeholder} {...field} />
+              <TextareaAutosize
+                className="flex bg-transparent disabled:opacity-50 shadow-sm px-3 py-2 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring w-full min-h-[60px] placeholder:text-muted-foreground md:text-sm text-base resize-none disabled:cursor-not-allowed"
+                placeholder={placeholder}
+                {...field}
+              />
             ) : (
               <div className="relative">
                 <Input

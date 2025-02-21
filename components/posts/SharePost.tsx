@@ -9,6 +9,7 @@ import { Share2 as ShareIcon, Link as CopyLinkIcon } from "lucide-react";
 import { copyLinkToClipboard } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { env } from "@/env";
+import GreyDiv from "../common/GreyDiv";
 
 interface Props {
   postId: number;
@@ -19,10 +20,10 @@ const SharePost = ({ postId }: Props) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <div className="flex flex-row items-center gap-2 bg-muted hover:bg-muted-foreground/30 px-4 py-2 rounded-full">
+        <GreyDiv className="flex flex-row items-center gap-2 px-4 py-2">
           <ShareIcon size={20} aria-label="Share Icon" />
           <span className="text-sm">Share</span>
-        </div>
+        </GreyDiv>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-muted">
         <DropdownMenuItem className="px-4 py-2">
