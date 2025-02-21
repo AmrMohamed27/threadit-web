@@ -17,3 +17,14 @@ query CheckToken($options: CheckTokenInput!) {
     success
   }
 }
+
+query GetUserById($id: Int!) {
+  getUserById(id: $id) {
+    user {
+      ...FullUser
+    }
+    errors {
+      ...FullErrorField
+    }
+  }
+}

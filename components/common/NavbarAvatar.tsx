@@ -1,6 +1,3 @@
-// TODO: Remove cookie if session is invalid
-// TODO: Continue video
-
 "use client";
 import React from "react";
 import {
@@ -24,7 +21,7 @@ import { useLogoutMutation } from "@/generated/graphql";
 import { useRouter } from "next/navigation";
 import { useCurrentUser } from "@/hooks/use-current-user";
 
-const Avatar = () => {
+const NavbarAvatar = () => {
   // Get current logged in user
   const { user, loading: isUserLoading, error: userError } = useCurrentUser();
   // Logout mutation
@@ -91,4 +88,4 @@ const Avatar = () => {
   );
 };
 
-export default Avatar;
+export default NavbarAvatar;

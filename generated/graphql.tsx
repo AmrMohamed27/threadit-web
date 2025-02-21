@@ -176,12 +176,16 @@ export type MutationUpdateVoteArgs = {
 
 export type Post = {
   __typename?: 'Post';
+  author?: Maybe<User>;
   authorId: Scalars['Int']['output'];
+  commentsCount?: Maybe<Scalars['Int']['output']>;
   content: Scalars['String']['output'];
   createdAt: Scalars['String']['output'];
   id: Scalars['Int']['output'];
+  isUpvoted?: Maybe<VoteOptions>;
   title: Scalars['String']['output'];
   updatedAt: Scalars['String']['output'];
+  upvotesCount?: Maybe<Scalars['Int']['output']>;
 };
 
 export type PostResponse = {
@@ -202,6 +206,7 @@ export type Query = {
   getPostComments: CommentResponse;
   getPostVotes: VoteResponse;
   getPostsCount: Scalars['Int']['output'];
+  getUserById: UserResponse;
   getUserComments: CommentResponse;
   getUserPosts: PostResponse;
   getUserVotedPosts: VotedPostsResponse;
@@ -242,6 +247,11 @@ export type QueryGetPostCommentsArgs = {
 
 export type QueryGetPostVotesArgs = {
   postId: Scalars['Int']['input'];
+};
+
+
+export type QueryGetUserByIdArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -310,6 +320,13 @@ export type Vote = {
   userId: Scalars['Int']['output'];
 };
 
+/** Represents the user's vote status on a post */
+export enum VoteOptions {
+  Downvote = 'Downvote',
+  None = 'None',
+  Upvote = 'Upvote'
+}
+
 export type VoteResponse = {
   __typename?: 'VoteResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -369,6 +386,8 @@ export type FullErrorFieldFragment = { __typename?: 'FieldError', field: string,
 
 export type FullPostFragment = { __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number };
 
+export type FullPostResponseFragment = { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, authorId: number, author?: { __typename?: 'User', confirmed: boolean, name: string, email: string, createdAt: string, id: number, image?: string | null, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
+
 export type CreatePostMutationVariables = Exact<{
   options: CreatePostInput;
 }>;
@@ -395,7 +414,7 @@ export type GetAllPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllPostsQuery = { __typename?: 'Query', getAllPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetAllPostsQuery = { __typename?: 'Query', getAllPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, authorId: number, author?: { __typename?: 'User', confirmed: boolean, name: string, email: string, createdAt: string, id: number, image?: string | null, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetPostByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -496,6 +515,13 @@ export type CheckTokenQueryVariables = Exact<{
 
 export type CheckTokenQuery = { __typename?: 'Query', checkToken: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
+export type GetUserByIdQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type GetUserByIdQuery = { __typename?: 'Query', getUserById: { __typename?: 'UserResponse', user?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
 export type FullVoteFragment = { __typename?: 'Vote', id: number, isUpvote: boolean, createdAt: string, updatedAt: string, userId: number, postId?: number | null, commentId?: number | null };
 
 export type CreateVoteMutationVariables = Exact<{
@@ -543,6 +569,35 @@ export const FullPostFragmentDoc = gql`
   createdAt
   updatedAt
   authorId
+}
+    `;
+export const FullPostResponseFragmentDoc = gql`
+    fragment FullPostResponse on PostResponse {
+  postsArray {
+    id
+    title
+    content
+    createdAt
+    updatedAt
+    upvotesCount
+    isUpvoted
+    commentsCount
+    authorId
+    author {
+      confirmed
+      name
+      email
+      createdAt
+      id
+      image
+      updatedAt
+    }
+  }
+  errors {
+    field
+    message
+  }
+  count
 }
     `;
 export const FullUserFragmentDoc = gql`
@@ -929,17 +984,10 @@ export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<UpdatePostMut
 export const GetAllPostsDocument = gql`
     query GetAllPosts($options: GetAllPostsInput!) {
   getAllPosts(options: $options) {
-    postsArray {
-      ...FullPost
-    }
-    count
-    errors {
-      ...FullErrorField
-    }
+    ...FullPostResponse
   }
 }
-    ${FullPostFragmentDoc}
-${FullErrorFieldFragmentDoc}`;
+    ${FullPostResponseFragmentDoc}`;
 
 /**
  * __useGetAllPostsQuery__
@@ -1588,6 +1636,52 @@ export type CheckTokenQueryHookResult = ReturnType<typeof useCheckTokenQuery>;
 export type CheckTokenLazyQueryHookResult = ReturnType<typeof useCheckTokenLazyQuery>;
 export type CheckTokenSuspenseQueryHookResult = ReturnType<typeof useCheckTokenSuspenseQuery>;
 export type CheckTokenQueryResult = Apollo.QueryResult<CheckTokenQuery, CheckTokenQueryVariables>;
+export const GetUserByIdDocument = gql`
+    query GetUserById($id: Int!) {
+  getUserById(id: $id) {
+    user {
+      ...FullUser
+    }
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+    ${FullUserFragmentDoc}
+${FullErrorFieldFragmentDoc}`;
+
+/**
+ * __useGetUserByIdQuery__
+ *
+ * To run a query within a React component, call `useGetUserByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetUserByIdQuery(baseOptions: Apollo.QueryHookOptions<GetUserByIdQuery, GetUserByIdQueryVariables> & ({ variables: GetUserByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserByIdQuery, GetUserByIdQueryVariables>(GetUserByIdDocument, options);
+      }
+export function useGetUserByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserByIdQuery, GetUserByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserByIdQuery, GetUserByIdQueryVariables>(GetUserByIdDocument, options);
+        }
+export function useGetUserByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetUserByIdQuery, GetUserByIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetUserByIdQuery, GetUserByIdQueryVariables>(GetUserByIdDocument, options);
+        }
+export type GetUserByIdQueryHookResult = ReturnType<typeof useGetUserByIdQuery>;
+export type GetUserByIdLazyQueryHookResult = ReturnType<typeof useGetUserByIdLazyQuery>;
+export type GetUserByIdSuspenseQueryHookResult = ReturnType<typeof useGetUserByIdSuspenseQuery>;
+export type GetUserByIdQueryResult = Apollo.QueryResult<GetUserByIdQuery, GetUserByIdQueryVariables>;
 export const CreateVoteDocument = gql`
     mutation CreateVote($options: CreateVoteInput!) {
   createVote(options: $options) {

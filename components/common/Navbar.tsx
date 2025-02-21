@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Avatar from "./Avatar";
+import NavbarAvatar from "./NavbarAvatar";
 import { DarkModeToggle } from "./DarkModeToggle";
 import SearchBar from "./SearchBar";
 
@@ -13,7 +13,7 @@ export default function Navbar() {
         <SearchBar />
         <div className="flex items-center space-x-4">
           <DarkModeToggle />
-          <Avatar />
+          <NavbarAvatar />
         </div>
       </div>
     </nav>

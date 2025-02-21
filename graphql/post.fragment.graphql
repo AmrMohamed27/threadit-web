@@ -1,8 +1,36 @@
 fragment FullPost on Post {
-      id
-      title
-      content
+  id
+  title
+  content
+  createdAt
+  updatedAt
+  authorId
+}
+
+fragment FullPostResponse on PostResponse {
+  postsArray {
+    id
+    title
+    content
+    createdAt
+    updatedAt
+    upvotesCount
+    isUpvoted
+    commentsCount
+    authorId
+    author {
+      confirmed
+      name
+      email
       createdAt
+      id
+      image
       updatedAt
-      authorId
+    }
+  }
+  errors {
+    field
+    message
+  }
+  count
 }
