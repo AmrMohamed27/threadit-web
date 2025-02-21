@@ -1,4 +1,3 @@
-// TODO: Fix search results not showing upvotes and comments
 // TODO: Add Share Button
 // TODO: Add post page
 // TODO: limit post content to 100 words on home page and not on post page
@@ -14,6 +13,7 @@ import { timeAgo } from "@/lib/utils";
 import PostOptions from "./PostOptions";
 import Votes from "./Votes";
 import CommentsCount from "./CommentsCount";
+import SharePost from "./SharePost";
 
 interface Props {
   post: Post;
@@ -78,6 +78,7 @@ const PostCard = ({ post }: Props) => {
           postId={postId}
         />
         <CommentsCount count={commentsCount ?? 0} postId={postId} />
+        <SharePost postId={postId} />
       </div>
     </div>
   );

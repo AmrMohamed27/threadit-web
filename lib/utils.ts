@@ -53,3 +53,11 @@ export function timeAgo(timestamp: string): string {
   return "just now";
 }
 
+export function copyLinkToClipboard(link: string, then: () => void): void {
+  navigator.clipboard
+    .writeText(link)
+    .then(then)
+    .catch((err) => {
+      console.error("Failed to copy link: ", err);
+    });
+}
