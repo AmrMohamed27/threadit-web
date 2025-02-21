@@ -1,3 +1,4 @@
+"use client";
 import { useCreateVoteMutation, VoteOptions } from "@/generated/graphql";
 import { cn } from "@/lib/utils";
 import {

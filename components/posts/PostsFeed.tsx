@@ -9,12 +9,13 @@ import { Post } from "@/generated/graphql";
 interface HomePostsProps {
   posts: Post[];
   count: number;
+  hasPagination?: boolean;
 }
 
-const PostsFeed = ({ posts, count }: HomePostsProps) => {
+const PostsFeed = ({ posts, count, hasPagination }: HomePostsProps) => {
   const router = useRouter();
   const pathname = usePathname();
-  
+
   const totalPages = Math.ceil(count / POSTS_PER_PAGE);
   const { currentPage, createQueryString } = useCurrentPage();
   // Edge Cases for current page
@@ -35,7 +36,7 @@ const PostsFeed = ({ posts, count }: HomePostsProps) => {
           <PostCard key={post.id} post={post} />
         ))}
       </div>
-      <PaginationComponent totalPages={totalPages} />
+      {hasPagination && <PaginationComponent totalPages={totalPages} />}
     </div>
   );
 };

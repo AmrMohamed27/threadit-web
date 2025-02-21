@@ -1,5 +1,6 @@
-// TODO: Add Share Button
-// TODO: Add post page
+// TODO: Add comments to post page
+// TODO: Add comment threading
+// TODO: Add comment sorting
 // TODO: limit post content to 100 words on home page and not on post page
 import { Post } from "@/generated/graphql";
 import React from "react";

@@ -13,7 +13,7 @@ const CommentsCount = ({ count, postId }: Props) => {
       {/* Comments Button "Links to post page" */}
       <Link
         className="flex flex-row items-center gap-2 px-4 py-2"
-        href={`/post/${postId}`}
+        href={`/posts/${postId}`}
       >
         <CommentIcon size={20} aria-label="Comment Icon" />
         {/* Comments Count */}
