@@ -41,9 +41,7 @@ const SearchBar = () => {
   const searchURL = "/search" + "?" + createQueryString("q", searchTerm);
 
   const handleSearch = () => {
-    if (searchTerm.trim().length === 0) {
-      router.push("/");
-    } else {
+    if (searchTerm.trim().length !== 0) {
       router.push(searchURL);
     }
   };

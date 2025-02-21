@@ -6,12 +6,7 @@ query GetAllPosts($options: GetAllPostsInput!) {
 
 query GetPostById($id: Int!) {
   getPost(id: $id) {
-    post {
-      ...FullPost
-    }
-    errors {
-      ...FullErrorField
-    }
+    ...FullSinglePostResponse
   }
 }
 
@@ -37,14 +32,9 @@ query GetPostVotes($postId: Int!) {
   }
 }
 
-query GetUserPosts($userId: Float) {
-  getUserPosts(userId: $userId) {
-    postsArray {
-      ...FullPost
-    }
-    errors {
-      ...FullErrorField
-    }
+query GetUserPosts($options: GetUserPostsInput!) {
+  getUserPosts(options: $options) {
+    ...FullPostResponse
   }
 }
 
@@ -61,12 +51,6 @@ query GetUserVotedPosts {
 
 query SearchPosts($options: GetSearchResultInput!) {
   searchPosts(options: $options) {
-    postsArray {
-      ...FullPost
-    }
-    count
-    errors {
-      ...FullErrorField
-    }
+    ...FullPostResponse
   }
 }

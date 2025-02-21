@@ -78,6 +78,12 @@ export type GetSearchResultInput = {
   searchTerm: Scalars['String']['input'];
 };
 
+export type GetUserPostsInput = {
+  limit: Scalars['Float']['input'];
+  page: Scalars['Float']['input'];
+  userId: Scalars['Float']['input'];
+};
+
 export type LoginInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -256,7 +262,7 @@ export type QueryGetUserByIdArgs = {
 
 
 export type QueryGetUserPostsArgs = {
-  userId?: InputMaybe<Scalars['Float']['input']>;
+  options: GetUserPostsInput;
 };
 
 
@@ -388,6 +394,8 @@ export type FullPostFragment = { __typename?: 'Post', id: number, title: string,
 
 export type FullPostResponseFragment = { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, authorId: number, author?: { __typename?: 'User', confirmed: boolean, name: string, email: string, createdAt: string, id: number, image?: string | null, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
+export type FullSinglePostResponseFragment = { __typename?: 'PostResponse', post?: { __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, authorId: number, author?: { __typename?: 'User', confirmed: boolean, name: string, email: string, createdAt: string, id: number, image?: string | null, updatedAt: string } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
+
 export type CreatePostMutationVariables = Exact<{
   options: CreatePostInput;
 }>;
@@ -421,7 +429,7 @@ export type GetPostByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetPostByIdQuery = { __typename?: 'Query', getPost: { __typename?: 'PostResponse', post?: { __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetPostByIdQuery = { __typename?: 'Query', getPost: { __typename?: 'PostResponse', post?: { __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, authorId: number, author?: { __typename?: 'User', confirmed: boolean, name: string, email: string, createdAt: string, id: number, image?: string | null, updatedAt: string } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetPostCommentsQueryVariables = Exact<{
   postId: Scalars['Int']['input'];
@@ -438,11 +446,11 @@ export type GetPostVotesQueryVariables = Exact<{
 export type GetPostVotesQuery = { __typename?: 'Query', getPostVotes: { __typename?: 'VoteResponse', votesArray?: Array<{ __typename?: 'Vote', id: number, isUpvote: boolean, createdAt: string, updatedAt: string, userId: number, postId?: number | null, commentId?: number | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetUserPostsQueryVariables = Exact<{
-  userId?: InputMaybe<Scalars['Float']['input']>;
+  options: GetUserPostsInput;
 }>;
 
 
-export type GetUserPostsQuery = { __typename?: 'Query', getUserPosts: { __typename?: 'PostResponse', postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetUserPostsQuery = { __typename?: 'Query', getUserPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, authorId: number, author?: { __typename?: 'User', confirmed: boolean, name: string, email: string, createdAt: string, id: number, image?: string | null, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetUserVotedPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -454,7 +462,7 @@ export type SearchPostsQueryVariables = Exact<{
 }>;
 
 
-export type SearchPostsQuery = { __typename?: 'Query', searchPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type SearchPostsQuery = { __typename?: 'Query', searchPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, authorId: number, author?: { __typename?: 'User', confirmed: boolean, name: string, email: string, createdAt: string, id: number, image?: string | null, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type FullUserFragment = { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean };
 
@@ -598,6 +606,34 @@ export const FullPostResponseFragmentDoc = gql`
     message
   }
   count
+}
+    `;
+export const FullSinglePostResponseFragmentDoc = gql`
+    fragment FullSinglePostResponse on PostResponse {
+  post {
+    id
+    title
+    content
+    createdAt
+    updatedAt
+    upvotesCount
+    isUpvoted
+    commentsCount
+    authorId
+    author {
+      confirmed
+      name
+      email
+      createdAt
+      id
+      image
+      updatedAt
+    }
+  }
+  errors {
+    field
+    message
+  }
 }
     `;
 export const FullUserFragmentDoc = gql`
@@ -1024,16 +1060,10 @@ export type GetAllPostsQueryResult = Apollo.QueryResult<GetAllPostsQuery, GetAll
 export const GetPostByIdDocument = gql`
     query GetPostById($id: Int!) {
   getPost(id: $id) {
-    post {
-      ...FullPost
-    }
-    errors {
-      ...FullErrorField
-    }
+    ...FullSinglePostResponse
   }
 }
-    ${FullPostFragmentDoc}
-${FullErrorFieldFragmentDoc}`;
+    ${FullSinglePostResponseFragmentDoc}`;
 
 /**
  * __useGetPostByIdQuery__
@@ -1160,18 +1190,12 @@ export type GetPostVotesLazyQueryHookResult = ReturnType<typeof useGetPostVotesL
 export type GetPostVotesSuspenseQueryHookResult = ReturnType<typeof useGetPostVotesSuspenseQuery>;
 export type GetPostVotesQueryResult = Apollo.QueryResult<GetPostVotesQuery, GetPostVotesQueryVariables>;
 export const GetUserPostsDocument = gql`
-    query GetUserPosts($userId: Float) {
-  getUserPosts(userId: $userId) {
-    postsArray {
-      ...FullPost
-    }
-    errors {
-      ...FullErrorField
-    }
+    query GetUserPosts($options: GetUserPostsInput!) {
+  getUserPosts(options: $options) {
+    ...FullPostResponse
   }
 }
-    ${FullPostFragmentDoc}
-${FullErrorFieldFragmentDoc}`;
+    ${FullPostResponseFragmentDoc}`;
 
 /**
  * __useGetUserPostsQuery__
@@ -1185,11 +1209,11 @@ ${FullErrorFieldFragmentDoc}`;
  * @example
  * const { data, loading, error } = useGetUserPostsQuery({
  *   variables: {
- *      userId: // value for 'userId'
+ *      options: // value for 'options'
  *   },
  * });
  */
-export function useGetUserPostsQuery(baseOptions?: Apollo.QueryHookOptions<GetUserPostsQuery, GetUserPostsQueryVariables>) {
+export function useGetUserPostsQuery(baseOptions: Apollo.QueryHookOptions<GetUserPostsQuery, GetUserPostsQueryVariables> & ({ variables: GetUserPostsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetUserPostsQuery, GetUserPostsQueryVariables>(GetUserPostsDocument, options);
       }
@@ -1253,17 +1277,10 @@ export type GetUserVotedPostsQueryResult = Apollo.QueryResult<GetUserVotedPostsQ
 export const SearchPostsDocument = gql`
     query SearchPosts($options: GetSearchResultInput!) {
   searchPosts(options: $options) {
-    postsArray {
-      ...FullPost
-    }
-    count
-    errors {
-      ...FullErrorField
-    }
+    ...FullPostResponse
   }
 }
-    ${FullPostFragmentDoc}
-${FullErrorFieldFragmentDoc}`;
+    ${FullPostResponseFragmentDoc}`;
 
 /**
  * __useSearchPostsQuery__

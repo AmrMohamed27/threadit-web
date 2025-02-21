@@ -34,3 +34,30 @@ fragment FullPostResponse on PostResponse {
   }
   count
 }
+
+fragment FullSinglePostResponse on PostResponse {
+  post {
+    id
+    title
+    content
+    createdAt
+    updatedAt
+    upvotesCount
+    isUpvoted
+    commentsCount
+    authorId
+    author {
+      confirmed
+      name
+      email
+      createdAt
+      id
+      image
+      updatedAt
+    }
+  }
+  errors {
+    field
+    message
+  }
+}
