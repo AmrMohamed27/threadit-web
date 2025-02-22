@@ -2,12 +2,14 @@
 import { useGetPostByIdQuery } from "@/generated/graphql";
 import React from "react";
 import PostsFeed from "./PostsFeed";
+import EditPostForm from "../forms/EditPostForm";
 
 interface Props {
   postId: number;
+  isEdit?: boolean;
 }
 
-const PostGetter = ({ postId }: Props) => {
+const PostGetter = ({ postId, isEdit }: Props) => {
   const { data, loading, error } = useGetPostByIdQuery({
     variables: {
       id: postId,
@@ -26,7 +28,11 @@ const PostGetter = ({ postId }: Props) => {
   if (error) return <div>Error: {error.message}</div>;
   const post = data?.getPost.post;
   if (!post) return <div>Error 404 - No post found</div>;
-  return <PostsFeed posts={[post]} count={1} />;
+  return isEdit ? (
+    <EditPostForm post={post} />
+  ) : (
+    <PostsFeed posts={[post]} count={1} />
+  );
 };
 
 export default PostGetter;

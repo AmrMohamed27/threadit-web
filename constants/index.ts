@@ -1,3 +1,4 @@
+import { PostOptions } from "@/types";
 import {
   Bookmark as SaveIcon,
   EyeOff as HideIcon,
@@ -9,23 +10,23 @@ import {
 export const POSTS_PER_PAGE = 5;
 
 // Options for logged out users options dropdown
-export const loggedOutUserOptionsDropdown = [
+export const loggedOutUserOptionsDropdown: PostOptions[] = [
   { id: "report", label: "Report", icon: ReportIcon, onClick: () => {} },
 ] as const;
 // Options for post options dropdown
-export const postOptionsDropdown = [
+export const postOptionsDropdown: PostOptions[] = [
   { id: "save", label: "Save", icon: SaveIcon, onClick: () => {} },
   { id: "hide", label: "Hide", icon: HideIcon, onClick: () => {} },
   loggedOutUserOptionsDropdown[0],
 ] as const;
 
 // Options for user's post options dropdown
-export const userPostOptionsDropdown = [
+export const userPostOptionsDropdown: PostOptions[] = [
   {
     id: "edit",
     label: "Edit post",
     icon: EditIcon,
-    onClick: () => {},
+    href: (postId: number) => `/posts/${postId}/edit`,
   },
   postOptionsDropdown[0],
   postOptionsDropdown[1],

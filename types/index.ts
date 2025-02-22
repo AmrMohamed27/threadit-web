@@ -1,3 +1,6 @@
+import { LucideProps } from "lucide-react";
+import { ForwardRefExoticComponent, RefAttributes } from "react";
+
 export type ErrorField =
   | "email"
   | "name"
@@ -22,3 +25,13 @@ export type ResetPasswordErrorType =
 export type RequestResetErrorType = "email" | "root" | `root.${string}`;
 
 export type ConfirmErrorType = "code" | "root" | `root.${string}`;
+
+export interface PostOptions {
+  id: string;
+  label: string;
+  icon: ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
+  >;
+  href?: (postId: number) => string;
+  onClick?: () => void;
+}

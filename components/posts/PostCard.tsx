@@ -72,7 +72,7 @@ const PostCard = ({ post }: Props) => {
           )}
         </div>
         {/* Options */}
-        <PostOptions authorId={author?.id ?? 0} />
+        <PostOptions authorId={author?.id ?? 0} postId={postId} />
       </div>
       {/* Title */}
       <span className="font-bold text-lg" dir={isArabicContent ? "rtl" : "ltr"}>
