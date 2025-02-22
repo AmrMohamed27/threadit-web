@@ -27,11 +27,12 @@ export type RequestResetErrorType = "email" | "root" | `root.${string}`;
 export type ConfirmErrorType = "code" | "root" | `root.${string}`;
 
 export interface PostOptions {
-  id: string;
+  id: OptionIds;
   label: string;
   icon: ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;
   href?: (postId: number) => string;
-  onClick?: () => void;
 }
+
+export type OptionIds = "hide" | "edit" | "delete" | "report" | "save";

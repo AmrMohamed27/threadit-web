@@ -1,0 +1,18 @@
+mutation HidePost($postId: Float!) {
+  hidePost(postId: $postId) {
+    success
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+
+mutation UnhidePost($postId: Float!) {
+  unhidePost(postId: $postId) {
+    success
+    errors {
+      field
+      message
+    }
+  }
+}

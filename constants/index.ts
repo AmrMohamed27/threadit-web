@@ -11,12 +11,12 @@ export const POSTS_PER_PAGE = 5;
 
 // Options for logged out users options dropdown
 export const loggedOutUserOptionsDropdown: PostOptions[] = [
-  { id: "report", label: "Report", icon: ReportIcon, onClick: () => {} },
+  { id: "report", label: "Report", icon: ReportIcon },
 ] as const;
 // Options for post options dropdown
 export const postOptionsDropdown: PostOptions[] = [
-  { id: "save", label: "Save", icon: SaveIcon, onClick: () => {} },
-  { id: "hide", label: "Hide", icon: HideIcon, onClick: () => {} },
+  { id: "save", label: "Save", icon: SaveIcon },
+  { id: "hide", label: "Hide", icon: HideIcon },
   loggedOutUserOptionsDropdown[0],
 ] as const;
 
@@ -34,6 +34,5 @@ export const userPostOptionsDropdown: PostOptions[] = [
     id: "delete",
     label: "Delete",
     icon: DeleteIcon,
-    onClick: () => {},
   },
 ] as const;

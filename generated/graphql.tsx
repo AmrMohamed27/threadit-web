@@ -98,6 +98,7 @@ export type Mutation = {
   deleteComment: ConfirmResponse;
   deletePost: ConfirmResponse;
   deleteVote: ConfirmResponse;
+  hidePost: ConfirmResponse;
   loginUser: UserResponse;
   logoutUser: Scalars['Boolean']['output'];
   registerUser: UserResponse;
@@ -105,6 +106,7 @@ export type Mutation = {
   requestPasswordReset: ConfirmResponse;
   resetPassword: ConfirmResponse;
   toggleConfirmed: Scalars['Boolean']['output'];
+  unhidePost: ConfirmResponse;
   updateComment?: Maybe<ConfirmResponse>;
   updatePost: ConfirmResponse;
   updateVote?: Maybe<ConfirmResponse>;
@@ -146,6 +148,11 @@ export type MutationDeleteVoteArgs = {
 };
 
 
+export type MutationHidePostArgs = {
+  postId: Scalars['Float']['input'];
+};
+
+
 export type MutationLoginUserArgs = {
   userData: LoginInput;
 };
@@ -163,6 +170,11 @@ export type MutationRequestPasswordResetArgs = {
 
 export type MutationResetPasswordArgs = {
   options: ResetPasswordInput;
+};
+
+
+export type MutationUnhidePostArgs = {
+  postId: Scalars['Float']['input'];
 };
 
 
@@ -208,6 +220,7 @@ export type Query = {
   getAllPosts: PostResponse;
   getComment: CommentResponse;
   getCommentVotes: VoteResponse;
+  getHiddenPosts: Array<Scalars['Float']['output']>;
   getPost: PostResponse;
   getPostComments: CommentResponse;
   getPostVotes: VoteResponse;
@@ -389,6 +402,25 @@ export type GetUserCommentsQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetUserCommentsQuery = { __typename?: 'Query', getUserComments: { __typename?: 'CommentResponse', commentsArray?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type FullErrorFieldFragment = { __typename?: 'FieldError', field: string, message: string };
+
+export type HidePostMutationVariables = Exact<{
+  postId: Scalars['Float']['input'];
+}>;
+
+
+export type HidePostMutation = { __typename?: 'Mutation', hidePost: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type UnhidePostMutationVariables = Exact<{
+  postId: Scalars['Float']['input'];
+}>;
+
+
+export type UnhidePostMutation = { __typename?: 'Mutation', unhidePost: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type GetHiddenPostsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetHiddenPostsQuery = { __typename?: 'Query', getHiddenPosts: Array<number> };
 
 export type FullPostFragment = { __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number };
 
@@ -906,6 +938,116 @@ export type GetUserCommentsQueryHookResult = ReturnType<typeof useGetUserComment
 export type GetUserCommentsLazyQueryHookResult = ReturnType<typeof useGetUserCommentsLazyQuery>;
 export type GetUserCommentsSuspenseQueryHookResult = ReturnType<typeof useGetUserCommentsSuspenseQuery>;
 export type GetUserCommentsQueryResult = Apollo.QueryResult<GetUserCommentsQuery, GetUserCommentsQueryVariables>;
+export const HidePostDocument = gql`
+    mutation HidePost($postId: Float!) {
+  hidePost(postId: $postId) {
+    success
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+    ${FullErrorFieldFragmentDoc}`;
+export type HidePostMutationFn = Apollo.MutationFunction<HidePostMutation, HidePostMutationVariables>;
+
+/**
+ * __useHidePostMutation__
+ *
+ * To run a mutation, you first call `useHidePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useHidePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [hidePostMutation, { data, loading, error }] = useHidePostMutation({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useHidePostMutation(baseOptions?: Apollo.MutationHookOptions<HidePostMutation, HidePostMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<HidePostMutation, HidePostMutationVariables>(HidePostDocument, options);
+      }
+export type HidePostMutationHookResult = ReturnType<typeof useHidePostMutation>;
+export type HidePostMutationResult = Apollo.MutationResult<HidePostMutation>;
+export type HidePostMutationOptions = Apollo.BaseMutationOptions<HidePostMutation, HidePostMutationVariables>;
+export const UnhidePostDocument = gql`
+    mutation UnhidePost($postId: Float!) {
+  unhidePost(postId: $postId) {
+    success
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type UnhidePostMutationFn = Apollo.MutationFunction<UnhidePostMutation, UnhidePostMutationVariables>;
+
+/**
+ * __useUnhidePostMutation__
+ *
+ * To run a mutation, you first call `useUnhidePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnhidePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unhidePostMutation, { data, loading, error }] = useUnhidePostMutation({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useUnhidePostMutation(baseOptions?: Apollo.MutationHookOptions<UnhidePostMutation, UnhidePostMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UnhidePostMutation, UnhidePostMutationVariables>(UnhidePostDocument, options);
+      }
+export type UnhidePostMutationHookResult = ReturnType<typeof useUnhidePostMutation>;
+export type UnhidePostMutationResult = Apollo.MutationResult<UnhidePostMutation>;
+export type UnhidePostMutationOptions = Apollo.BaseMutationOptions<UnhidePostMutation, UnhidePostMutationVariables>;
+export const GetHiddenPostsDocument = gql`
+    query GetHiddenPosts {
+  getHiddenPosts
+}
+    `;
+
+/**
+ * __useGetHiddenPostsQuery__
+ *
+ * To run a query within a React component, call `useGetHiddenPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetHiddenPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetHiddenPostsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetHiddenPostsQuery(baseOptions?: Apollo.QueryHookOptions<GetHiddenPostsQuery, GetHiddenPostsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetHiddenPostsQuery, GetHiddenPostsQueryVariables>(GetHiddenPostsDocument, options);
+      }
+export function useGetHiddenPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetHiddenPostsQuery, GetHiddenPostsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetHiddenPostsQuery, GetHiddenPostsQueryVariables>(GetHiddenPostsDocument, options);
+        }
+export function useGetHiddenPostsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetHiddenPostsQuery, GetHiddenPostsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetHiddenPostsQuery, GetHiddenPostsQueryVariables>(GetHiddenPostsDocument, options);
+        }
+export type GetHiddenPostsQueryHookResult = ReturnType<typeof useGetHiddenPostsQuery>;
+export type GetHiddenPostsLazyQueryHookResult = ReturnType<typeof useGetHiddenPostsLazyQuery>;
+export type GetHiddenPostsSuspenseQueryHookResult = ReturnType<typeof useGetHiddenPostsSuspenseQuery>;
+export type GetHiddenPostsQueryResult = Apollo.QueryResult<GetHiddenPostsQuery, GetHiddenPostsQueryVariables>;
 export const CreatePostDocument = gql`
     mutation CreatePost($options: CreatePostInput!) {
   createPost(options: $options) {
