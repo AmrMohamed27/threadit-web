@@ -80,7 +80,7 @@ const RegisterForm = () => {
   }, [registerError, registerResult, form, router]);
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
         {/* Email */}
         <InputField
           control={form.control}
@@ -115,7 +115,7 @@ const RegisterForm = () => {
           showPassword={showPassword}
           handleToggleShowPassword={handleToggleShowPassword}
         />
-        <Button type="submit">
+        <Button type="submit" className="w-full">
           {loading ? (
             <Loader className="animate-spin" />
           ) : (

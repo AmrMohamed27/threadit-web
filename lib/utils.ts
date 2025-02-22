@@ -61,3 +61,17 @@ export function copyLinkToClipboard(link: string, then: () => void): void {
       console.error("Failed to copy link: ", err);
     });
 }
+
+interface defaultAvatarProps {
+  firstName: string;
+  lastName: string | undefined;
+}
+
+export const getDefaultAvatar = ({
+  firstName,
+  lastName,
+}: defaultAvatarProps) => {
+  return `https://ui-avatars.com/api/?name=${firstName}+${
+    lastName ?? firstName.charAt(1)
+  }&background=random&color=0d1012`;
+};

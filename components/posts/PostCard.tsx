@@ -68,7 +68,7 @@ const PostCard = ({ post }: Props) => {
           )}
         </div>
         {/* Options */}
-        <PostOptions />
+        <PostOptions authorId={author?.id ?? 0} />
       </div>
       {/* Title */}
       <span className="font-bold text-lg">{title}</span>
@@ -79,8 +79,8 @@ const PostCard = ({ post }: Props) => {
       ) : isPostPage ? (
         <p className="text-muted-foreground text-sm">{content}</p>
       ) : (
-        <p className="text-muted-foreground text-sm" dir={"rtl"}>
-          {content.split(" ").slice(0, 100).join(" ") + "..."}
+        <p className="text-muted-foreground text-sm">
+          {content.split(" ").slice(0, 100).join(" ") + " ..."}
         </p>
       )}
       {/* Interactions */}

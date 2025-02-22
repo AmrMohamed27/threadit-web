@@ -64,7 +64,7 @@ const LoginForm = () => {
   }, [loginError, loginResult, router, form]);
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
         {/* Email */}
         <InputField
           control={form.control}
@@ -82,10 +82,9 @@ const LoginForm = () => {
           showPassword={showPassword}
           handleToggleShowPassword={handleToggleShowPassword}
         />
-        <Button type="submit">
+        <Button type="submit" variant={"red"}>
           {loading ? <Loader className="animate-spin" /> : <span>Log in</span>}
         </Button>
-        {/* Forgot Password link */}
       </form>
     </Form>
   );

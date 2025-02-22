@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { Skeleton } from "../ui/skeleton";
 import GreyDiv from "./GreyDiv";
 import Link from "next/link";
+import { getDefaultAvatar } from "@/lib/utils";
 
 interface Props {
   user: User;
@@ -39,6 +40,7 @@ const NavbarLoggedIn = ({ user }: Props) => {
     router.push("/");
   };
   if (logoutError) console.error(logoutError);
+  const [firstName, lastName] = user.name.split(" ");
   return (
     <div className="flex flex-row-reverse items-center gap-4">
       {/* Avatar and dropdown menu */}
@@ -49,7 +51,7 @@ const NavbarLoggedIn = ({ user }: Props) => {
               <Skeleton />
             ) : (
               <AvatarImage
-                src={user.image ?? "https://github.com/shadcn.png"}
+                src={user.image ?? getDefaultAvatar({ firstName, lastName })}
                 alt={`${user.name}'s profile picture`}
               />
             )}
