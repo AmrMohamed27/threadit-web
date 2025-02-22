@@ -89,12 +89,25 @@ const Votes = ({ upvotesCount, isUpvoted, postId }: Props) => {
         <UpvoteIcon
           size={20}
           aria-label="Upvote Icon"
-          className=""
+          className={cn(
+            vote === VoteOptions.Upvote || vote === VoteOptions.Downvote
+              ? "text-white"
+              : ""
+          )}
           strokeWidth={vote === VoteOptions.Upvote ? 3 : 1}
         />
       </button>
       {/* Upvote Count */}
-      <span className="text-sm">{count}</span>
+      <span
+        className={cn(
+          "text-sm",
+          vote === VoteOptions.Upvote || vote === VoteOptions.Downvote
+            ? "text-white"
+            : ""
+        )}
+      >
+        {count}
+      </span>
       {/* Downvote Button */}
       <button
         className="hover:bg-muted-foreground/10 p-2 rounded-full"
@@ -115,6 +128,11 @@ const Votes = ({ upvotesCount, isUpvoted, postId }: Props) => {
           size={20}
           aria-label="Upvote Icon"
           strokeWidth={vote === VoteOptions.Downvote ? 3 : 1}
+          className={cn(
+            vote === VoteOptions.Upvote || vote === VoteOptions.Downvote
+              ? "text-white"
+              : ""
+          )}
         />
       </button>
     </div>

@@ -31,7 +31,7 @@ export default function Home() {
       {loading ? (
         <div>Loading...</div>
       ) : errors || !posts || !count ? (
-        <div>Error: {errors ? errors[0].message : "An error occurred"}</div>
+        <div> {errors ? errors[0].message : "An error occurred"}</div>
       ) : error ? (
         <div>Error: {error?.message ?? "An error occurred"}</div>
       ) : (

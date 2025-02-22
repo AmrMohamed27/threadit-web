@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,57 +6,27 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LucideProps, Ellipsis as OptionsIcon } from "lucide-react";
-import {
-  loggedOutUserOptionsDropdown,
-  postOptionsDropdown,
-  userPostOptionsDropdown,
-} from "@/constants";
-import { useCurrentUser } from "@/hooks/use-current-user";
 import { useRouter } from "next/navigation";
 import DeletePostDialog from "./DeletePostDialog";
-import { useHidePostMutation } from "@/generated/graphql";
-import { useToast } from "@/hooks/use-toast";
+import { PostOptions } from "@/types";
 
 interface Props {
-  authorId: number;
+  options: PostOptions[];
   postId: number;
+  handleHidePost: () => Promise<void>;
+  handleSavePost: () => Promise<void>;
+  handleUnsavePost: () => Promise<void>;
+  isSaved: boolean;
 }
 
-const PostOptions = ({ authorId, postId }: Props) => {
-  const { user } = useCurrentUser();
-  const { toast } = useToast();
-  const options = user
-    ? user.id === authorId
-      ? userPostOptionsDropdown
-      : postOptionsDropdown
-    : loggedOutUserOptionsDropdown;
-
-  const [hidePostMutation, { data: hideResult, error: hideError }] =
-    useHidePostMutation();
-  const handleHidePost = async () => {
-    await hidePostMutation({
-      variables: {
-        postId,
-      },
-      refetchQueries: ["GetAllPosts", "GetPostById", "GetHiddenPosts"],
-    });
-  };
-
-  useEffect(() => {
-    if (hideError) {
-      console.error("Error hiding post: ", hideError);
-    } else if (hideResult?.hidePost.errors) {
-      console.error(
-        "Error hiding post: ",
-        hideResult.hidePost.errors[0].message
-      );
-    } else if (hideResult?.hidePost.success) {
-      toast({
-        title: "Post hidden successfully!",
-      });
-    }
-  }, [hideError, hideResult, toast]);
-
+const PostOptionsUI = ({
+  options,
+  postId,
+  handleHidePost,
+  handleSavePost,
+  handleUnsavePost,
+  isSaved,
+}: Props) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="hover:bg-muted p-1 rounded-full">
@@ -82,7 +52,15 @@ const PostOptions = ({ authorId, postId }: Props) => {
                 label={label}
                 Icon={Icon}
                 postId={postId}
-                onClick={id === "hide" ? handleHidePost : undefined}
+                onClick={
+                  id === "hide"
+                    ? handleHidePost
+                    : id === "save" && !isSaved
+                    ? handleSavePost
+                    : id === "unsave" && isSaved
+                    ? handleUnsavePost
+                    : undefined
+                }
                 href={href}
               />
             )}
@@ -93,7 +71,7 @@ const PostOptions = ({ authorId, postId }: Props) => {
   );
 };
 
-export default PostOptions;
+export default PostOptionsUI;
 
 interface OptionButtonProps {
   label: string;

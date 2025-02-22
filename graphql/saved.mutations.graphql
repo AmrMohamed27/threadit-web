@@ -1,0 +1,19 @@
+mutation SavePost($postId: Float!) {
+  savePost(postId: $postId) {
+    success
+    errors {
+      field
+      message
+    }
+  }
+}
+
+mutation UnsavePost($postId: Float!) {
+  unsavePost(postId: $postId) {
+    success
+    errors {
+      field
+      message
+    }
+  }
+}

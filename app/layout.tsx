@@ -7,6 +7,8 @@ import Footer from "@/components/common/Footer";
 import ApolloProvider from "@/components/providers/apollo-provider";
 import { Toaster } from "@/components/ui/toaster";
 import ConfirmAlert from "@/components/common/ConfirmAlert";
+import ReduxProvider from "@/components/providers/redux-provider";
+import ReduxContextProvider from "@/components/providers/redux-context-provider";
 
 const funnel_display = Funnel_Display({ subsets: ["latin"] });
 
@@ -30,13 +32,17 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ApolloProvider>
-            <div className="flex flex-col min-h-screen">
-              <ConfirmAlert />
-              <Navbar />
-              <main className="flex-grow">{children}</main>
-              <Footer />
-              <Toaster />
-            </div>
+            <ReduxProvider>
+              <ReduxContextProvider>
+                <div className="flex flex-col min-h-screen">
+                  <ConfirmAlert />
+                  <Navbar />
+                  <main className="flex-grow">{children}</main>
+                  <Footer />
+                  <Toaster />
+                </div>
+              </ReduxContextProvider>
+            </ReduxProvider>
           </ApolloProvider>
         </ThemeProvider>
       </body>

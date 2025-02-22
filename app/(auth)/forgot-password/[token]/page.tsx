@@ -13,7 +13,6 @@ const ResetPassword = async ({
   const token = (await params).token;
   const email = (await searchParams).email;
   if (!email || Array.isArray(email)) {
-    console.log("Email is not valid");
     redirect("/login");
   }
 

@@ -1,12 +1,11 @@
 "use client";
-import {
-  useGetHiddenPostsQuery,
-  useGetPostByIdQuery,
-} from "@/generated/graphql";
+import { useGetPostByIdQuery } from "@/generated/graphql";
 import React from "react";
 import PostsFeed from "./PostsFeed";
 import EditPostForm from "../forms/EditPostForm";
 import HiddenPost from "./HiddenPost";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 interface Props {
   postId: number;
@@ -14,14 +13,16 @@ interface Props {
 }
 
 const PostGetter = ({ postId, isEdit }: Props) => {
-  const { data: hiddenPosts, loading: hiddenPostsLoading } =
-    useGetHiddenPostsQuery();
   const { data, loading, error } = useGetPostByIdQuery({
     variables: {
       id: postId,
     },
   });
-  if (loading || hiddenPostsLoading) return <div>Loading...</div>;
+  const hiddenPosts = useSelector(
+    (state: RootState) => state.hiddenPosts.hiddenPostsIds
+  );
+  const hiddenSet = new Set(hiddenPosts);
+  if (loading) return <div>Loading...</div>;
   if (data?.getPost.errors)
     return (
       <div>
@@ -35,7 +36,6 @@ const PostGetter = ({ postId, isEdit }: Props) => {
   if (error) return <div>Error: {error.message}</div>;
   const post = data?.getPost.post;
   if (!post) return <div>Error 404 - No post found</div>;
-  const hiddenSet = new Set(hiddenPosts?.getHiddenPosts ?? []);
   if (hiddenSet.has(postId)) {
     return <HiddenPost postId={postId} />;
   }

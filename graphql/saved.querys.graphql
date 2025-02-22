@@ -1,0 +1,8 @@
+query GetSavedPostsIds {
+  getSavedPostsIds
+}
+query GetSavedPosts($options: GetAllPostsInput!) {
+  getSavedPosts(options: $options) {
+    ...FullPostResponse
+  }
+}

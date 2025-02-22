@@ -12,8 +12,7 @@ const RequestConfirmButton = () => {
   const { toast } = useToast();
   const handleRequest = async () => {
     await requestMutation({
-      onCompleted: (data) => {
-        console.log(data);
+      onCompleted: () => {
         toast({
           title: "Confirmation Email Sent",
           description: "Please check your email for the confirmation code.",

@@ -13,7 +13,6 @@ const ConfirmAlert = () => {
   if (isUserLoading) return null;
   if (userError) console.error(userError);
   if (!user) return null;
-  console.log(user);
   if (user.confirmed) return null;
 
   //   Toggle close state

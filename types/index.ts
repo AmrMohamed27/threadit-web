@@ -35,4 +35,10 @@ export interface PostOptions {
   href?: (postId: number) => string;
 }
 
-export type OptionIds = "hide" | "edit" | "delete" | "report" | "save";
+export type OptionIds =
+  | "hide"
+  | "edit"
+  | "delete"
+  | "report"
+  | "save"
+  | "unsave";

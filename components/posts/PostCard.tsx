@@ -10,8 +10,8 @@ import {
   Avatar as AvatarContainer,
 } from "../ui/avatar";
 import { Skeleton } from "../ui/skeleton";
-import { getDefaultAvatar, isArabic, timeAgo } from "@/lib/utils";
-import PostOptions from "./PostOptions";
+import { cn, getDefaultAvatar, isArabic, timeAgo } from "@/lib/utils";
+import PostOptionsGetter from "./PostOptionsGetter";
 import Votes from "./Votes";
 import CommentsCount from "./CommentsCount";
 import SharePost from "./SharePost";
@@ -45,51 +45,54 @@ const PostCard = ({ post }: Props) => {
       {/* Header */}
       <div className="flex flex-row justify-between items-center w-full">
         {/* Info */}
-        <div className="flex flex-row items-center gap-2">
-          {/* Image */}
-          <AvatarContainer className="w-6 h-6">
-            <AvatarImage
-              src={author?.image ?? getDefaultAvatar({ name: author?.name })}
-              alt={`${author?.name ?? "Author"}'s profile picture`}
-            />
-            <AvatarFallback>
-              <Skeleton />
-            </AvatarFallback>
-          </AvatarContainer>
-          {/* Name */}
-          <span className="text-xs">{author?.name ?? "Author"}</span>
-          {/* Separator */}
-          <span className="text-muted-foreground text-xs">•</span>
-          {/* Date created */}
-          <span className="text-muted-foreground text-xs">
-            {timeAgo(createdAt)}
-          </span>
+        <div className="flex md:flex-row flex-col items-center gap-2">
+          <div className="flex flex-row items-center gap-2">
+            {/* Image */}
+            <AvatarContainer className="w-6 h-6">
+              <AvatarImage
+                src={author?.image ?? getDefaultAvatar({ name: author?.name })}
+                alt={`${author?.name ?? "Author"}'s profile picture`}
+              />
+              <AvatarFallback>
+                <Skeleton />
+              </AvatarFallback>
+            </AvatarContainer>
+            {/* Name */}
+            <span className="text-xs">{author?.name ?? "Author"}</span>
+            {/* Separator */}
+            <span className="text-muted-foreground text-xs">•</span>
+            {/* Date created */}
+            <span className="text-muted-foreground text-xs">
+              {timeAgo(createdAt)}
+            </span>
+          </div>
           {/* Date Updated if updatedAt is different from createdAt */}
           {updatedAt !== createdAt && (
-            <span className="text-muted-foreground text-xs">
+            <span className="hidden md:block text-muted-foreground text-xs">
               (Last updated: {timeAgo(updatedAt)})
             </span>
           )}
         </div>
         {/* Options */}
-        <PostOptions authorId={author?.id ?? 0} postId={postId} />
+        <PostOptionsGetter authorId={author?.id ?? 0} postId={postId} />
       </div>
       {/* Title */}
       <span className="font-bold text-lg" dir={isArabicContent ? "rtl" : "ltr"}>
         {title}
       </span>
       {/* Content */}
-      {/* Clip content to 100 words when not on post page */}
+      {/* Clip content to a constant number of words when not on post page */}
       <div dir={isArabicContent ? "rtl" : "ltr"}>
-        {content.length < 100 ? (
-          <p className="text-muted-foreground text-sm">{content}</p>
-        ) : isPostPage ? (
-          <p className="text-muted-foreground text-sm">{content}</p>
-        ) : (
-          <p className="text-muted-foreground text-sm">
-            {content.split(" ").slice(0, 100).join(" ") + " ..."}
+        {
+          <p
+            className={cn(
+              "text-muted-foreground text-sm",
+              !isPostPage ? "line-clamp-3 lg:line-clamp-4" : ""
+            )}
+          >
+            {content}
           </p>
-        )}
+        }
       </div>
       {/* Interactions */}
       <div className="flex flex-row items-center gap-4">

@@ -13,21 +13,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { LogOut, Plus as CreateIcon } from "lucide-react";
+import {
+  LogOut as LogOutIcon,
+  Plus as CreateIcon,
+  Bookmark as SavedIcon,
+} from "lucide-react";
 import { useLogoutMutation, User } from "@/generated/graphql";
-import { useRouter } from "next/navigation";
 import { Skeleton } from "../ui/skeleton";
 import GreyDiv from "./GreyDiv";
 import Link from "next/link";
-import { getDefaultAvatar } from "@/lib/utils";
+import { cn, getDefaultAvatar } from "@/lib/utils";
 
 interface Props {
   user: User;
 }
 
 const NavbarLoggedIn = ({ user }: Props) => {
-  // Router
-  const router = useRouter();
   // Logout mutation
   const [logoutMutation, { loading: isLogoutLoading, error: logoutError }] =
     useLogoutMutation();
@@ -35,9 +36,14 @@ const NavbarLoggedIn = ({ user }: Props) => {
   const handleLogout = async () => {
     // perform the logout mutation on the server
     await logoutMutation({
-      refetchQueries: ["Me", "GetAllPosts", "GetPostById"],
+      refetchQueries: [
+        "Me",
+        "GetAllPosts",
+        "GetPostById",
+        "GetSavedPosts",
+        "GetSavedPostsIds",
+      ],
     });
-    router.push("/");
   };
   if (logoutError) console.error(logoutError);
   return (
@@ -62,6 +68,27 @@ const NavbarLoggedIn = ({ user }: Props) => {
         <DropdownMenuContent>
           <DropdownMenuLabel>{`${user.name}'s Account`}</DropdownMenuLabel>
           <DropdownMenuSeparator />
+          {/* Mobile Create Post button */}
+          <DropdownMenuItem className="md:hidden">
+            <Link
+              className="flex flex-row items-center gap-2 py-2"
+              href={"/posts/create"}
+            >
+              <CreateIcon size={16} />
+              <span>Create a post</span>
+            </Link>
+          </DropdownMenuItem>
+          {/* Saved Posts link */}
+          <DropdownMenuItem>
+            <Link
+              className="flex flex-row items-center gap-2 py-2"
+              href="/saved"
+            >
+              <SavedIcon size={16} aria-label="Saved Posts Icon" />
+              Saved posts
+            </Link>
+          </DropdownMenuItem>
+          {/* Logout Button */}
           <DropdownMenuItem>
             <Button
               className="p-0"
@@ -70,14 +97,14 @@ const NavbarLoggedIn = ({ user }: Props) => {
                 await handleLogout();
               }}
             >
-              <LogOut size={16} aria-label="Logout Icon" />
+              <LogOutIcon size={16} aria-label="Logout Icon" />
               Logout
             </Button>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      {/* Create Post button */}
-      <GreyDiv className="bg-transparent px-4 py-2">
+      {/* Desktop Create Post button */}
+      <GreyDiv className={cn("bg-transparent px-4 py-2 hidden md:block")}>
         <Link
           className="flex flex-row items-center gap-2"
           href={"/posts/create"}

@@ -105,8 +105,10 @@ export type Mutation = {
   requestConfirmationCode: ConfirmResponse;
   requestPasswordReset: ConfirmResponse;
   resetPassword: ConfirmResponse;
+  savePost: ConfirmResponse;
   toggleConfirmed: Scalars['Boolean']['output'];
   unhidePost: ConfirmResponse;
+  unsavePost: ConfirmResponse;
   updateComment?: Maybe<ConfirmResponse>;
   updatePost: ConfirmResponse;
   updateVote?: Maybe<ConfirmResponse>;
@@ -173,7 +175,17 @@ export type MutationResetPasswordArgs = {
 };
 
 
+export type MutationSavePostArgs = {
+  postId: Scalars['Float']['input'];
+};
+
+
 export type MutationUnhidePostArgs = {
+  postId: Scalars['Float']['input'];
+};
+
+
+export type MutationUnsavePostArgs = {
   postId: Scalars['Float']['input'];
 };
 
@@ -225,6 +237,8 @@ export type Query = {
   getPostComments: CommentResponse;
   getPostVotes: VoteResponse;
   getPostsCount: Scalars['Int']['output'];
+  getSavedPosts: PostResponse;
+  getSavedPostsIds: Array<Scalars['Float']['output']>;
   getUserById: UserResponse;
   getUserComments: CommentResponse;
   getUserPosts: PostResponse;
@@ -266,6 +280,11 @@ export type QueryGetPostCommentsArgs = {
 
 export type QueryGetPostVotesArgs = {
   postId: Scalars['Int']['input'];
+};
+
+
+export type QueryGetSavedPostsArgs = {
+  options: GetAllPostsInput;
 };
 
 
@@ -495,6 +514,32 @@ export type SearchPostsQueryVariables = Exact<{
 
 
 export type SearchPostsQuery = { __typename?: 'Query', searchPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, authorId: number, author?: { __typename?: 'User', confirmed: boolean, name: string, email: string, createdAt: string, id: number, image?: string | null, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type SavePostMutationVariables = Exact<{
+  postId: Scalars['Float']['input'];
+}>;
+
+
+export type SavePostMutation = { __typename?: 'Mutation', savePost: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type UnsavePostMutationVariables = Exact<{
+  postId: Scalars['Float']['input'];
+}>;
+
+
+export type UnsavePostMutation = { __typename?: 'Mutation', unsavePost: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type GetSavedPostsIdsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSavedPostsIdsQuery = { __typename?: 'Query', getSavedPostsIds: Array<number> };
+
+export type GetSavedPostsQueryVariables = Exact<{
+  options: GetAllPostsInput;
+}>;
+
+
+export type GetSavedPostsQuery = { __typename?: 'Query', getSavedPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, authorId: number, author?: { __typename?: 'User', confirmed: boolean, name: string, email: string, createdAt: string, id: number, image?: string | null, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type FullUserFragment = { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean };
 
@@ -1456,6 +1501,157 @@ export type SearchPostsQueryHookResult = ReturnType<typeof useSearchPostsQuery>;
 export type SearchPostsLazyQueryHookResult = ReturnType<typeof useSearchPostsLazyQuery>;
 export type SearchPostsSuspenseQueryHookResult = ReturnType<typeof useSearchPostsSuspenseQuery>;
 export type SearchPostsQueryResult = Apollo.QueryResult<SearchPostsQuery, SearchPostsQueryVariables>;
+export const SavePostDocument = gql`
+    mutation SavePost($postId: Float!) {
+  savePost(postId: $postId) {
+    success
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type SavePostMutationFn = Apollo.MutationFunction<SavePostMutation, SavePostMutationVariables>;
+
+/**
+ * __useSavePostMutation__
+ *
+ * To run a mutation, you first call `useSavePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSavePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [savePostMutation, { data, loading, error }] = useSavePostMutation({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useSavePostMutation(baseOptions?: Apollo.MutationHookOptions<SavePostMutation, SavePostMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SavePostMutation, SavePostMutationVariables>(SavePostDocument, options);
+      }
+export type SavePostMutationHookResult = ReturnType<typeof useSavePostMutation>;
+export type SavePostMutationResult = Apollo.MutationResult<SavePostMutation>;
+export type SavePostMutationOptions = Apollo.BaseMutationOptions<SavePostMutation, SavePostMutationVariables>;
+export const UnsavePostDocument = gql`
+    mutation UnsavePost($postId: Float!) {
+  unsavePost(postId: $postId) {
+    success
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type UnsavePostMutationFn = Apollo.MutationFunction<UnsavePostMutation, UnsavePostMutationVariables>;
+
+/**
+ * __useUnsavePostMutation__
+ *
+ * To run a mutation, you first call `useUnsavePostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnsavePostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unsavePostMutation, { data, loading, error }] = useUnsavePostMutation({
+ *   variables: {
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useUnsavePostMutation(baseOptions?: Apollo.MutationHookOptions<UnsavePostMutation, UnsavePostMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UnsavePostMutation, UnsavePostMutationVariables>(UnsavePostDocument, options);
+      }
+export type UnsavePostMutationHookResult = ReturnType<typeof useUnsavePostMutation>;
+export type UnsavePostMutationResult = Apollo.MutationResult<UnsavePostMutation>;
+export type UnsavePostMutationOptions = Apollo.BaseMutationOptions<UnsavePostMutation, UnsavePostMutationVariables>;
+export const GetSavedPostsIdsDocument = gql`
+    query GetSavedPostsIds {
+  getSavedPostsIds
+}
+    `;
+
+/**
+ * __useGetSavedPostsIdsQuery__
+ *
+ * To run a query within a React component, call `useGetSavedPostsIdsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSavedPostsIdsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSavedPostsIdsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetSavedPostsIdsQuery(baseOptions?: Apollo.QueryHookOptions<GetSavedPostsIdsQuery, GetSavedPostsIdsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSavedPostsIdsQuery, GetSavedPostsIdsQueryVariables>(GetSavedPostsIdsDocument, options);
+      }
+export function useGetSavedPostsIdsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSavedPostsIdsQuery, GetSavedPostsIdsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSavedPostsIdsQuery, GetSavedPostsIdsQueryVariables>(GetSavedPostsIdsDocument, options);
+        }
+export function useGetSavedPostsIdsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSavedPostsIdsQuery, GetSavedPostsIdsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetSavedPostsIdsQuery, GetSavedPostsIdsQueryVariables>(GetSavedPostsIdsDocument, options);
+        }
+export type GetSavedPostsIdsQueryHookResult = ReturnType<typeof useGetSavedPostsIdsQuery>;
+export type GetSavedPostsIdsLazyQueryHookResult = ReturnType<typeof useGetSavedPostsIdsLazyQuery>;
+export type GetSavedPostsIdsSuspenseQueryHookResult = ReturnType<typeof useGetSavedPostsIdsSuspenseQuery>;
+export type GetSavedPostsIdsQueryResult = Apollo.QueryResult<GetSavedPostsIdsQuery, GetSavedPostsIdsQueryVariables>;
+export const GetSavedPostsDocument = gql`
+    query GetSavedPosts($options: GetAllPostsInput!) {
+  getSavedPosts(options: $options) {
+    ...FullPostResponse
+  }
+}
+    ${FullPostResponseFragmentDoc}`;
+
+/**
+ * __useGetSavedPostsQuery__
+ *
+ * To run a query within a React component, call `useGetSavedPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSavedPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSavedPostsQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useGetSavedPostsQuery(baseOptions: Apollo.QueryHookOptions<GetSavedPostsQuery, GetSavedPostsQueryVariables> & ({ variables: GetSavedPostsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSavedPostsQuery, GetSavedPostsQueryVariables>(GetSavedPostsDocument, options);
+      }
+export function useGetSavedPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSavedPostsQuery, GetSavedPostsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSavedPostsQuery, GetSavedPostsQueryVariables>(GetSavedPostsDocument, options);
+        }
+export function useGetSavedPostsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSavedPostsQuery, GetSavedPostsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetSavedPostsQuery, GetSavedPostsQueryVariables>(GetSavedPostsDocument, options);
+        }
+export type GetSavedPostsQueryHookResult = ReturnType<typeof useGetSavedPostsQuery>;
+export type GetSavedPostsLazyQueryHookResult = ReturnType<typeof useGetSavedPostsLazyQuery>;
+export type GetSavedPostsSuspenseQueryHookResult = ReturnType<typeof useGetSavedPostsSuspenseQuery>;
+export type GetSavedPostsQueryResult = Apollo.QueryResult<GetSavedPostsQuery, GetSavedPostsQueryVariables>;
 export const RegisterDocument = gql`
     mutation Register($userData: RegisterInput!) {
   registerUser(userData: $userData) {

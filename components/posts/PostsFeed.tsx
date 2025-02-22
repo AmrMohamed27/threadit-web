@@ -29,7 +29,6 @@ const PostsFeed = ({ posts, count, hasPagination }: HomePostsProps) => {
       router.push(pathname + "?" + createQueryString("page", "1"));
     }
   }, [createQueryString, currentPage, totalPages, router, pathname]);
-  if (posts.length === 0) return <div>No posts found</div>;
   const handlePostClick = (
     e: React.MouseEvent<HTMLDivElement>,
     postId: number
@@ -43,7 +42,6 @@ const PostsFeed = ({ posts, count, hasPagination }: HomePostsProps) => {
       router.push(`/posts/${postId}`);
     }
   };
-  console.log(hasPagination);
   return (
     <div className="flex flex-col items-center gap-20 container">
       <div className="flex flex-col items-center gap-4 w-full">
