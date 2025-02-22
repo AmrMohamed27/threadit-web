@@ -123,7 +123,7 @@ const ResetPasswordForm = ({ token, email }: Props) => {
           showPassword={showPassword}
           handleToggleShowPassword={handleToggleShowPassword}
         />
-        <Button type="submit">
+        <Button type="submit" variant={"red"}>
           {resetPasswordLoading ? (
             <Loader className="animate-spin" />
           ) : (

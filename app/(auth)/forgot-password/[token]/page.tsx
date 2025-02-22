@@ -1,5 +1,3 @@
-// TODO: Add Confirm User workflow.
-
 import ResetPasswordForm from "@/components/forms/ResetPasswordForm";
 import { redirect } from "next/navigation";
 import React from "react";

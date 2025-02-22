@@ -82,6 +82,7 @@ const Votes = ({ upvotesCount, isUpvoted, postId }: Props) => {
                 postId: postId,
               },
             },
+            refetchQueries: ["GetPostById", "GetAllPosts"],
           });
         }}
       >

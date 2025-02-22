@@ -35,7 +35,7 @@ const NavbarLoggedIn = ({ user }: Props) => {
   const handleLogout = async () => {
     // perform the logout mutation on the server
     await logoutMutation({
-      refetchQueries: ["Me"],
+      refetchQueries: ["Me", "GetAllPosts", "GetPostById"],
     });
     router.push("/");
   };

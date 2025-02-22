@@ -36,7 +36,7 @@ const LoginForm = () => {
           password,
         },
       },
-      refetchQueries: ["Me"],
+      refetchQueries: ["Me", "GetAllPosts", "GetPostById"],
     });
   }
   // Show password state

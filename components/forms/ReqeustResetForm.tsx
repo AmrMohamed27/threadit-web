@@ -67,7 +67,7 @@ const RequestResetForm = () => {
           label="Email"
           placeholder="example@email.com"
         />
-        <Button type="submit">
+        <Button type="submit" variant={"red"}>
           {requestLoading ? (
             <Loader className="animate-spin" />
           ) : (
