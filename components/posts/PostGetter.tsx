@@ -35,7 +35,8 @@ const PostGetter = ({ postId, isEdit }: Props) => {
   if (error) return <div>Error: {error.message}</div>;
   const post = data?.getPost.post;
   if (!post) return <div>Error 404 - No post found</div>;
-  if (hiddenPosts?.getHiddenPosts.includes(postId)) {
+  const hiddenSet = new Set(hiddenPosts?.getHiddenPosts ?? []);
+  if (hiddenSet.has(postId)) {
     return <HiddenPost postId={postId} />;
   }
   return isEdit ? (
