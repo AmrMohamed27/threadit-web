@@ -72,7 +72,8 @@ const Votes = ({ upvotesCount, isUpvoted, postId }: Props) => {
       {/* Upvote Button */}
       <button
         className="hover:bg-muted-foreground/10 p-2 rounded-full"
-        onClick={async () => {
+        onClick={async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+          e.stopPropagation();
           handleClick(VoteOptions.Upvote);
           await createVoteMutation({
             variables: {
@@ -96,7 +97,8 @@ const Votes = ({ upvotesCount, isUpvoted, postId }: Props) => {
       {/* Downvote Button */}
       <button
         className="hover:bg-muted-foreground/10 p-2 rounded-full"
-        onClick={async () => {
+        onClick={async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+          e.stopPropagation();
           handleClick(VoteOptions.Downvote);
           await createVoteMutation({
             variables: {

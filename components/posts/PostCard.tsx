@@ -10,7 +10,7 @@ import {
   Avatar as AvatarContainer,
 } from "../ui/avatar";
 import { Skeleton } from "../ui/skeleton";
-import { timeAgo } from "@/lib/utils";
+import { getDefaultAvatar, isArabic, timeAgo } from "@/lib/utils";
 import PostOptions from "./PostOptions";
 import Votes from "./Votes";
 import CommentsCount from "./CommentsCount";
@@ -23,6 +23,7 @@ interface Props {
 
 const PostCard = ({ post }: Props) => {
   const pathname = usePathname();
+
   const isPostPage = pathname.includes("/posts/");
   // Destructure post
   const {
@@ -36,6 +37,9 @@ const PostCard = ({ post }: Props) => {
     isUpvoted,
     upvotesCount,
   } = post;
+
+  const isArabicContent = isArabic(content);
+
   return (
     <div className="flex flex-col gap-2 p-4 border-muted border-t w-full">
       {/* Header */}
@@ -45,7 +49,7 @@ const PostCard = ({ post }: Props) => {
           {/* Image */}
           <AvatarContainer className="w-6 h-6">
             <AvatarImage
-              src={author?.image ?? "https://github.com/shadcn.png"}
+              src={author?.image ?? getDefaultAvatar({ name: author?.name })}
               alt={`${author?.name ?? "Author"}'s profile picture`}
             />
             <AvatarFallback>
@@ -71,18 +75,22 @@ const PostCard = ({ post }: Props) => {
         <PostOptions authorId={author?.id ?? 0} />
       </div>
       {/* Title */}
-      <span className="font-bold text-lg">{title}</span>
+      <span className="font-bold text-lg" dir={isArabicContent ? "rtl" : "ltr"}>
+        {title}
+      </span>
       {/* Content */}
       {/* Clip content to 100 words when not on post page */}
-      {content.length < 100 ? (
-        <p className="text-muted-foreground text-sm">{content}</p>
-      ) : isPostPage ? (
-        <p className="text-muted-foreground text-sm">{content}</p>
-      ) : (
-        <p className="text-muted-foreground text-sm">
-          {content.split(" ").slice(0, 100).join(" ") + " ..."}
-        </p>
-      )}
+      <div dir={isArabicContent ? "rtl" : "ltr"}>
+        {content.length < 100 ? (
+          <p className="text-muted-foreground text-sm">{content}</p>
+        ) : isPostPage ? (
+          <p className="text-muted-foreground text-sm">{content}</p>
+        ) : (
+          <p className="text-muted-foreground text-sm">
+            {content.split(" ").slice(0, 100).join(" ") + " ..."}
+          </p>
+        )}
+      </div>
       {/* Interactions */}
       <div className="flex flex-row items-center gap-4">
         <Votes

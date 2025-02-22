@@ -63,15 +63,19 @@ export function copyLinkToClipboard(link: string, then: () => void): void {
 }
 
 interface defaultAvatarProps {
-  firstName: string;
-  lastName: string | undefined;
+  name?: string;
 }
 
 export const getDefaultAvatar = ({
-  firstName,
-  lastName,
+  name = "Anonymous",
 }: defaultAvatarProps) => {
+  const [firstName, lastName] = name.split(" ");
   return `https://ui-avatars.com/api/?name=${firstName}+${
     lastName ?? firstName.charAt(1)
-  }&background=random&color=0d1012`;
+  }&background=7f96dc&color=ffffff`;
+};
+
+export const isArabic = (text: string) => {
+  const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
+  return arabicRegex.test(text);
 };

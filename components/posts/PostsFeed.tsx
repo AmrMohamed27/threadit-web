@@ -5,6 +5,7 @@ import PostCard from "./PostCard";
 import PaginationComponent from "./Pagination";
 import { useCurrentPage } from "@/hooks/use-current-page";
 import { Post } from "@/generated/graphql";
+import { cn } from "@/lib/utils";
 
 interface HomePostsProps {
   posts: Post[];
@@ -29,11 +30,35 @@ const PostsFeed = ({ posts, count, hasPagination }: HomePostsProps) => {
     }
   }, [createQueryString, currentPage, totalPages, router, pathname]);
   if (posts.length === 0) return <div>No posts found</div>;
+  const handlePostClick = (
+    e: React.MouseEvent<HTMLDivElement>,
+    postId: number
+  ) => {
+    // Prevent navigation if a button or interactive element is clicked
+    const isInteractive =
+      e.target instanceof HTMLElement &&
+      (e.target.closest("button") || e.target.closest("a"));
+
+    if (!isInteractive) {
+      router.push(`/posts/${postId}`);
+    }
+  };
+  console.log(hasPagination);
   return (
     <div className="flex flex-col items-center gap-20 container">
       <div className="flex flex-col items-center gap-4 w-full">
         {posts.map((post) => (
-          <PostCard key={post.id} post={post} />
+          <div
+            key={post.id}
+            onClick={(e) => {
+              if (hasPagination) {
+                handlePostClick(e, post.id);
+              }
+            }}
+            className={cn("w-full", hasPagination ? "cursor-pointer" : "")}
+          >
+            <PostCard post={post} />
+          </div>
         ))}
       </div>
       {hasPagination && <PaginationComponent totalPages={totalPages} />}

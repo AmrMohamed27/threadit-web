@@ -40,7 +40,6 @@ const NavbarLoggedIn = ({ user }: Props) => {
     router.push("/");
   };
   if (logoutError) console.error(logoutError);
-  const [firstName, lastName] = user.name.split(" ");
   return (
     <div className="flex flex-row-reverse items-center gap-4">
       {/* Avatar and dropdown menu */}
@@ -51,7 +50,7 @@ const NavbarLoggedIn = ({ user }: Props) => {
               <Skeleton />
             ) : (
               <AvatarImage
-                src={user.image ?? getDefaultAvatar({ firstName, lastName })}
+                src={user.image ?? getDefaultAvatar({ name: user.name })}
                 alt={`${user.name}'s profile picture`}
               />
             )}

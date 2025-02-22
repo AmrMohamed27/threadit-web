@@ -26,7 +26,7 @@ export const SearchPage = () => {
     count: 0,
   };
   return (
-    <div className="flex flex-col items-center gap-8 p-8 min-h-screen container">
+    <>
       {/* Heading */}
       <h1 className="text-xl md:text-3xl">Search Results for {searchTerm}</h1>
       {loading ? (
@@ -40,7 +40,7 @@ export const SearchPage = () => {
           <PostsFeed posts={posts} count={count} />
         </>
       )}
-    </div>
+    </>
   );
 };
 
