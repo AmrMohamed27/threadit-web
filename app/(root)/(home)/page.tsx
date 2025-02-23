@@ -7,12 +7,13 @@ import { useGetAllPostsQuery } from "@/generated/graphql";
 import { useCurrentPage } from "@/hooks/use-current-page";
 
 export default function Home() {
-  const { currentPage } = useCurrentPage();
+  const { currentPage, sortBy } = useCurrentPage();
   const { data, loading, error } = useGetAllPostsQuery({
     variables: {
       options: {
         limit: POSTS_PER_PAGE,
         page: currentPage,
+        sortBy,
       },
     },
   });

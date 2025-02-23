@@ -7,12 +7,13 @@ import { useCurrentPage } from "@/hooks/use-current-page";
 import React from "react";
 
 const SavedPage = () => {
-  const { currentPage } = useCurrentPage();
+  const { currentPage, sortBy } = useCurrentPage();
   const { data, loading, error } = useGetSavedPostsQuery({
     variables: {
       options: {
         page: currentPage,
         limit: POSTS_PER_PAGE,
+        sortBy,
       },
     },
   });

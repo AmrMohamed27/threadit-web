@@ -3,7 +3,7 @@ import React, { useCallback, useState } from "react";
 import { Input } from "../ui/input";
 import { Search as SearchIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createQueryStringFn } from "@/lib/utils";
+import { createMultipleQueryStringsFn } from "@/lib/utils";
 import {
   Popover,
   PopoverAnchor,
@@ -32,13 +32,16 @@ const SearchBar = () => {
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      return createQueryStringFn(name, value, searchParams);
+  const createMultipleQueryStrings = useCallback(
+    (names: string[], values: string[]) => {
+      return createMultipleQueryStringsFn({ names, values, searchParams });
     },
     [searchParams]
   );
-  const searchURL = "/search" + "?" + createQueryString("q", searchTerm);
+  const searchURL =
+    "/search" +
+    "?" +
+    createMultipleQueryStrings(["q", "page"], [searchTerm, "1"]);
 
   const handleSearch = () => {
     if (searchTerm.trim().length !== 0) {

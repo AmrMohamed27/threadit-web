@@ -70,12 +70,14 @@ export type FieldError = {
 export type GetAllPostsInput = {
   limit: Scalars['Float']['input'];
   page: Scalars['Float']['input'];
+  sortBy?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GetSearchResultInput = {
   limit: Scalars['Float']['input'];
   page: Scalars['Float']['input'];
   searchTerm: Scalars['String']['input'];
+  sortBy?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GetUserPostsInput = {

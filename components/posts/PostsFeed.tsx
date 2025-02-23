@@ -6,6 +6,7 @@ import PaginationComponent from "./Pagination";
 import { useCurrentPage } from "@/hooks/use-current-page";
 import { Post } from "@/generated/graphql";
 import { cn } from "@/lib/utils";
+import SortBy from "./SortBy";
 
 interface HomePostsProps {
   posts: Post[];
@@ -43,7 +44,8 @@ const PostsFeed = ({ posts, count, hasPagination }: HomePostsProps) => {
     }
   };
   return (
-    <div className="flex flex-col items-center gap-20 container">
+    <div className="flex flex-col items-start gap-8 container">
+      {hasPagination && <SortBy />}
       <div className="flex flex-col items-center gap-4 w-full">
         {posts.map((post) => (
           <div

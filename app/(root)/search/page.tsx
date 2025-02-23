@@ -37,7 +37,7 @@ export const SearchPage = () => {
         <div>Error: {error?.message ?? "An error occurred"}</div>
       ) : (
         <>
-          <PostsFeed posts={posts} count={count} />
+          <PostsFeed posts={posts} count={count} hasPagination />
         </>
       )}
     </>

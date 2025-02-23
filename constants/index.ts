@@ -1,4 +1,4 @@
-import { PostOptions } from "@/types";
+import { PostOptions, SortingObjects } from "@/types";
 import {
   Bookmark as SaveIcon,
   EyeOff as HideIcon,
@@ -6,12 +6,14 @@ import {
   Trash as DeleteIcon,
   Pencil as EditIcon,
   BookmarkX as UnsaveIcon,
+  Trophy as BestIcon,
+  Flame as HotIcon,
+  ClockArrowDown as OldIcon,
+  ClockArrowUp as NewIcon,
+  SquareArrowUp as TopIcon,
 } from "lucide-react";
 
 export const POSTS_PER_PAGE = 5;
-
-
-
 
 // Options for logged out users options dropdown
 export const loggedOutUserOptionsDropdown: PostOptions[] = [
@@ -62,4 +64,12 @@ export const savedUserPostOptionsDropdown: PostOptions[] = [
     label: "Delete",
     icon: DeleteIcon,
   },
+];
+
+export const sortingOptions: SortingObjects[] = [
+  { id: 1, option: "Best", icon: BestIcon },
+  { id: 2, option: "Hot", icon: HotIcon },
+  { id: 3, option: "New", icon: NewIcon },
+  { id: 4, option: "Top", icon: TopIcon },
+  { id: 5, option: "Old", icon: OldIcon },
 ];

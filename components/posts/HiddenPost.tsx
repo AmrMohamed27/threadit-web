@@ -1,8 +1,6 @@
 import React from "react";
 import { Button } from "../ui/button";
 import { useUnhidePostMutation } from "@/generated/graphql";
-import { useDispatch } from "react-redux";
-import { toggleHidePost } from "@/lib/features/hiddenPostsSlice";
 
 interface Props {
   postId: number;
@@ -10,10 +8,7 @@ interface Props {
 
 const HiddenPost = ({ postId }: Props) => {
   const [unhideMutation] = useUnhidePostMutation();
-  const dispatch = useDispatch();
-  const reduxToggleHiddenPost = (postId: number) => {
-    dispatch(toggleHidePost(postId));
-  };
+
   const handleUnhide = async () => {
     try {
       const { data } = await unhideMutation({
@@ -22,9 +17,7 @@ const HiddenPost = ({ postId }: Props) => {
         },
         refetchQueries: ["GetHiddenPosts", "GetAllPosts", "GetPostById"],
       });
-      if (data?.unhidePost?.success) {
-        reduxToggleHiddenPost(postId);
-      } else {
+      if (!data?.unhidePost?.success) {
         console.error(
           "Error Hiding post: ",
           data?.unhidePost?.errors?.[0]?.message

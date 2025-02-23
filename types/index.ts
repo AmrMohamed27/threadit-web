@@ -42,3 +42,13 @@ export type OptionIds =
   | "report"
   | "save"
   | "unsave";
+
+export type SortOptions = "Best" | "Hot" | "New" | "Top" | "Old";
+
+export interface SortingObjects {
+  id: number;
+  option: SortOptions;
+  icon: ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
+  >;
+}

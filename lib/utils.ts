@@ -21,10 +21,23 @@ export const createQueryStringFn = (
   searchParams: ReadonlyURLSearchParams
 ) => {
   const params = new URLSearchParams(searchParams.toString());
-  if (params.has("page")) {
-    params.set("page", "1");
-  }
   params.set(name, value);
+  return params.toString();
+};
+
+export const createMultipleQueryStringsFn = ({
+  names,
+  values,
+  searchParams,
+}: {
+  names: string[];
+  values: string[];
+  searchParams: ReadonlyURLSearchParams;
+}) => {
+  const params = new URLSearchParams(searchParams.toString());
+  for (let i = 0; i < names.length; i++) {
+    params.set(names[i], values[i]);
+  }
   return params.toString();
 };
 
