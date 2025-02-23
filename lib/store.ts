@@ -1,11 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import savedPostsReducer from "./features/savedPostsSlice";
-import hiddenPostsReducer from "./features/hiddenPostsSlice";
 
 export const store = configureStore({
   reducer: {
     savedPosts: savedPostsReducer,
-    hiddenPosts: hiddenPostsReducer,
   },
 });
 

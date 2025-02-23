@@ -1,11 +1,12 @@
 "use client";
-import { useGetPostByIdQuery } from "@/generated/graphql";
+import {
+  useGetHiddenPostsQuery,
+  useGetPostByIdQuery,
+} from "@/generated/graphql";
 import React from "react";
 import PostsFeed from "./PostsFeed";
 import EditPostForm from "../forms/EditPostForm";
 import HiddenPost from "./HiddenPost";
-import { useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
 
 interface Props {
   postId: number;
@@ -18,10 +19,9 @@ const PostGetter = ({ postId, isEdit }: Props) => {
       id: postId,
     },
   });
-  const hiddenPosts = useSelector(
-    (state: RootState) => state.hiddenPosts.hiddenPostsIds
-  );
-  const hiddenSet = new Set(hiddenPosts);
+  const { data: hiddenPosts } = useGetHiddenPostsQuery();
+
+  const hiddenSet = new Set(hiddenPosts?.getHiddenPosts || []);
   if (loading) return <div>Loading...</div>;
   if (data?.getPost.errors)
     return (

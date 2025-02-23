@@ -1,3 +1,8 @@
+// TODO: Add post sorting
+// TODO: Add comments to post page
+// TODO: Add comment threading
+// TODO: Add comment sorting
+// TODO: Add sidebar
 import React from "react";
 import {
   DropdownMenu,

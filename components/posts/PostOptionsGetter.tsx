@@ -18,7 +18,6 @@ import PostOptionsUI from "./PostOptionsUI";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { toggleSavePost } from "@/lib/features/savedPostsSlice";
-import { toggleHidePost } from "@/lib/features/hiddenPostsSlice";
 
 interface Props {
   authorId: number;
@@ -50,9 +49,6 @@ const PostOptionsGetter = ({ authorId, postId }: Props) => {
   const reduxToggleSavedPost = (postId: number) => {
     dispatch(toggleSavePost(postId));
   };
-  const reduxToggleHiddenPost = (postId: number) => {
-    dispatch(toggleHidePost(postId));
-  };
 
   const [hidePostMutation] = useHidePostMutation();
   const handleHidePost = async () => {
@@ -65,7 +61,6 @@ const PostOptionsGetter = ({ authorId, postId }: Props) => {
       });
       if (data?.hidePost?.success) {
         toast({ title: "Post hidden successfully!" });
-        reduxToggleHiddenPost(postId);
       } else {
         console.error(
           "Error Hiding post: ",
