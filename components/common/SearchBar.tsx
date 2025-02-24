@@ -11,7 +11,17 @@ import {
 } from "@/components/ui/popover";
 import Link from "next/link";
 
-const SearchBar = () => {
+interface Props {
+  origin?: string;
+  placeholder?: string;
+  hasPagination?: boolean;
+}
+
+const SearchBar = ({
+  origin = "/search",
+  placeholder = "Search",
+  hasPagination = false,
+}: Props) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false); // Manually control popover state
 
@@ -39,9 +49,12 @@ const SearchBar = () => {
     [searchParams]
   );
   const searchURL =
-    "/search" +
+    origin +
     "?" +
-    createMultipleQueryStrings(["q", "page"], [searchTerm, "1"]);
+    createMultipleQueryStrings(
+      hasPagination ? ["q", "page"] : ["q"],
+      hasPagination ? [searchTerm, "1"] : [searchTerm]
+    );
 
   const handleSearch = () => {
     if (searchTerm.trim().length !== 0) {
@@ -55,6 +68,7 @@ const SearchBar = () => {
         <PopoverAnchor className="w-full">
           <Input
             className="relative pl-10 rounded-full w-full"
+            placeholder={placeholder}
             value={searchTerm}
             onChange={handleSearchTermChange}
             onFocus={handleFocus} // Open popover when input is focused

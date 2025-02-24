@@ -10,17 +10,6 @@ query GetPostById($id: Int!) {
   }
 }
 
-query GetPostComments($postId: Int!) {
-  getPostComments(postId: $postId) {
-    commentsArray {
-      ...FullComment
-    }
-    errors {
-      ...FullErrorField
-    }
-  }
-}
-
 query GetPostVotes($postId: Int!) {
   getPostVotes(postId: $postId) {
     votesArray {

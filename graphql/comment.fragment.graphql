@@ -5,4 +5,38 @@ fragment FullComment on Comment {
   updatedAt
   authorId
   postId
+  upvotesCount
+  isUpvoted
+  author {
+    ...FullAuthor
+  }
+  parentCommentId
+}
+
+fragment FullCommentResponse on CommentResponse {
+  comment {
+    ...FullComment
+  }
+  errors {
+    ...FullErrorField
+  }
+}
+
+fragment FullCommentArrayResponse on CommentResponse {
+  commentsArray {
+    ...FullComment
+    replies {
+      ...FullComment
+      replies {
+        ...FullComment
+        replies {
+          ...FullComment
+        }
+      }
+    }
+  }
+  errors {
+    ...FullErrorField
+  }
+  count
 }

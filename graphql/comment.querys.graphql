@@ -1,32 +1,17 @@
 query GetCommentById($getCommentId: Int!) {
   getComment(id: $getCommentId) {
-    comment {
-      ...FullComment
-    }
-    errors {
-      ...FullErrorField
-    }
-  }
-}
-
-query GetCommentVotes($commentId: Int!) {
-  getCommentVotes(commentId: $commentId) {
-    errors {
-      ...FullErrorField
-    }
-    votesArray {
-      ...FullVote
-    }
+    ...FullCommentResponse
   }
 }
 
 query GetUserComments {
   getUserComments {
-    commentsArray {
-      ...FullComment
-    }
-    errors {
-      ...FullErrorField
-    }
+    ...FullCommentArrayResponse
+  }
+}
+
+query GetPostComments($options: GetPostCommentsInput!) {
+  getPostComments(options: $options) {
+    ...FullCommentArrayResponse
   }
 }

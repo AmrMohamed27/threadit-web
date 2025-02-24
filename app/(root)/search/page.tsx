@@ -6,8 +6,7 @@ import { useCurrentPage } from "@/hooks/use-current-page";
 import React from "react";
 
 export const SearchPage = () => {
-  const { currentPage, searchParams } = useCurrentPage();
-  const searchTerm = searchParams.get("q") ?? "";
+  const { currentPage, searchTerm } = useCurrentPage();
   const { data, loading, error } = useSearchPostsQuery({
     variables: {
       options: {

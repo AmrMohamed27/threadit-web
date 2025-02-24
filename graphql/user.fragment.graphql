@@ -7,3 +7,14 @@ fragment FullUser on User {
   updatedAt
   confirmed
 }
+
+fragment FullAuthor on User {
+  id
+  confirmed
+  createdAt
+  email
+  id
+  image
+  name
+  updatedAt
+}

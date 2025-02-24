@@ -7,6 +7,8 @@ import React from "react";
 import PostsFeed from "./PostsFeed";
 import EditPostForm from "../forms/EditPostForm";
 import HiddenPost from "./HiddenPost";
+import CommentForm from "../forms/CommentForm";
+import CommentsFeed from "./CommentsFeed";
 
 interface Props {
   postId: number;
@@ -42,7 +44,11 @@ const PostGetter = ({ postId, isEdit }: Props) => {
   return isEdit ? (
     <EditPostForm post={post} />
   ) : (
-    <PostsFeed posts={[post]} count={1} />
+    <div className="flex flex-col gap-4 w-full">
+      <PostsFeed posts={[post]} count={1} />
+      <CommentForm postId={postId} />
+      <CommentsFeed postId={postId} />
+    </div>
   );
 };
 

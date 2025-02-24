@@ -15,6 +15,8 @@ import {
 
 export const POSTS_PER_PAGE = 5;
 
+export const MAX_REPLY_DEPTH = 3;
+
 // Options for logged out users options dropdown
 export const loggedOutUserOptionsDropdown: PostOptions[] = [
   { id: "report", label: "Report", icon: ReportIcon },

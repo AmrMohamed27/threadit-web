@@ -3,7 +3,6 @@ import { Funnel_Display } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import Navbar from "@/components/common/Navbar";
-import Footer from "@/components/common/Footer";
 import ApolloProvider from "@/components/providers/apollo-provider";
 import { Toaster } from "@/components/ui/toaster";
 import ConfirmAlert from "@/components/common/ConfirmAlert";
@@ -38,7 +37,6 @@ export default function RootLayout({
                   <ConfirmAlert />
                   <Navbar />
                   <main className="flex-grow">{children}</main>
-                  <Footer />
                   <Toaster />
                 </div>
               </ReduxContextProvider>

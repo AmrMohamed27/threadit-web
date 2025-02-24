@@ -1,5 +1,5 @@
-import { Post } from "@/generated/graphql";
-import React from "react";
+import { Comment } from "@/generated/graphql";
+import React, { useState } from "react";
 import {
   AvatarFallback,
   AvatarImage,
@@ -7,37 +7,41 @@ import {
 } from "../ui/avatar";
 import { Skeleton } from "../ui/skeleton";
 import { cn, getDefaultAvatar, isArabic, timeAgo } from "@/lib/utils";
-import PostOptionsGetter from "./PostOptionsGetter";
 import Votes from "./Votes";
-import CommentsCount from "./CommentsCount";
-import SharePost from "./SharePost";
-import { usePathname } from "next/navigation";
+import { Button } from "../ui/button";
+import { MessageCircle as CommentIcon } from "lucide-react";
+import CommentForm from "../forms/CommentForm";
 
 interface Props {
-  post: Post;
+  comment: Comment;
+  depth?: number;
+  maxDepth?: number;
 }
 
-const PostCard = ({ post }: Props) => {
-  const pathname = usePathname();
-
-  const isPostPage = pathname.includes("/posts/");
-  // Destructure post
+const CommentCard = ({ comment, depth = 0, maxDepth = 3 }: Props) => {
+  // Destructure comment
   const {
-    title,
     content,
     createdAt,
     updatedAt,
     author,
-    id: postId,
-    commentsCount,
+    id: commentId,
     isUpvoted,
     upvotesCount,
-  } = post;
+  } = comment;
 
   const isArabicContent = isArabic(content);
+  const [isFormVisible, setIsFormVisible] = useState(false);
+
+  const showForm = () => {
+    setIsFormVisible(true);
+  };
+  const hideForm = () => {
+    setIsFormVisible(false);
+  };
 
   return (
-    <div className="flex flex-col gap-2 p-4 border-muted border-t w-full">
+    <div className="flex flex-col gap-2 p-4 border-muted border-l w-full">
       {/* Header */}
       <div className="flex flex-row justify-between items-center w-full">
         {/* Info */}
@@ -70,38 +74,42 @@ const PostCard = ({ post }: Props) => {
           )}
         </div>
         {/* Options */}
-        <PostOptionsGetter authorId={author?.id ?? 0} postId={postId} />
       </div>
-      {/* Title */}
-      <span className="font-bold text-lg" dir={isArabicContent ? "rtl" : "ltr"}>
-        {title}
-      </span>
       {/* Content */}
-      {/* Clip content to a constant number of words when not on post page */}
       <div dir={isArabicContent ? "rtl" : "ltr"}>
-        {
-          <p
-            className={cn(
-              "text-muted-foreground text-sm",
-              !isPostPage ? "line-clamp-3 lg:line-clamp-4" : ""
-            )}
-          >
-            {content}
-          </p>
-        }
+        {<p className={cn("text-muted-foreground text-sm")}>{content}</p>}
       </div>
       {/* Interactions */}
       <div className="flex flex-row items-center gap-4">
         <Votes
           upvotesCount={upvotesCount ?? 0}
           isUpvoted={isUpvoted}
-          postId={postId}
+          commentId={commentId}
         />
-        <CommentsCount count={commentsCount ?? 0} postId={postId} />
-        <SharePost postId={postId} />
+        {/* Comments Button "Links to post page" */}
+        <div>
+          <Button
+            className="flex flex-row items-center gap-2 px-4 py-2 text-foreground"
+            variant={"grey"}
+            onClick={showForm}
+          >
+            <CommentIcon size={20} aria-label="Comment Icon" />
+            {/* Comments Count */}
+            <span className="text-sm">Reply</span>
+          </Button>
+        </div>
       </div>
+      {isFormVisible && (
+        <CommentForm
+          postId={comment.postId}
+          parentCommentId={
+            depth === maxDepth ? comment.parentCommentId! : comment.id
+          }
+          hideForm={hideForm}
+        />
+      )}
     </div>
   );
 };
 
-export default PostCard;
+export default CommentCard;

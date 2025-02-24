@@ -24,18 +24,24 @@ export type CheckTokenInput = {
 
 export type Comment = {
   __typename?: 'Comment';
+  author?: Maybe<User>;
   authorId: Scalars['Int']['output'];
   content: Scalars['String']['output'];
   createdAt: Scalars['String']['output'];
   id: Scalars['Int']['output'];
+  isUpvoted?: Maybe<VoteOptions>;
+  parentCommentId?: Maybe<Scalars['Int']['output']>;
   postId: Scalars['Int']['output'];
+  replies?: Maybe<Array<Comment>>;
   updatedAt: Scalars['String']['output'];
+  upvotesCount?: Maybe<Scalars['Int']['output']>;
 };
 
 export type CommentResponse = {
   __typename?: 'CommentResponse';
   comment?: Maybe<Comment>;
   commentsArray?: Maybe<Array<Comment>>;
+  count?: Maybe<Scalars['Int']['output']>;
   errors?: Maybe<Array<FieldError>>;
 };
 
@@ -47,6 +53,7 @@ export type ConfirmResponse = {
 
 export type CreateCommentInput = {
   content: Scalars['String']['input'];
+  parentCommentId?: InputMaybe<Scalars['Int']['input']>;
   postId: Scalars['Float']['input'];
 };
 
@@ -70,6 +77,12 @@ export type FieldError = {
 export type GetAllPostsInput = {
   limit: Scalars['Float']['input'];
   page: Scalars['Float']['input'];
+  sortBy?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type GetPostCommentsInput = {
+  postId: Scalars['Int']['input'];
+  searchTerm?: InputMaybe<Scalars['String']['input']>;
   sortBy?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -276,7 +289,7 @@ export type QueryGetPostArgs = {
 
 
 export type QueryGetPostCommentsArgs = {
-  postId: Scalars['Int']['input'];
+  options: GetPostCommentsInput;
 };
 
 
@@ -380,14 +393,18 @@ export type VotedPostsResponse = {
   posts?: Maybe<Array<Post>>;
 };
 
-export type FullCommentFragment = { __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number };
+export type FullCommentFragment = { __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null };
+
+export type FullCommentResponseFragment = { __typename?: 'CommentResponse', comment?: { __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
+
+export type FullCommentArrayResponseFragment = { __typename?: 'CommentResponse', count?: number | null, commentsArray?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, replies?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, replies?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, replies?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
 export type CreateCommentMutationVariables = Exact<{
   options: CreateCommentInput;
 }>;
 
 
-export type CreateCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'CommentResponse', comment?: { __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type CreateCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'CommentResponse', comment?: { __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type DeleteCommentMutationVariables = Exact<{
   id: Scalars['Float']['input'];
@@ -408,19 +425,19 @@ export type GetCommentByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetCommentByIdQuery = { __typename?: 'Query', getComment: { __typename?: 'CommentResponse', comment?: { __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
-
-export type GetCommentVotesQueryVariables = Exact<{
-  commentId: Scalars['Int']['input'];
-}>;
-
-
-export type GetCommentVotesQuery = { __typename?: 'Query', getCommentVotes: { __typename?: 'VoteResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, votesArray?: Array<{ __typename?: 'Vote', id: number, isUpvote: boolean, createdAt: string, updatedAt: string, userId: number, postId?: number | null, commentId?: number | null }> | null } };
+export type GetCommentByIdQuery = { __typename?: 'Query', getComment: { __typename?: 'CommentResponse', comment?: { __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetUserCommentsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserCommentsQuery = { __typename?: 'Query', getUserComments: { __typename?: 'CommentResponse', commentsArray?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetUserCommentsQuery = { __typename?: 'Query', getUserComments: { __typename?: 'CommentResponse', count?: number | null, commentsArray?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, replies?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, replies?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, replies?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type GetPostCommentsQueryVariables = Exact<{
+  options: GetPostCommentsInput;
+}>;
+
+
+export type GetPostCommentsQuery = { __typename?: 'Query', getPostComments: { __typename?: 'CommentResponse', count?: number | null, commentsArray?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, replies?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, replies?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, replies?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type FullErrorFieldFragment = { __typename?: 'FieldError', field: string, message: string };
 
@@ -445,9 +462,9 @@ export type GetHiddenPostsQuery = { __typename?: 'Query', getHiddenPosts: Array<
 
 export type FullPostFragment = { __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number };
 
-export type FullPostResponseFragment = { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, authorId: number, author?: { __typename?: 'User', confirmed: boolean, name: string, email: string, createdAt: string, id: number, image?: string | null, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
+export type FullPostResponseFragment = { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
-export type FullSinglePostResponseFragment = { __typename?: 'PostResponse', post?: { __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, authorId: number, author?: { __typename?: 'User', confirmed: boolean, name: string, email: string, createdAt: string, id: number, image?: string | null, updatedAt: string } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
+export type FullSinglePostResponseFragment = { __typename?: 'PostResponse', post?: { __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
 export type CreatePostMutationVariables = Exact<{
   options: CreatePostInput;
@@ -475,21 +492,14 @@ export type GetAllPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllPostsQuery = { __typename?: 'Query', getAllPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, authorId: number, author?: { __typename?: 'User', confirmed: boolean, name: string, email: string, createdAt: string, id: number, image?: string | null, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetAllPostsQuery = { __typename?: 'Query', getAllPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetPostByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type GetPostByIdQuery = { __typename?: 'Query', getPost: { __typename?: 'PostResponse', post?: { __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, authorId: number, author?: { __typename?: 'User', confirmed: boolean, name: string, email: string, createdAt: string, id: number, image?: string | null, updatedAt: string } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
-
-export type GetPostCommentsQueryVariables = Exact<{
-  postId: Scalars['Int']['input'];
-}>;
-
-
-export type GetPostCommentsQuery = { __typename?: 'Query', getPostComments: { __typename?: 'CommentResponse', commentsArray?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetPostByIdQuery = { __typename?: 'Query', getPost: { __typename?: 'PostResponse', post?: { __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetPostVotesQueryVariables = Exact<{
   postId: Scalars['Int']['input'];
@@ -503,7 +513,7 @@ export type GetUserPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetUserPostsQuery = { __typename?: 'Query', getUserPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, authorId: number, author?: { __typename?: 'User', confirmed: boolean, name: string, email: string, createdAt: string, id: number, image?: string | null, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetUserPostsQuery = { __typename?: 'Query', getUserPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetUserVotedPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -515,7 +525,7 @@ export type SearchPostsQueryVariables = Exact<{
 }>;
 
 
-export type SearchPostsQuery = { __typename?: 'Query', searchPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, authorId: number, author?: { __typename?: 'User', confirmed: boolean, name: string, email: string, createdAt: string, id: number, image?: string | null, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type SearchPostsQuery = { __typename?: 'Query', searchPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type SavePostMutationVariables = Exact<{
   postId: Scalars['Float']['input'];
@@ -541,9 +551,11 @@ export type GetSavedPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetSavedPostsQuery = { __typename?: 'Query', getSavedPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, authorId: number, author?: { __typename?: 'User', confirmed: boolean, name: string, email: string, createdAt: string, id: number, image?: string | null, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetSavedPostsQuery = { __typename?: 'Query', getSavedPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type FullUserFragment = { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean };
+
+export type FullAuthorFragment = { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string };
 
 export type RegisterMutationVariables = Exact<{
   userData: RegisterInput;
@@ -632,6 +644,18 @@ export type UpdateVoteMutationVariables = Exact<{
 
 export type UpdateVoteMutation = { __typename?: 'Mutation', updateVote?: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } | null };
 
+export const FullAuthorFragmentDoc = gql`
+    fragment FullAuthor on User {
+  id
+  confirmed
+  createdAt
+  email
+  id
+  image
+  name
+  updatedAt
+}
+    `;
 export const FullCommentFragmentDoc = gql`
     fragment FullComment on Comment {
   id
@@ -640,14 +664,52 @@ export const FullCommentFragmentDoc = gql`
   updatedAt
   authorId
   postId
+  upvotesCount
+  isUpvoted
+  author {
+    ...FullAuthor
+  }
+  parentCommentId
 }
-    `;
+    ${FullAuthorFragmentDoc}`;
 export const FullErrorFieldFragmentDoc = gql`
     fragment FullErrorField on FieldError {
   field
   message
 }
     `;
+export const FullCommentResponseFragmentDoc = gql`
+    fragment FullCommentResponse on CommentResponse {
+  comment {
+    ...FullComment
+  }
+  errors {
+    ...FullErrorField
+  }
+}
+    ${FullCommentFragmentDoc}
+${FullErrorFieldFragmentDoc}`;
+export const FullCommentArrayResponseFragmentDoc = gql`
+    fragment FullCommentArrayResponse on CommentResponse {
+  commentsArray {
+    ...FullComment
+    replies {
+      ...FullComment
+      replies {
+        ...FullComment
+        replies {
+          ...FullComment
+        }
+      }
+    }
+  }
+  errors {
+    ...FullErrorField
+  }
+  count
+}
+    ${FullCommentFragmentDoc}
+${FullErrorFieldFragmentDoc}`;
 export const FullPostFragmentDoc = gql`
     fragment FullPost on Post {
   id
@@ -661,60 +723,40 @@ export const FullPostFragmentDoc = gql`
 export const FullPostResponseFragmentDoc = gql`
     fragment FullPostResponse on PostResponse {
   postsArray {
-    id
-    title
-    content
-    createdAt
-    updatedAt
+    ...FullPost
     upvotesCount
     isUpvoted
     commentsCount
-    authorId
     author {
-      confirmed
-      name
-      email
-      createdAt
-      id
-      image
-      updatedAt
+      ...FullAuthor
     }
   }
   errors {
-    field
-    message
+    ...FullErrorField
   }
   count
 }
-    `;
+    ${FullPostFragmentDoc}
+${FullAuthorFragmentDoc}
+${FullErrorFieldFragmentDoc}`;
 export const FullSinglePostResponseFragmentDoc = gql`
     fragment FullSinglePostResponse on PostResponse {
   post {
-    id
-    title
-    content
-    createdAt
-    updatedAt
+    ...FullPost
     upvotesCount
     isUpvoted
     commentsCount
-    authorId
     author {
-      confirmed
-      name
-      email
-      createdAt
-      id
-      image
-      updatedAt
+      ...FullAuthor
     }
   }
   errors {
-    field
-    message
+    ...FullErrorField
   }
 }
-    `;
+    ${FullPostFragmentDoc}
+${FullAuthorFragmentDoc}
+${FullErrorFieldFragmentDoc}`;
 export const FullUserFragmentDoc = gql`
     fragment FullUser on User {
   id
@@ -851,16 +893,10 @@ export type UpdateCommentMutationOptions = Apollo.BaseMutationOptions<UpdateComm
 export const GetCommentByIdDocument = gql`
     query GetCommentById($getCommentId: Int!) {
   getComment(id: $getCommentId) {
-    comment {
-      ...FullComment
-    }
-    errors {
-      ...FullErrorField
-    }
+    ...FullCommentResponse
   }
 }
-    ${FullCommentFragmentDoc}
-${FullErrorFieldFragmentDoc}`;
+    ${FullCommentResponseFragmentDoc}`;
 
 /**
  * __useGetCommentByIdQuery__
@@ -894,65 +930,13 @@ export type GetCommentByIdQueryHookResult = ReturnType<typeof useGetCommentByIdQ
 export type GetCommentByIdLazyQueryHookResult = ReturnType<typeof useGetCommentByIdLazyQuery>;
 export type GetCommentByIdSuspenseQueryHookResult = ReturnType<typeof useGetCommentByIdSuspenseQuery>;
 export type GetCommentByIdQueryResult = Apollo.QueryResult<GetCommentByIdQuery, GetCommentByIdQueryVariables>;
-export const GetCommentVotesDocument = gql`
-    query GetCommentVotes($commentId: Int!) {
-  getCommentVotes(commentId: $commentId) {
-    errors {
-      ...FullErrorField
-    }
-    votesArray {
-      ...FullVote
-    }
-  }
-}
-    ${FullErrorFieldFragmentDoc}
-${FullVoteFragmentDoc}`;
-
-/**
- * __useGetCommentVotesQuery__
- *
- * To run a query within a React component, call `useGetCommentVotesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCommentVotesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetCommentVotesQuery({
- *   variables: {
- *      commentId: // value for 'commentId'
- *   },
- * });
- */
-export function useGetCommentVotesQuery(baseOptions: Apollo.QueryHookOptions<GetCommentVotesQuery, GetCommentVotesQueryVariables> & ({ variables: GetCommentVotesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCommentVotesQuery, GetCommentVotesQueryVariables>(GetCommentVotesDocument, options);
-      }
-export function useGetCommentVotesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCommentVotesQuery, GetCommentVotesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCommentVotesQuery, GetCommentVotesQueryVariables>(GetCommentVotesDocument, options);
-        }
-export function useGetCommentVotesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetCommentVotesQuery, GetCommentVotesQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetCommentVotesQuery, GetCommentVotesQueryVariables>(GetCommentVotesDocument, options);
-        }
-export type GetCommentVotesQueryHookResult = ReturnType<typeof useGetCommentVotesQuery>;
-export type GetCommentVotesLazyQueryHookResult = ReturnType<typeof useGetCommentVotesLazyQuery>;
-export type GetCommentVotesSuspenseQueryHookResult = ReturnType<typeof useGetCommentVotesSuspenseQuery>;
-export type GetCommentVotesQueryResult = Apollo.QueryResult<GetCommentVotesQuery, GetCommentVotesQueryVariables>;
 export const GetUserCommentsDocument = gql`
     query GetUserComments {
   getUserComments {
-    commentsArray {
-      ...FullComment
-    }
-    errors {
-      ...FullErrorField
-    }
+    ...FullCommentArrayResponse
   }
 }
-    ${FullCommentFragmentDoc}
-${FullErrorFieldFragmentDoc}`;
+    ${FullCommentArrayResponseFragmentDoc}`;
 
 /**
  * __useGetUserCommentsQuery__
@@ -985,6 +969,46 @@ export type GetUserCommentsQueryHookResult = ReturnType<typeof useGetUserComment
 export type GetUserCommentsLazyQueryHookResult = ReturnType<typeof useGetUserCommentsLazyQuery>;
 export type GetUserCommentsSuspenseQueryHookResult = ReturnType<typeof useGetUserCommentsSuspenseQuery>;
 export type GetUserCommentsQueryResult = Apollo.QueryResult<GetUserCommentsQuery, GetUserCommentsQueryVariables>;
+export const GetPostCommentsDocument = gql`
+    query GetPostComments($options: GetPostCommentsInput!) {
+  getPostComments(options: $options) {
+    ...FullCommentArrayResponse
+  }
+}
+    ${FullCommentArrayResponseFragmentDoc}`;
+
+/**
+ * __useGetPostCommentsQuery__
+ *
+ * To run a query within a React component, call `useGetPostCommentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPostCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPostCommentsQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useGetPostCommentsQuery(baseOptions: Apollo.QueryHookOptions<GetPostCommentsQuery, GetPostCommentsQueryVariables> & ({ variables: GetPostCommentsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPostCommentsQuery, GetPostCommentsQueryVariables>(GetPostCommentsDocument, options);
+      }
+export function useGetPostCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPostCommentsQuery, GetPostCommentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPostCommentsQuery, GetPostCommentsQueryVariables>(GetPostCommentsDocument, options);
+        }
+export function useGetPostCommentsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetPostCommentsQuery, GetPostCommentsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetPostCommentsQuery, GetPostCommentsQueryVariables>(GetPostCommentsDocument, options);
+        }
+export type GetPostCommentsQueryHookResult = ReturnType<typeof useGetPostCommentsQuery>;
+export type GetPostCommentsLazyQueryHookResult = ReturnType<typeof useGetPostCommentsLazyQuery>;
+export type GetPostCommentsSuspenseQueryHookResult = ReturnType<typeof useGetPostCommentsSuspenseQuery>;
+export type GetPostCommentsQueryResult = Apollo.QueryResult<GetPostCommentsQuery, GetPostCommentsQueryVariables>;
 export const HidePostDocument = gql`
     mutation HidePost($postId: Float!) {
   hidePost(postId: $postId) {
@@ -1286,52 +1310,6 @@ export type GetPostByIdQueryHookResult = ReturnType<typeof useGetPostByIdQuery>;
 export type GetPostByIdLazyQueryHookResult = ReturnType<typeof useGetPostByIdLazyQuery>;
 export type GetPostByIdSuspenseQueryHookResult = ReturnType<typeof useGetPostByIdSuspenseQuery>;
 export type GetPostByIdQueryResult = Apollo.QueryResult<GetPostByIdQuery, GetPostByIdQueryVariables>;
-export const GetPostCommentsDocument = gql`
-    query GetPostComments($postId: Int!) {
-  getPostComments(postId: $postId) {
-    commentsArray {
-      ...FullComment
-    }
-    errors {
-      ...FullErrorField
-    }
-  }
-}
-    ${FullCommentFragmentDoc}
-${FullErrorFieldFragmentDoc}`;
-
-/**
- * __useGetPostCommentsQuery__
- *
- * To run a query within a React component, call `useGetPostCommentsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPostCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetPostCommentsQuery({
- *   variables: {
- *      postId: // value for 'postId'
- *   },
- * });
- */
-export function useGetPostCommentsQuery(baseOptions: Apollo.QueryHookOptions<GetPostCommentsQuery, GetPostCommentsQueryVariables> & ({ variables: GetPostCommentsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetPostCommentsQuery, GetPostCommentsQueryVariables>(GetPostCommentsDocument, options);
-      }
-export function useGetPostCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPostCommentsQuery, GetPostCommentsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetPostCommentsQuery, GetPostCommentsQueryVariables>(GetPostCommentsDocument, options);
-        }
-export function useGetPostCommentsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetPostCommentsQuery, GetPostCommentsQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetPostCommentsQuery, GetPostCommentsQueryVariables>(GetPostCommentsDocument, options);
-        }
-export type GetPostCommentsQueryHookResult = ReturnType<typeof useGetPostCommentsQuery>;
-export type GetPostCommentsLazyQueryHookResult = ReturnType<typeof useGetPostCommentsLazyQuery>;
-export type GetPostCommentsSuspenseQueryHookResult = ReturnType<typeof useGetPostCommentsSuspenseQuery>;
-export type GetPostCommentsQueryResult = Apollo.QueryResult<GetPostCommentsQuery, GetPostCommentsQueryVariables>;
 export const GetPostVotesDocument = gql`
     query GetPostVotes($postId: Int!) {
   getPostVotes(postId: $postId) {

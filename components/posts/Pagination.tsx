@@ -1,5 +1,3 @@
-// TODO: Fix Pagination interfering with sortBy
-// TODO: Refetch posts when changing sortBy
 "use client";
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useCallback } from "react";

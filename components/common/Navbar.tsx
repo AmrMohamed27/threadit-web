@@ -10,7 +10,7 @@ export default function Navbar() {
         <Link href="/" className="font-bold text-2xl">
           Threadit
         </Link>
-        <SearchBar />
+        <SearchBar hasPagination />
         <div className="flex items-center space-x-4">
           <DarkModeToggle />
           <NavbarActions />

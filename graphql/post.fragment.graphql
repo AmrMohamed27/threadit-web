@@ -9,55 +9,31 @@ fragment FullPost on Post {
 
 fragment FullPostResponse on PostResponse {
   postsArray {
-    id
-    title
-    content
-    createdAt
-    updatedAt
+    ...FullPost
     upvotesCount
     isUpvoted
     commentsCount
-    authorId
     author {
-      confirmed
-      name
-      email
-      createdAt
-      id
-      image
-      updatedAt
+      ...FullAuthor
     }
   }
   errors {
-    field
-    message
+    ...FullErrorField
   }
   count
 }
 
 fragment FullSinglePostResponse on PostResponse {
   post {
-    id
-    title
-    content
-    createdAt
-    updatedAt
+    ...FullPost
     upvotesCount
     isUpvoted
     commentsCount
-    authorId
     author {
-      confirmed
-      name
-      email
-      createdAt
-      id
-      image
-      updatedAt
+      ...FullAuthor
     }
   }
   errors {
-    field
-    message
+    ...FullErrorField
   }
 }

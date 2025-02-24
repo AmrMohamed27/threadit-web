@@ -16,6 +16,8 @@ export type CreatePostErrorType =
   | "root"
   | `root.${string}`;
 
+export type CommentErrorType = "content" | "root" | `root.${string}`;
+
 export type ResetPasswordErrorType =
   | "root"
   | `root.${string}`

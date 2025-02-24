@@ -1,5 +1,4 @@
 "use client";
-// TODO: Implement a sidebar
 
 import PostsFeed from "@/components/posts/PostsFeed";
 import { POSTS_PER_PAGE } from "@/constants";

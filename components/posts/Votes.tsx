@@ -10,10 +10,11 @@ import React, { useState } from "react";
 interface Props {
   upvotesCount: number;
   isUpvoted?: VoteOptions | null;
-  postId: number;
+  postId?: number;
+  commentId?: number;
 }
 
-const Votes = ({ upvotesCount, isUpvoted, postId }: Props) => {
+const Votes = ({ upvotesCount, isUpvoted, postId, commentId }: Props) => {
   const [vote, setVote] = useState<VoteOptions>(isUpvoted ?? VoteOptions.None);
   const [count, setCount] = useState(upvotesCount);
 
@@ -58,6 +59,19 @@ const Votes = ({ upvotesCount, isUpvoted, postId }: Props) => {
     }
   };
   const [createVoteMutation] = useCreateVoteMutation();
+
+  const addVote = async (isUpvote: boolean) => {
+    await createVoteMutation({
+      variables: {
+        options: {
+          isUpvote,
+          postId,
+          commentId,
+        },
+      },
+      refetchQueries: ["GetPostById", "GetAllPosts", "GetPostComments", "GetCommentById"],
+    });
+  };
   return (
     <div
       className={cn(
@@ -75,15 +89,7 @@ const Votes = ({ upvotesCount, isUpvoted, postId }: Props) => {
         onClick={async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
           e.stopPropagation();
           handleClick(VoteOptions.Upvote);
-          await createVoteMutation({
-            variables: {
-              options: {
-                isUpvote: true,
-                postId: postId,
-              },
-            },
-            refetchQueries: ["GetPostById", "GetAllPosts"],
-          });
+          addVote(true);
         }}
       >
         <UpvoteIcon
@@ -114,14 +120,7 @@ const Votes = ({ upvotesCount, isUpvoted, postId }: Props) => {
         onClick={async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
           e.stopPropagation();
           handleClick(VoteOptions.Downvote);
-          await createVoteMutation({
-            variables: {
-              options: {
-                isUpvote: false,
-                postId: postId,
-              },
-            },
-          });
+          addVote(false);
         }}
       >
         <DownvoteIcon
