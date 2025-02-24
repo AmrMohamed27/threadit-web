@@ -8,9 +8,9 @@ import {
 import { Skeleton } from "../ui/skeleton";
 import { cn, getDefaultAvatar, isArabic, timeAgo } from "@/lib/utils";
 import PostOptionsGetter from "./PostOptionsGetter";
-import Votes from "./Votes";
-import CommentsCount from "./CommentsCount";
-import ShareButton from "./ShareButton";
+import Votes from "../common/Votes";
+import CommentsCount from "../comments/CommentsCount";
+import ShareButton from "../common/ShareButton";
 import { usePathname } from "next/navigation";
 
 interface Props {

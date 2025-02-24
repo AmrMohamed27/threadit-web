@@ -9,7 +9,7 @@ import { Share2 as ShareIcon, Link as CopyLinkIcon } from "lucide-react";
 import { copyLinkToClipboard } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { env } from "@/env";
-import GreyDiv from "../common/GreyDiv";
+import GreyDiv from "./GreyDiv";
 
 interface Props {
   postId: number;

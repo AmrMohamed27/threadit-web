@@ -8,8 +8,8 @@ import PostsFeed from "./PostsFeed";
 import EditPostForm from "../forms/EditPostForm";
 import HiddenPost from "./HiddenPost";
 import CommentForm from "../forms/CommentForm";
-import CommentsFeed from "./CommentsFeed";
-import CommentGetter from "./CommentGetter";
+import CommentsFeed from "../comments/CommentsFeed";
+import CommentGetter from "../comments/CommentGetter";
 
 interface Props {
   postId: number;

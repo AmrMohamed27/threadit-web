@@ -1,11 +1,11 @@
 import { useGetPostCommentsQuery } from "@/generated/graphql";
 import { useCurrentPage } from "@/hooks/use-current-page";
 import React from "react";
-import SortBy from "./SortBy";
+import SortBy from "../common/SortBy";
 import SearchBar from "../common/SearchBar";
 import { MAX_REPLY_DEPTH } from "@/constants";
 import CommentThread from "./CommentThread";
-import GoBackButton from "./GoBackButton";
+import GoBackButton from "../common/GoBackButton";
 
 interface Props {
   postId: number;

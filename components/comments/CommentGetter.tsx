@@ -2,7 +2,7 @@ import React from "react";
 import CommentThread from "./CommentThread";
 import { MAX_REPLY_DEPTH } from "@/constants";
 import { useGetCommentQuery } from "@/generated/graphql";
-import GoBackButton from "./GoBackButton";
+import GoBackButton from "../common/GoBackButton";
 
 interface Props {
   commentId: number;

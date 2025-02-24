@@ -7,11 +7,11 @@ import {
 } from "../ui/avatar";
 import { Skeleton } from "../ui/skeleton";
 import { cn, getDefaultAvatar, isArabic, timeAgo } from "@/lib/utils";
-import Votes from "./Votes";
+import Votes from "../common/Votes";
 import { Button } from "../ui/button";
 import { MessageCircle as CommentIcon, Redo2 as GoToIcon } from "lucide-react";
 import CommentForm from "../forms/CommentForm";
-import ShareButton from "./ShareButton";
+import ShareButton from "../common/ShareButton";
 import Link from "next/link";
 
 interface Props {

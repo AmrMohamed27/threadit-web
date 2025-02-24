@@ -2,11 +2,11 @@ import { POSTS_PER_PAGE } from "@/constants";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import PostCard from "./PostCard";
-import PaginationComponent from "./Pagination";
+import PaginationComponent from "../common/Pagination";
 import { useCurrentPage } from "@/hooks/use-current-page";
 import { Post } from "@/generated/graphql";
 import { cn } from "@/lib/utils";
-import SortBy from "./SortBy";
+import SortBy from "../common/SortBy";
 
 interface HomePostsProps {
   posts: Post[];
