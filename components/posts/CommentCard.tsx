@@ -9,8 +9,10 @@ import { Skeleton } from "../ui/skeleton";
 import { cn, getDefaultAvatar, isArabic, timeAgo } from "@/lib/utils";
 import Votes from "./Votes";
 import { Button } from "../ui/button";
-import { MessageCircle as CommentIcon } from "lucide-react";
+import { MessageCircle as CommentIcon, Redo2 as GoToIcon } from "lucide-react";
 import CommentForm from "../forms/CommentForm";
+import ShareButton from "./ShareButton";
+import Link from "next/link";
 
 interface Props {
   comment: Comment;
@@ -39,6 +41,8 @@ const CommentCard = ({ comment, depth = 0, maxDepth = 3 }: Props) => {
   const hideForm = () => {
     setIsFormVisible(false);
   };
+
+  const commentLink = `/posts/${comment.postId}/comment/${comment.id}`;
 
   return (
     <div className="flex flex-col gap-2 p-4 border-muted border-l w-full">
@@ -86,7 +90,7 @@ const CommentCard = ({ comment, depth = 0, maxDepth = 3 }: Props) => {
           isUpvoted={isUpvoted}
           commentId={commentId}
         />
-        {/* Comments Button "Links to post page" */}
+        {/* Comment Buttons */}
         <div>
           <Button
             className="flex flex-row items-center gap-2 px-4 py-2 text-foreground"
@@ -97,6 +101,18 @@ const CommentCard = ({ comment, depth = 0, maxDepth = 3 }: Props) => {
             {/* Comments Count */}
             <span className="text-sm">Reply</span>
           </Button>
+        </div>
+        <div>
+          <ShareButton commentId={comment.id} postId={comment.postId} />
+        </div>
+        <div>
+          <Link
+            href={commentLink}
+            className="flex flex-row items-center gap-2 bg-muted hover:bg-muted-foreground/30 px-4 py-2 rounded-full"
+          >
+            <GoToIcon size={20} aria-label="Go to comment" />
+            <span className="text-sm">Go to comment</span>
+          </Link>
         </div>
       </div>
       {isFormVisible && (

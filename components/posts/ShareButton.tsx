@@ -13,10 +13,14 @@ import GreyDiv from "../common/GreyDiv";
 
 interface Props {
   postId: number;
+  commentId?: number;
 }
 
-const SharePost = ({ postId }: Props) => {
+const ShareButton = ({ postId, commentId }: Props) => {
   const { toast } = useToast();
+  const link = commentId
+    ? `${env.NEXT_PUBLIC_HOME_URL}/posts/${postId}/comment/${commentId}`
+    : `${env.NEXT_PUBLIC_HOME_URL}/posts/${postId}`;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -30,14 +34,11 @@ const SharePost = ({ postId }: Props) => {
           <button
             className="flex flex-row justify-center items-center gap-2"
             onClick={() => {
-              copyLinkToClipboard(
-                `${env.NEXT_PUBLIC_HOME_URL}/posts/${postId}`,
-                () => {
-                  toast({
-                    title: "Link copied to clipboard!",
-                  });
-                }
-              );
+              copyLinkToClipboard(link, () => {
+                toast({
+                  title: "Link copied to clipboard!",
+                });
+              });
             }}
           >
             <CopyLinkIcon size={20} aria-label="Copy Link Icon" />
@@ -49,4 +50,4 @@ const SharePost = ({ postId }: Props) => {
   );
 };
 
-export default SharePost;
+export default ShareButton;

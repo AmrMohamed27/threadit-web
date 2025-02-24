@@ -1,42 +1,15 @@
-import { Comment, useGetPostCommentsQuery } from "@/generated/graphql";
+import { useGetPostCommentsQuery } from "@/generated/graphql";
 import { useCurrentPage } from "@/hooks/use-current-page";
 import React from "react";
-import CommentCard from "./CommentCard";
 import SortBy from "./SortBy";
 import SearchBar from "../common/SearchBar";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 import { MAX_REPLY_DEPTH } from "@/constants";
+import CommentThread from "./CommentThread";
+import GoBackButton from "./GoBackButton";
 
 interface Props {
   postId: number;
 }
-
-interface ThreadProps {
-  comment: Comment;
-  depth?: number;
-  maxDepth?: number;
-}
-
-const CommentThread = ({ comment, depth = 0, maxDepth = 3 }: ThreadProps) => {
-  return (
-    <div className="flex flex-col gap-0">
-      <CommentCard comment={comment} depth={depth} maxDepth={maxDepth} />
-      {comment.replies && comment.replies.length > 0 && depth < maxDepth && (
-        <div className="flex flex-col gap-0 pl-12 border-muted border-l">
-          {comment.replies.map((reply) => (
-            <CommentThread
-              key={reply.id}
-              comment={reply}
-              depth={depth + 1}
-              maxDepth={maxDepth}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
 
 const CommentsFeed = ({ postId }: Props) => {
   const { sortBy, pathname, searchTerm } = useCurrentPage();
@@ -63,15 +36,7 @@ const CommentsFeed = ({ postId }: Props) => {
         {!searchTerm && <SortBy />}
         <SearchBar origin={pathname} placeholder="Search comments" />
       </div>
-      {searchTerm && (
-        <Link
-          className="flex flex-row justify-center items-center gap-4 hover:bg-muted px-4 py-2 rounded-full max-w-[160px] text-sm"
-          href={pathname}
-        >
-          <ArrowLeft size={16} aria-label="Back to all comments" />
-          <span>All Comments</span>
-        </Link>
-      )}
+      {searchTerm && <GoBackButton href={pathname} label="all comments" />}
       {searchTerm && <span>{count} results found</span>}
       <div className="flex flex-col gap-0">
         {comments.map((comment) => (

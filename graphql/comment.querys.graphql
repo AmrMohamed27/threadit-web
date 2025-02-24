@@ -1,6 +1,6 @@
-query GetCommentById($getCommentId: Int!) {
-  getComment(id: $getCommentId) {
-    ...FullCommentResponse
+query GetComment($options: GetCommentByIdInput!) {
+  getComment(options: $options) {
+    ...FullCommentArrayResponse
   }
 }
 

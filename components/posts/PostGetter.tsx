@@ -9,13 +9,15 @@ import EditPostForm from "../forms/EditPostForm";
 import HiddenPost from "./HiddenPost";
 import CommentForm from "../forms/CommentForm";
 import CommentsFeed from "./CommentsFeed";
+import CommentGetter from "./CommentGetter";
 
 interface Props {
   postId: number;
   isEdit?: boolean;
+  commentId?: number;
 }
 
-const PostGetter = ({ postId, isEdit }: Props) => {
+const PostGetter = ({ postId, isEdit, commentId }: Props) => {
   const { data, loading, error } = useGetPostByIdQuery({
     variables: {
       id: postId,
@@ -42,8 +44,16 @@ const PostGetter = ({ postId, isEdit }: Props) => {
     return <HiddenPost postId={postId} />;
   }
   return isEdit ? (
+    // Render Edit Post Form
     <EditPostForm post={post} />
+  ) : commentId ? (
+    // Render single comment page
+    <div className="flex flex-col gap-4 w-full">
+      <PostsFeed posts={[post]} count={1} />
+      <CommentGetter commentId={commentId} postId={postId} />
+    </div>
   ) : (
+    // Render single post page
     <div className="flex flex-col gap-4 w-full">
       <PostsFeed posts={[post]} count={1} />
       <CommentForm postId={postId} />

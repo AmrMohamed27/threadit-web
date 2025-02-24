@@ -7,7 +7,6 @@ import { Form } from "@/components/ui/form";
 import InputField from "./InputField";
 import { useCreateCommentMutation } from "@/generated/graphql";
 import { Loader } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { CommentErrorType } from "../../types";
 import CommentSchema from "@/schema/CommentSchema";
 
@@ -21,7 +20,6 @@ const CommentForm = ({ postId, parentCommentId, hideForm }: Props) => {
   // Define graphql mutation
   const [createCommentMutation, { loading }] = useCreateCommentMutation();
   // Router
-  const router = useRouter();
   // 1. Define your form.
   const form = useForm<z.infer<typeof CommentSchema>>({
     resolver: zodResolver(CommentSchema),
@@ -52,8 +50,6 @@ const CommentForm = ({ postId, parentCommentId, hideForm }: Props) => {
     // Redirect to post page on success and display errors on failure
     const comment = data?.createComment.comment;
     if (comment) {
-      // Redirect to post page
-      router.push(`/posts/${comment.postId}`);
       if (hideForm) hideForm();
       form.reset();
     } else if (data?.createComment.errors) {

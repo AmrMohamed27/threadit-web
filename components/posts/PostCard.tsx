@@ -10,7 +10,7 @@ import { cn, getDefaultAvatar, isArabic, timeAgo } from "@/lib/utils";
 import PostOptionsGetter from "./PostOptionsGetter";
 import Votes from "./Votes";
 import CommentsCount from "./CommentsCount";
-import SharePost from "./SharePost";
+import ShareButton from "./ShareButton";
 import { usePathname } from "next/navigation";
 
 interface Props {
@@ -98,7 +98,7 @@ const PostCard = ({ post }: Props) => {
           postId={postId}
         />
         <CommentsCount count={commentsCount ?? 0} postId={postId} />
-        <SharePost postId={postId} />
+        <ShareButton postId={postId} />
       </div>
     </div>
   );

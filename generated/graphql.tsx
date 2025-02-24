@@ -80,6 +80,11 @@ export type GetAllPostsInput = {
   sortBy?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type GetCommentByIdInput = {
+  commentId: Scalars['Int']['input'];
+  postId?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type GetPostCommentsInput = {
   postId: Scalars['Int']['input'];
   searchTerm?: InputMaybe<Scalars['String']['input']>;
@@ -274,7 +279,7 @@ export type QueryGetAllPostsArgs = {
 
 
 export type QueryGetCommentArgs = {
-  id: Scalars['Int']['input'];
+  options: GetCommentByIdInput;
 };
 
 
@@ -420,12 +425,12 @@ export type UpdateCommentMutationVariables = Exact<{
 
 export type UpdateCommentMutation = { __typename?: 'Mutation', updateComment?: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } | null };
 
-export type GetCommentByIdQueryVariables = Exact<{
-  getCommentId: Scalars['Int']['input'];
+export type GetCommentQueryVariables = Exact<{
+  options: GetCommentByIdInput;
 }>;
 
 
-export type GetCommentByIdQuery = { __typename?: 'Query', getComment: { __typename?: 'CommentResponse', comment?: { __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetCommentQuery = { __typename?: 'Query', getComment: { __typename?: 'CommentResponse', count?: number | null, commentsArray?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, replies?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, replies?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, replies?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetUserCommentsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -890,46 +895,46 @@ export function useUpdateCommentMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateCommentMutationHookResult = ReturnType<typeof useUpdateCommentMutation>;
 export type UpdateCommentMutationResult = Apollo.MutationResult<UpdateCommentMutation>;
 export type UpdateCommentMutationOptions = Apollo.BaseMutationOptions<UpdateCommentMutation, UpdateCommentMutationVariables>;
-export const GetCommentByIdDocument = gql`
-    query GetCommentById($getCommentId: Int!) {
-  getComment(id: $getCommentId) {
-    ...FullCommentResponse
+export const GetCommentDocument = gql`
+    query GetComment($options: GetCommentByIdInput!) {
+  getComment(options: $options) {
+    ...FullCommentArrayResponse
   }
 }
-    ${FullCommentResponseFragmentDoc}`;
+    ${FullCommentArrayResponseFragmentDoc}`;
 
 /**
- * __useGetCommentByIdQuery__
+ * __useGetCommentQuery__
  *
- * To run a query within a React component, call `useGetCommentByIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCommentByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetCommentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCommentQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetCommentByIdQuery({
+ * const { data, loading, error } = useGetCommentQuery({
  *   variables: {
- *      getCommentId: // value for 'getCommentId'
+ *      options: // value for 'options'
  *   },
  * });
  */
-export function useGetCommentByIdQuery(baseOptions: Apollo.QueryHookOptions<GetCommentByIdQuery, GetCommentByIdQueryVariables> & ({ variables: GetCommentByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useGetCommentQuery(baseOptions: Apollo.QueryHookOptions<GetCommentQuery, GetCommentQueryVariables> & ({ variables: GetCommentQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCommentByIdQuery, GetCommentByIdQueryVariables>(GetCommentByIdDocument, options);
+        return Apollo.useQuery<GetCommentQuery, GetCommentQueryVariables>(GetCommentDocument, options);
       }
-export function useGetCommentByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCommentByIdQuery, GetCommentByIdQueryVariables>) {
+export function useGetCommentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCommentQuery, GetCommentQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCommentByIdQuery, GetCommentByIdQueryVariables>(GetCommentByIdDocument, options);
+          return Apollo.useLazyQuery<GetCommentQuery, GetCommentQueryVariables>(GetCommentDocument, options);
         }
-export function useGetCommentByIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetCommentByIdQuery, GetCommentByIdQueryVariables>) {
+export function useGetCommentSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetCommentQuery, GetCommentQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetCommentByIdQuery, GetCommentByIdQueryVariables>(GetCommentByIdDocument, options);
+          return Apollo.useSuspenseQuery<GetCommentQuery, GetCommentQueryVariables>(GetCommentDocument, options);
         }
-export type GetCommentByIdQueryHookResult = ReturnType<typeof useGetCommentByIdQuery>;
-export type GetCommentByIdLazyQueryHookResult = ReturnType<typeof useGetCommentByIdLazyQuery>;
-export type GetCommentByIdSuspenseQueryHookResult = ReturnType<typeof useGetCommentByIdSuspenseQuery>;
-export type GetCommentByIdQueryResult = Apollo.QueryResult<GetCommentByIdQuery, GetCommentByIdQueryVariables>;
+export type GetCommentQueryHookResult = ReturnType<typeof useGetCommentQuery>;
+export type GetCommentLazyQueryHookResult = ReturnType<typeof useGetCommentLazyQuery>;
+export type GetCommentSuspenseQueryHookResult = ReturnType<typeof useGetCommentSuspenseQuery>;
+export type GetCommentQueryResult = Apollo.QueryResult<GetCommentQuery, GetCommentQueryVariables>;
 export const GetUserCommentsDocument = gql`
     query GetUserComments {
   getUserComments {
