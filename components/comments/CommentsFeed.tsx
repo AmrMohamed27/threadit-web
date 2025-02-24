@@ -25,10 +25,11 @@ const CommentsFeed = ({ postId }: Props) => {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
-  if (data?.getPostComments.errors)
-    return <div>{data?.getPostComments.errors[0].message}</div>;
   const comments = data?.getPostComments.commentsArray ?? [];
   const count = data?.getPostComments.count ?? 0;
+  if (comments.length === 0) return <></>;
+  if (data?.getPostComments.errors)
+    return <div>{data?.getPostComments.errors[0].message}</div>;
 
   return (
     <div className="flex flex-col gap-4 mt-4 w-full">

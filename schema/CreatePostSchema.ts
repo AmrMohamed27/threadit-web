@@ -8,5 +8,6 @@ const CreatePostSchema = z.object({
   content: z
     .string()
     .min(1, { message: "Content must be at least 1 characters long" }),
+  communityId: z.number(),
 });
 export default CreatePostSchema;

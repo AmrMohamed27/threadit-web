@@ -1,0 +1,40 @@
+fragment FullCommunity on Community {
+  id
+  name
+  description
+  image
+  createdAt
+  updatedAt
+  creatorId
+  postsCount
+  membersCount
+  creator {
+    id
+    name
+    email
+    createdAt
+    updatedAt
+    image
+    confirmed
+  }
+}
+
+fragment FullCommunityResponse on CommunityResponse {
+  community {
+    ...FullCommunity
+  }
+  errors {
+    ...FullErrorField
+  }
+  count
+}
+
+fragment FullCommunityArrayResponse on CommunityResponse {
+  communitiesArray {
+    ...FullCommunity
+  }
+  errors {
+    ...FullErrorField
+  }
+  count
+}

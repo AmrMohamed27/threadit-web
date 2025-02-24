@@ -1,23 +1,24 @@
 "use client";
-import React, { useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import InputField from "./InputField";
-import { useCreatePostMutation } from "@/generated/graphql";
+import { Form, FormLabel } from "@/components/ui/form";
+import { Community, useCreatePostMutation } from "@/generated/graphql";
+import CreatePostSchema from "@/schema/CreatePostSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { CreatePostErrorType } from "../../types";
-import CreatePostSchema from "@/schema/CreatePostSchema";
+import InputField from "./InputField";
+import ChooseCommunity from "../communities/ChooseCommunity";
 
-const CreatePostForm = () => {
+interface Props {
+  communities: Community[];
+}
+
+const CreatePostForm = ({ communities }: Props) => {
   // Define graphql mutation
-  const [
-    createPostMutation,
-    { data: mutationResult, loading, error: mutationError },
-  ] = useCreatePostMutation();
+  const [createPostMutation, { loading }] = useCreatePostMutation();
   // Router
   const router = useRouter();
   // 1. Define your form.
@@ -26,42 +27,46 @@ const CreatePostForm = () => {
     defaultValues: {
       title: "",
       content: "",
+      communityId: communities.length > 0 ? communities[0].id : undefined,
     },
   });
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof CreatePostSchema>) {
-    const { title, content } = values;
-    await createPostMutation({
+    const { title, content, communityId } = values;
+    const { data } = await createPostMutation({
       variables: {
         options: {
           title,
           content,
+          communityId,
         },
       },
       refetchQueries: ["GetAllPosts"],
     });
-  }
-
-  useEffect(() => {
-    if (mutationError) {
-      console.error(mutationError);
-    }
-    if (mutationResult?.createPost.errors) {
-      for (const error of mutationResult.createPost.errors) {
+    const post = data?.createPost.post;
+    if (post) {
+      // Redirect to home page
+      router.push(`/posts/${post.id}`);
+    } else if (data?.createPost.errors) {
+      for (const error of data.createPost.errors) {
         form.setError(error.field as CreatePostErrorType, {
           message: error.message,
         });
       }
     }
-    const post = mutationResult?.createPost.post;
-    if (post) {
-      // Redirect to home page
-      router.push(`/posts/${post.id}`);
-    }
-  }, [mutationError, mutationResult, router, form]);
+  }
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+        {/* Community Selector */}
+        <div className="flex flex-row items-center gap-4">
+          <FormLabel>Choose a community:</FormLabel>
+          <ChooseCommunity
+            communities={communities}
+            selectedCommunityId={form.watch("communityId")}
+            onSelect={(id) => form.setValue("communityId", id)}
+          />
+        </div>
         {/* Title */}
         <InputField control={form.control} name="title" label="Title" />
         {/* Content */}

@@ -1,20 +1,15 @@
 "use client";
 import { Comment } from "@/generated/graphql";
-import React, { useState } from "react";
-import {
-  AvatarFallback,
-  AvatarImage,
-  Avatar as AvatarContainer,
-} from "../ui/avatar";
-import { Skeleton } from "../ui/skeleton";
 import { cn, getDefaultAvatar, isArabic, timeAgo } from "@/lib/utils";
-import Votes from "../common/Votes";
-import { Button } from "../ui/button";
 import { MessageCircle as CommentIcon, Redo2 as GoToIcon } from "lucide-react";
-import CommentForm from "../forms/CommentForm";
-import ShareButton from "../common/ShareButton";
 import Link from "next/link";
+import { useState } from "react";
+import AvatarWrapper from "../common/AvatarWrapper";
+import ShareButton from "../common/ShareButton";
+import Votes from "../common/Votes";
+import CommentForm from "../forms/CommentForm";
 import CommentOptionsGetter from "../posts/CommentOptionsGetter";
+import { Button } from "../ui/button";
 
 interface Props {
   comment: Comment;
@@ -54,15 +49,11 @@ const CommentCard = ({ comment, depth = 0, maxDepth = 3 }: Props) => {
         <div className="flex md:flex-row flex-col items-center gap-2">
           <div className="flex flex-row items-center gap-2">
             {/* Image */}
-            <AvatarContainer className="w-6 h-6">
-              <AvatarImage
-                src={author?.image ?? getDefaultAvatar({ name: author?.name })}
-                alt={`${author?.name ?? "Author"}'s profile picture`}
-              />
-              <AvatarFallback>
-                <Skeleton />
-              </AvatarFallback>
-            </AvatarContainer>
+            <AvatarWrapper
+              src={author?.image ?? getDefaultAvatar({ name: author?.name })}
+              alt={`${author?.name ?? "Author"}'s profile picture`}
+              className="w-6 h-6"
+            />
             {/* Name */}
             <span className="text-xs">{author?.name ?? "Author"}</span>
             {/* Separator */}

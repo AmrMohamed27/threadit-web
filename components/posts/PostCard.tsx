@@ -1,17 +1,11 @@
 import { Post } from "@/generated/graphql";
-import React from "react";
-import {
-  AvatarFallback,
-  AvatarImage,
-  Avatar as AvatarContainer,
-} from "../ui/avatar";
-import { Skeleton } from "../ui/skeleton";
 import { cn, getDefaultAvatar, isArabic, timeAgo } from "@/lib/utils";
-import PostOptionsGetter from "./PostOptionsGetter";
-import Votes from "../common/Votes";
-import CommentsCount from "../comments/CommentsCount";
-import ShareButton from "../common/ShareButton";
 import { usePathname } from "next/navigation";
+import CommentsCount from "../comments/CommentsCount";
+import AvatarWrapper from "../common/AvatarWrapper";
+import ShareButton from "../common/ShareButton";
+import Votes from "../common/Votes";
+import PostOptionsGetter from "./PostOptionsGetter";
 
 interface Props {
   post: Post;
@@ -28,6 +22,7 @@ const PostCard = ({ post }: Props) => {
     createdAt,
     updatedAt,
     author,
+    community,
     id: postId,
     commentsCount,
     isUpvoted,
@@ -43,24 +38,34 @@ const PostCard = ({ post }: Props) => {
         {/* Info */}
         <div className="flex md:flex-row flex-col items-center gap-2">
           <div className="flex flex-row items-center gap-2">
-            {/* Image */}
-            <AvatarContainer className="w-6 h-6">
-              <AvatarImage
-                src={author?.image ?? getDefaultAvatar({ name: author?.name })}
-                alt={`${author?.name ?? "Author"}'s profile picture`}
-              />
-              <AvatarFallback>
-                <Skeleton />
-              </AvatarFallback>
-            </AvatarContainer>
-            {/* Name */}
-            <span className="text-xs">{author?.name ?? "Author"}</span>
-            {/* Separator */}
-            <span className="text-muted-foreground text-xs">•</span>
-            {/* Date created */}
-            <span className="text-muted-foreground text-xs">
-              {timeAgo(createdAt)}
-            </span>
+            {/* Community Image */}
+            <AvatarWrapper
+              src={
+                community?.image ??
+                getDefaultAvatar({ name: community?.name ?? "Community" })
+              }
+              alt={`${community?.name ?? "Community"}'s profile picture`}
+              className="w-6 h-6"
+            />
+            {/* Names */}
+            <div className="flex flex-col items-start gap-1">
+              <div className="flex flex-row items-center gap-2">
+                {/* Community Name */}
+                <span className="font-semibold text-xs">
+                  {community?.name ?? "Community"}
+                </span>
+                {/* Separator */}
+                <span className="text-muted-foreground text-xs">•</span>
+                {/* Date created */}
+                <span className="text-muted-foreground text-xs">
+                  {timeAgo(createdAt)}
+                </span>
+              </div>
+              {/* Author Name */}
+              <span className="text-muted-foreground text-xs">
+                {author?.name ?? "Author"}
+              </span>
+            </div>
           </div>
           {/* Date Updated if updatedAt is different from createdAt */}
           {updatedAt !== createdAt && (

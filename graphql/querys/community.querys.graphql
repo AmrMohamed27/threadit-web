@@ -1,0 +1,10 @@
+query GetAllCommunities {
+  getAllCommunities {
+    ...FullCommunityArrayResponse
+  }
+}
+
+query GetUserCommunities {
+  getUserCommunities {
+    ...FullCommunityArrayResponse
+  }}

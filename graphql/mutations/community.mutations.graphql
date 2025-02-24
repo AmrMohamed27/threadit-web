@@ -1,0 +1,32 @@
+mutation CreateCommunity($options: CreateCommunityInput!) {
+  createCommunity(options: $options) {
+    ...FullCommunityResponse
+  }
+}
+
+mutation JoinCommunity($options: JoinCommunityInput!) {
+  joinCommunity(options: $options) {
+    success
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+
+mutation LeaveCommunity($options: LeaveCommunityInput!) {
+  leaveCommunity(options: $options) {
+    success
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+
+mutation DeleteCommunity($deleteCommunityId: Float!) {
+  deleteCommunity(id: $deleteCommunityId) {
+    success
+    errors {
+      ...FullErrorField
+    }
+  }
+}

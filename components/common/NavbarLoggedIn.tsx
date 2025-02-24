@@ -1,9 +1,3 @@
-import React from "react";
-import {
-  AvatarFallback,
-  AvatarImage,
-  Avatar as AvatarContainer,
-} from "../ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,17 +6,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "../ui/button";
+import { useLogoutMutation, User } from "@/generated/graphql";
+import { cn, getDefaultAvatar } from "@/lib/utils";
 import {
-  LogOut as LogOutIcon,
   Plus as CreateIcon,
+  LogOut as LogOutIcon,
   Bookmark as SavedIcon,
 } from "lucide-react";
-import { useLogoutMutation, User } from "@/generated/graphql";
-import { Skeleton } from "../ui/skeleton";
-import GreyDiv from "./GreyDiv";
 import Link from "next/link";
-import { cn, getDefaultAvatar } from "@/lib/utils";
+import { Button } from "../ui/button";
+import AvatarWrapper from "./AvatarWrapper";
+import GreyDiv from "./GreyDiv";
 
 interface Props {
   user: User;
@@ -51,19 +45,11 @@ const NavbarLoggedIn = ({ user }: Props) => {
       {/* Avatar and dropdown menu */}
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <AvatarContainer>
-            {isLogoutLoading ? (
-              <Skeleton />
-            ) : (
-              <AvatarImage
-                src={user.image ?? getDefaultAvatar({ name: user.name })}
-                alt={`${user.name}'s profile picture`}
-              />
-            )}
-            <AvatarFallback>
-              <Skeleton />
-            </AvatarFallback>
-          </AvatarContainer>
+          <AvatarWrapper
+            src={user.image ?? getDefaultAvatar({ name: user.name })}
+            alt={`${user.name}'s profile picture`}
+            loading={isLogoutLoading}
+          />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuLabel>{`${user.name}'s Account`}</DropdownMenuLabel>

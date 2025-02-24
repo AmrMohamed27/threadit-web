@@ -5,6 +5,7 @@ fragment FullPost on Post {
   createdAt
   updatedAt
   authorId
+  communityId
 }
 
 fragment FullPostResponse on PostResponse {
@@ -15,6 +16,9 @@ fragment FullPostResponse on PostResponse {
     commentsCount
     author {
       ...FullAuthor
+    }
+    community {
+      ...FullCommunity
     }
   }
   errors {
@@ -31,6 +35,9 @@ fragment FullSinglePostResponse on PostResponse {
     commentsCount
     author {
       ...FullAuthor
+    }
+    community {
+      ...FullCommunity
     }
   }
   errors {
