@@ -1,3 +1,4 @@
+"use client";
 import { Comment } from "@/generated/graphql";
 import React, { useState } from "react";
 import {
@@ -13,6 +14,7 @@ import { MessageCircle as CommentIcon, Redo2 as GoToIcon } from "lucide-react";
 import CommentForm from "../forms/CommentForm";
 import ShareButton from "../common/ShareButton";
 import Link from "next/link";
+import CommentOptionsGetter from "../posts/CommentOptionsGetter";
 
 interface Props {
   comment: Comment;
@@ -78,6 +80,11 @@ const CommentCard = ({ comment, depth = 0, maxDepth = 3 }: Props) => {
           )}
         </div>
         {/* Options */}
+        <CommentOptionsGetter
+          commentId={commentId}
+          postId={comment.postId}
+          authorId={comment.authorId}
+        />
       </div>
       {/* Content */}
       <div dir={isArabicContent ? "rtl" : "ltr"}>

@@ -1,4 +1,4 @@
-import { PostOptions, SortingObjects } from "@/types";
+import { CommentOptions, PostOptions, SortingObjects } from "@/types";
 import {
   Bookmark as SaveIcon,
   EyeOff as HideIcon,
@@ -17,10 +17,12 @@ export const POSTS_PER_PAGE = 5;
 
 export const MAX_REPLY_DEPTH = 3;
 
+// POSTS
 // Options for logged out users options dropdown
 export const loggedOutUserOptionsDropdown: PostOptions[] = [
   { id: "report", label: "Report", icon: ReportIcon },
 ] as const;
+
 // Options for post options dropdown if post is not saved
 export const postOptionsDropdown: PostOptions[] = [
   { id: "save", label: "Save", icon: SaveIcon },
@@ -39,7 +41,7 @@ export const userPostOptionsDropdown: PostOptions[] = [
     id: "edit",
     label: "Edit post",
     icon: EditIcon,
-    href: (postId: number) => `/posts/${postId}/edit`,
+    href: ({ postId }) => `/posts/${postId}/edit`,
   },
   postOptionsDropdown[0],
   postOptionsDropdown[1],
@@ -57,7 +59,7 @@ export const savedUserPostOptionsDropdown: PostOptions[] = [
     id: "edit",
     label: "Edit post",
     icon: EditIcon,
-    href: (postId: number) => `/posts/${postId}/edit`,
+    href: ({ postId }) => `/posts/${postId}/edit`,
   },
   savedPostOptionsDropdown[0],
   savedPostOptionsDropdown[1],
@@ -67,6 +69,32 @@ export const savedUserPostOptionsDropdown: PostOptions[] = [
     icon: DeleteIcon,
   },
 ];
+
+// COMMENTS
+// Options for logged out users options dropdown
+export const loggedOutUserCommentOptionsDropdown: CommentOptions[] = [
+  { id: "report", label: "Report", icon: ReportIcon },
+] as const;
+// Options for comment options dropdown
+export const commentOptionsDropdown: CommentOptions[] = [
+  loggedOutUserCommentOptionsDropdown[0],
+] as const;
+// Options for user's comment options dropdown
+export const userCommentOptionsDropdown: CommentOptions[] = [
+  {
+    id: "edit",
+    label: "Edit comment",
+    icon: EditIcon,
+    href: ({ postId, commentId }) =>
+      `/posts/${postId}/comment/${commentId}/edit`,
+  },
+  {
+    id: "delete",
+    label: "Delete",
+    icon: DeleteIcon,
+  },
+  loggedOutUserCommentOptionsDropdown[0],
+] as const;
 
 export const sortingOptions: SortingObjects[] = [
   { id: 1, option: "Best", icon: BestIcon },

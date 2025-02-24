@@ -3,13 +3,15 @@ import CommentThread from "./CommentThread";
 import { MAX_REPLY_DEPTH } from "@/constants";
 import { useGetCommentQuery } from "@/generated/graphql";
 import GoBackButton from "../common/GoBackButton";
+import EditCommentForm from "../forms/EditCommentForm";
 
 interface Props {
   commentId: number;
   postId: number;
+  isEdit?: boolean;
 }
 
-const CommentGetter = ({ commentId, postId }: Props) => {
+const CommentGetter = ({ commentId, postId, isEdit }: Props) => {
   const { data, loading, error } = useGetCommentQuery({
     variables: {
       options: {
@@ -28,7 +30,9 @@ const CommentGetter = ({ commentId, postId }: Props) => {
     return <div>Error 404 - No comment found</div>;
   const comment = comments[0];
 
-  return (
+  return isEdit ? (
+    <EditCommentForm comment={comment} />
+  ) : (
     <div className="flex flex-col gap-4 w-full">
       <div className="max-w-[90px]">
         <GoBackButton href={`/posts/${postId}`} label="post" />

@@ -34,7 +34,21 @@ export interface PostOptions {
   icon: ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;
-  href?: (postId: number) => string;
+  href?: ({ postId }: { postId: number }) => string;
+}
+export interface CommentOptions {
+  id: OptionIds;
+  label: string;
+  icon: ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
+  >;
+  href?: ({
+    postId,
+    commentId,
+  }: {
+    postId: number;
+    commentId: number;
+  }) => string;
 }
 
 export type OptionIds =

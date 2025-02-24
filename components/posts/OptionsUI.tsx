@@ -7,24 +7,28 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LucideProps, Ellipsis as OptionsIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import DeletePostDialog from "./DeletePostDialog";
-import { PostOptions } from "@/types";
+import DeleteDialog from "./DeleteDialog";
+import { CommentOptions, PostOptions } from "@/types";
 
 interface Props {
-  options: PostOptions[];
+  options: PostOptions[] & CommentOptions[];
   postId: number;
-  handleHidePost: () => Promise<void>;
-  handleSavePost: () => Promise<void>;
-  handleUnsavePost: () => Promise<void>;
-  isSaved: boolean;
+  commentId?: number;
+  handleHide?: () => Promise<void>;
+  handleSave?: () => Promise<void>;
+  handleUnsave?: () => Promise<void>;
+  handleDelete: () => Promise<void>;
+  isSaved?: boolean;
 }
 
-const PostOptionsUI = ({
+const OptionsUI = ({
   options,
   postId,
-  handleHidePost,
-  handleSavePost,
-  handleUnsavePost,
+  commentId,
+  handleHide,
+  handleSave,
+  handleUnsave,
+  handleDelete,
   isSaved,
 }: Props) => {
   return (
@@ -44,21 +48,25 @@ const PostOptionsUI = ({
             }}
           >
             {id === "delete" ? (
-              <DeletePostDialog postId={postId}>
+              <DeleteDialog
+                handleDelete={handleDelete}
+                label={commentId ? "comment" : "post"}
+              >
                 <OptionButton label={label} Icon={Icon} postId={postId} />
-              </DeletePostDialog>
+              </DeleteDialog>
             ) : (
               <OptionButton
                 label={label}
                 Icon={Icon}
                 postId={postId}
+                commentId={commentId}
                 onClick={
                   id === "hide"
-                    ? handleHidePost
+                    ? handleHide
                     : id === "save" && !isSaved
-                    ? handleSavePost
+                    ? handleSave
                     : id === "unsave" && isSaved
-                    ? handleUnsavePost
+                    ? handleUnsave
                     : undefined
                 }
                 href={href}
@@ -71,7 +79,7 @@ const PostOptionsUI = ({
   );
 };
 
-export default PostOptionsUI;
+export default OptionsUI;
 
 interface OptionButtonProps {
   label: string;
@@ -79,8 +87,10 @@ interface OptionButtonProps {
     Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
   >;
   onClick?: () => void;
-  href?: (postId: number) => string;
+  href?: (({ postId }: { postId: number }) => string) &
+    (({ postId, commentId }: { postId: number; commentId: number }) => string);
   postId: number;
+  commentId?: number;
 }
 
 const OptionButton = ({
@@ -89,13 +99,21 @@ const OptionButton = ({
   onClick,
   href,
   postId,
+  commentId,
 }: OptionButtonProps) => {
   const router = useRouter();
   return (
     <button
       className="flex flex-row items-center gap-2 p-2 rounded-md"
       onClick={
-        onClick ? onClick : href ? () => router.push(href(postId)) : undefined
+        onClick
+          ? onClick
+          : href
+          ? () =>
+              router.push(
+                commentId ? href({ postId, commentId }) : href({ postId })
+              )
+          : undefined
       }
     >
       <Icon size={16} aria-label={label} />

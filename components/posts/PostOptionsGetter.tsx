@@ -9,15 +9,17 @@ import {
 } from "@/constants";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import {
+  useDeletePostMutation,
   useHidePostMutation,
   useSavePostMutation,
   useUnsavePostMutation,
 } from "@/generated/graphql";
 import { useToast } from "@/hooks/use-toast";
-import PostOptionsUI from "./PostOptionsUI";
+import OptionsUI from "./OptionsUI";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { toggleSavePost } from "@/lib/features/savedPostsSlice";
+import { useRouter } from "next/navigation";
 
 interface Props {
   authorId: number;
@@ -126,13 +128,37 @@ const PostOptionsGetter = ({ authorId, postId }: Props) => {
     }
   };
 
+  const router = useRouter();
+  const [deletePostMutation] = useDeletePostMutation();
+
+  const handleDeletePost = async () => {
+    const { data } = await deletePostMutation({
+      variables: {
+        id: postId,
+      },
+      refetchQueries: ["GetAllPosts", "GetPostById"],
+    });
+    if (data?.deletePost.success) {
+      toast({
+        title: "Post deleted successfully!",
+      });
+      router.push("/");
+    } else if (data?.deletePost.errors) {
+      toast({
+        title: "Error deleting post",
+        description: data.deletePost.errors[0].message,
+        variant: "destructive",
+      });
+    }
+  };
   return (
-    <PostOptionsUI
+    <OptionsUI
       options={options}
       postId={postId}
-      handleHidePost={handleHidePost}
-      handleSavePost={handleSavePost}
-      handleUnsavePost={handleUnsavePost}
+      handleHide={handleHidePost}
+      handleSave={handleSavePost}
+      handleUnsave={handleUnsavePost}
+      handleDelete={handleDeletePost}
       isSaved={isSaved}
     />
   );
