@@ -1,38 +1,17 @@
 "use client";
-import React, { useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useCurrentPage } from "@/hooks/use-current-page";
-import { Button } from "../ui/button";
-import { ChevronDown as DropdownIcon } from "lucide-react";
-import { SortOptions } from "@/types";
-import { usePathname, useRouter } from "next/navigation";
 import { sortingOptions } from "@/constants";
+import { useSort } from "@/hooks/use-sort";
+import { ChevronDown as DropdownIcon } from "lucide-react";
+import { Button } from "../ui/button";
 
 const SortBy = () => {
-  const { createQueryString, searchParams } = useCurrentPage();
-  const pathname = usePathname();
-  const router = useRouter();
-  const [sortBy, setSortBy] = React.useState<SortOptions>(
-    (searchParams.get("sortBy") as SortOptions) ||
-      (localStorage.getItem("sortBy") as SortOptions) ||
-      "Best"
-  );
-
-  function handleSortByChange(sortBy: SortOptions) {
-    setSortBy(sortBy);
-    localStorage.setItem("sortBy", sortBy);
-  }
-
-  useEffect(() => {
-    const queryString = createQueryString("sortBy", sortBy);
-    const newUrl = `${pathname}?${queryString}`;
-    router.push(newUrl);
-  }, [sortBy, createQueryString, router, pathname]);
+  const { handleSortByChange, sortBy } = useSort();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

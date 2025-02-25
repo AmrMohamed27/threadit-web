@@ -59,7 +59,12 @@ const PostOptionsGetter = ({ authorId, postId }: Props) => {
         variables: {
           postId,
         },
-        refetchQueries: ["GetAllPosts", "GetPostById", "GetHiddenPosts"],
+        refetchQueries: [
+          "GetAllPosts",
+          "GetPostById",
+          "GetHiddenPosts",
+          "GetUserCommunityPosts",
+        ],
       });
       if (data?.hidePost?.success) {
         toast({ title: "Post hidden successfully!" });
@@ -81,6 +86,7 @@ const PostOptionsGetter = ({ authorId, postId }: Props) => {
         variables: { postId },
         refetchQueries: [
           "GetAllPosts",
+          "GetUserCommunityPosts",
           "GetPostById",
           "GetSavedPosts",
           "GetSavedPostsIds",
@@ -108,6 +114,7 @@ const PostOptionsGetter = ({ authorId, postId }: Props) => {
         variables: { postId },
         refetchQueries: [
           "GetAllPosts",
+          "GetUserCommunityPosts",
           "GetPostById",
           "GetSavedPosts",
           "GetSavedPostsIds",
@@ -136,7 +143,7 @@ const PostOptionsGetter = ({ authorId, postId }: Props) => {
       variables: {
         id: postId,
       },
-      refetchQueries: ["GetAllPosts", "GetPostById"],
+      refetchQueries: ["GetAllPosts", "GetUserCommunityPosts", "GetPostById"],
     });
     if (data?.deletePost.success) {
       toast({

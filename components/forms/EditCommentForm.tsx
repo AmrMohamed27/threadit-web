@@ -43,6 +43,7 @@ const EditCommentForm = ({ comment }: Props) => {
         "GetComment",
         "GetPostComments",
         "GetAllPosts",
+        "GetUserCommunityPosts",
         "GetPostById",
       ],
     });

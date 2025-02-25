@@ -41,6 +41,7 @@ const CommentForm = ({ postId, parentCommentId, hideForm }: Props) => {
       },
       refetchQueries: [
         "GetAllPosts",
+        "GetUserCommunityPosts",
         "GetPostById",
         "GetCommentById",
         "GetSavedPosts",

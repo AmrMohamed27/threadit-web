@@ -41,7 +41,7 @@ const CreatePostForm = ({ communities }: Props) => {
           communityId,
         },
       },
-      refetchQueries: ["GetAllPosts"],
+      refetchQueries: ["GetAllPosts", "GetUserCommunityPosts"],
     });
     const post = data?.createPost.post;
     if (post) {

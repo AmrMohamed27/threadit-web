@@ -69,7 +69,13 @@ const Votes = ({ upvotesCount, isUpvoted, postId, commentId }: Props) => {
           commentId,
         },
       },
-      refetchQueries: ["GetPostById", "GetAllPosts", "GetPostComments", "GetCommentById"],
+      refetchQueries: [
+        "GetPostById",
+        "GetAllPosts",
+        "GetUserCommunityPosts",
+        "GetPostComments",
+        "GetCommentById",
+      ],
     });
   };
   return (

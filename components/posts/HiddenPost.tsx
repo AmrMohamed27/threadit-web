@@ -15,7 +15,12 @@ const HiddenPost = ({ postId }: Props) => {
         variables: {
           postId: postId,
         },
-        refetchQueries: ["GetHiddenPosts", "GetAllPosts", "GetPostById"],
+        refetchQueries: [
+          "GetHiddenPosts",
+          "GetAllPosts",
+          "GetPostById",
+          "GetUserCommunityPosts",
+        ],
       });
       if (!data?.unhidePost?.success) {
         console.error(

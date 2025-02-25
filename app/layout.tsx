@@ -8,6 +8,8 @@ import { Toaster } from "@/components/ui/toaster";
 import ConfirmAlert from "@/components/common/ConfirmAlert";
 import ReduxProvider from "@/components/providers/redux-provider";
 import ReduxContextProvider from "@/components/providers/redux-context-provider";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/common/app-sidebar";
 
 const funnel_display = Funnel_Display({ subsets: ["latin"] });
 
@@ -33,12 +35,16 @@ export default function RootLayout({
           <ApolloProvider>
             <ReduxProvider>
               <ReduxContextProvider>
-                <div className="flex flex-col min-h-screen">
-                  <ConfirmAlert />
-                  <Navbar />
-                  <main className="flex-grow">{children}</main>
-                  <Toaster />
-                </div>
+                <SidebarProvider>
+                  <AppSidebar />
+                  <SidebarTrigger />
+                  <div className="flex flex-col flex-1 w-full min-h-screen">
+                    <ConfirmAlert />
+                    <Navbar />
+                    <main className="flex-grow">{children}</main>
+                    <Toaster />
+                  </div>
+                </SidebarProvider>
               </ReduxContextProvider>
             </ReduxProvider>
           </ApolloProvider>

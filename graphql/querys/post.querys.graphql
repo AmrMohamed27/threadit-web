@@ -4,6 +4,11 @@ query GetAllPosts($options: GetAllPostsInput!) {
   }
 }
 
+query GetUserCommunityPosts($options: GetUserCommunityPostsInput!) {
+  getUserCommunityPosts(options: $options) {
+    ...FullPostResponse
+  }}
+
 query GetPostById($id: Int!) {
   getPost(id: $id) {
     ...FullSinglePostResponse

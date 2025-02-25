@@ -33,6 +33,7 @@ const NavbarLoggedIn = ({ user }: Props) => {
       refetchQueries: [
         "Me",
         "GetAllPosts",
+        "GetUserCommunityPosts",
         "GetPostById",
         "GetSavedPosts",
         "GetSavedPostsIds",

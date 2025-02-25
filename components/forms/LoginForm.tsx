@@ -39,6 +39,7 @@ const LoginForm = () => {
       refetchQueries: [
         "Me",
         "GetAllPosts",
+        "GetUserCommunityPosts",
         "GetPostById",
         "GetSavedPosts",
         "GetSavedPostsIds",

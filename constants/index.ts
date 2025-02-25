@@ -1,3 +1,4 @@
+import { Community } from "@/generated/graphql";
 import { CommentOptions, PostOptions, SortingObjects } from "@/types";
 import {
   Bookmark as SaveIcon,
@@ -11,6 +12,11 @@ import {
   ClockArrowDown as OldIcon,
   ClockArrowUp as NewIcon,
   SquareArrowUp as TopIcon,
+  Home as HomeIcon,
+  Flame as PopularIcon,
+  Globe as AllIcon,
+  PlusIcon,
+  Book as AboutIcon,
 } from "lucide-react";
 
 export const POSTS_PER_PAGE = 5;
@@ -103,3 +109,53 @@ export const sortingOptions: SortingObjects[] = [
   { id: 4, option: "Top", icon: TopIcon },
   { id: 5, option: "Old", icon: OldIcon },
 ];
+
+export const sidebarHeader = [
+  { id: 1, title: "Home", href: "/", icon: HomeIcon },
+  { id: 2, title: "Popular", href: "/popular", icon: PopularIcon },
+  { id: 3, title: "All", href: "/all", icon: AllIcon },
+] as const;
+
+export const sidebarCollapsibles = [
+  {
+    id: 1,
+    title: "Communities",
+    children: [
+      {
+        id: 10,
+        title: "Create a community",
+        href: "/c/create",
+        icon: PlusIcon,
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: "Resources",
+    children: [
+      { id: 20, title: "About Threadit", href: "/about", icon: AboutIcon },
+    ],
+  },
+] as const;
+
+export const sidebarCommunitiesCollapsible = (communities: Community[]) =>
+  [
+    {
+      id: 1,
+      name: "Create a community",
+      href: "/c/create",
+      icon: PlusIcon,
+    },
+    communities.map(({ id, name, image }) => ({
+      id,
+      name,
+      image,
+      href: `/c/${name}`,
+    })),
+  ] as const;
+
+export const sidebarResourcesCollapsible = [
+  { id: 1, title: "About Threadit", href: "/about", icon: AboutIcon },
+] as const;
+
+export const sidebarCollapsiblesMap = [] as const;

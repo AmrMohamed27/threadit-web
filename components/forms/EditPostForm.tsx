@@ -45,7 +45,7 @@ const EditPostForm = ({ post }: Props) => {
           id: postId,
         },
       },
-      refetchQueries: ["GetPostById", "GetAllPosts"],
+      refetchQueries: ["GetPostById", "GetAllPosts", "GetUserCommunityPosts"],
     });
   }
 

@@ -39,6 +39,7 @@ const CommentOptionsGetter = ({ authorId, commentId, postId }: Props) => {
       },
       refetchQueries: [
         "GetAllPosts",
+        "GetUserCommunityPosts",
         "GetPostById",
         "GetPostComments",
         "GetComment",
