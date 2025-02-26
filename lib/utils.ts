@@ -66,6 +66,16 @@ export function timeAgo(timestamp: string): string {
   return "just now";
 }
 
+export function formatDate(timestamp: string): string {
+  const date = new Date(parseInt(timestamp));
+
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+}
+
 export function copyLinkToClipboard(link: string, then: () => void): void {
   navigator.clipboard
     .writeText(link)

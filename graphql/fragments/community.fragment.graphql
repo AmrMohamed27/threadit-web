@@ -8,14 +8,9 @@ fragment FullCommunity on Community {
   creatorId
   postsCount
   membersCount
+  isJoined
   creator {
-    id
-    name
-    email
-    createdAt
-    updatedAt
-    image
-    confirmed
+    ...FullUser
   }
 }
 

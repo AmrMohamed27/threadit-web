@@ -41,7 +41,7 @@ const RegisterForm = () => {
           password,
         },
       },
-      refetchQueries: ["Me"],
+      refetchQueries: "all",
     });
     // Handle graphql errors
     if (registerError) {

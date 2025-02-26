@@ -29,11 +29,8 @@ const ChooseCommunity = ({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="grey"
-          className="flex items-center gap-2 py-4 max-w-[150px] text-sm"
-        >
+      <DropdownMenuTrigger asChild className="w-auto">
+        <Button variant="grey" className="flex items-center gap-2 py-4 text-sm">
           {selectedCommunity ? (
             <>
               <AvatarWrapper

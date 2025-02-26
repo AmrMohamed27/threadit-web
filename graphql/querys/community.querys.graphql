@@ -7,4 +7,11 @@ query GetAllCommunities {
 query GetUserCommunities {
   getUserCommunities {
     ...FullCommunityArrayResponse
-  }}
+  }
+}
+
+query GetCommunityByName($name: String!) {
+  getCommunityByName(name: $name) {
+    ...FullCommunityResponse
+  }
+}

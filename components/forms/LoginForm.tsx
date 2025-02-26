@@ -36,14 +36,7 @@ const LoginForm = () => {
           password,
         },
       },
-      refetchQueries: [
-        "Me",
-        "GetAllPosts",
-        "GetUserCommunityPosts",
-        "GetPostById",
-        "GetSavedPosts",
-        "GetSavedPostsIds",
-      ],
+      refetchQueries: "all",
     });
   }
   // Show password state

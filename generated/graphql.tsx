@@ -47,12 +47,14 @@ export type CommentResponse = {
 
 export type Community = {
   __typename?: 'Community';
+  cover?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['String']['output'];
   creator?: Maybe<User>;
   creatorId: Scalars['Int']['output'];
   description: Scalars['String']['output'];
   id: Scalars['Int']['output'];
   image?: Maybe<Scalars['String']['output']>;
+  isJoined?: Maybe<Scalars['Boolean']['output']>;
   membersCount?: Maybe<Scalars['Int']['output']>;
   name: Scalars['String']['output'];
   postsCount?: Maybe<Scalars['Int']['output']>;
@@ -112,6 +114,13 @@ export type GetAllPostsInput = {
 export type GetCommentByIdInput = {
   commentId: Scalars['Int']['input'];
   postId?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type GetCommunityPostsInput = {
+  communityId: Scalars['Float']['input'];
+  limit: Scalars['Float']['input'];
+  page: Scalars['Float']['input'];
+  sortBy?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type GetPostCommentsInput = {
@@ -328,11 +337,12 @@ export type Query = {
   getAllPosts: PostResponse;
   getComment: CommentResponse;
   getCommentVotes: VoteResponse;
+  getCommunityByName: CommunityResponse;
+  getCommunityPosts: PostResponse;
   getHiddenPosts: Array<Scalars['Float']['output']>;
   getPost: PostResponse;
   getPostComments: CommentResponse;
   getPostVotes: VoteResponse;
-  getPostsCount: Scalars['Int']['output'];
   getSavedPosts: PostResponse;
   getSavedPostsIds: Array<Scalars['Float']['output']>;
   getUserById: UserResponse;
@@ -363,6 +373,16 @@ export type QueryGetCommentArgs = {
 
 export type QueryGetCommentVotesArgs = {
   commentId: Scalars['Int']['input'];
+};
+
+
+export type QueryGetCommunityByNameArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type QueryGetCommunityPostsArgs = {
+  options: GetCommunityPostsInput;
 };
 
 
@@ -494,19 +514,19 @@ export type FullCommentResponseFragment = { __typename?: 'CommentResponse', comm
 
 export type FullCommentArrayResponseFragment = { __typename?: 'CommentResponse', count?: number | null, commentsArray?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, replies?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, replies?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, replies?: Array<{ __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
-export type FullCommunityFragment = { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null };
+export type FullCommunityFragment = { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null };
 
-export type FullCommunityResponseFragment = { __typename?: 'CommunityResponse', count?: number | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
+export type FullCommunityResponseFragment = { __typename?: 'CommunityResponse', count?: number | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
-export type FullCommunityArrayResponseFragment = { __typename?: 'CommunityResponse', count?: number | null, communitiesArray?: Array<{ __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
+export type FullCommunityArrayResponseFragment = { __typename?: 'CommunityResponse', count?: number | null, communitiesArray?: Array<{ __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
 export type FullErrorFieldFragment = { __typename?: 'FieldError', field: string, message: string };
 
 export type FullPostFragment = { __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number };
 
-export type FullPostResponseFragment = { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
+export type FullPostResponseFragment = { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
-export type FullSinglePostResponseFragment = { __typename?: 'PostResponse', post?: { __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
+export type FullSinglePostResponseFragment = { __typename?: 'PostResponse', post?: { __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
 export type FullUserFragment = { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean };
 
@@ -540,7 +560,7 @@ export type CreateCommunityMutationVariables = Exact<{
 }>;
 
 
-export type CreateCommunityMutation = { __typename?: 'Mutation', createCommunity: { __typename?: 'CommunityResponse', count?: number | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type CreateCommunityMutation = { __typename?: 'Mutation', createCommunity: { __typename?: 'CommunityResponse', count?: number | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type JoinCommunityMutationVariables = Exact<{
   options: JoinCommunityInput;
@@ -700,12 +720,19 @@ export type GetPostCommentsQuery = { __typename?: 'Query', getPostComments: { __
 export type GetAllCommunitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllCommunitiesQuery = { __typename?: 'Query', getAllCommunities: { __typename?: 'CommunityResponse', count?: number | null, communitiesArray?: Array<{ __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetAllCommunitiesQuery = { __typename?: 'Query', getAllCommunities: { __typename?: 'CommunityResponse', count?: number | null, communitiesArray?: Array<{ __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetUserCommunitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserCommunitiesQuery = { __typename?: 'Query', getUserCommunities: { __typename?: 'CommunityResponse', count?: number | null, communitiesArray?: Array<{ __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetUserCommunitiesQuery = { __typename?: 'Query', getUserCommunities: { __typename?: 'CommunityResponse', count?: number | null, communitiesArray?: Array<{ __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type GetCommunityByNameQueryVariables = Exact<{
+  name: Scalars['String']['input'];
+}>;
+
+
+export type GetCommunityByNameQuery = { __typename?: 'Query', getCommunityByName: { __typename?: 'CommunityResponse', count?: number | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetHiddenPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -717,21 +744,21 @@ export type GetAllPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllPostsQuery = { __typename?: 'Query', getAllPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetAllPostsQuery = { __typename?: 'Query', getAllPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetUserCommunityPostsQueryVariables = Exact<{
   options: GetUserCommunityPostsInput;
 }>;
 
 
-export type GetUserCommunityPostsQuery = { __typename?: 'Query', getUserCommunityPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetUserCommunityPostsQuery = { __typename?: 'Query', getUserCommunityPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetPostByIdQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type GetPostByIdQuery = { __typename?: 'Query', getPost: { __typename?: 'PostResponse', post?: { __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetPostByIdQuery = { __typename?: 'Query', getPost: { __typename?: 'PostResponse', post?: { __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetPostVotesQueryVariables = Exact<{
   postId: Scalars['Int']['input'];
@@ -745,7 +772,7 @@ export type GetUserPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetUserPostsQuery = { __typename?: 'Query', getUserPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetUserPostsQuery = { __typename?: 'Query', getUserPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetUserVotedPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -757,7 +784,14 @@ export type SearchPostsQueryVariables = Exact<{
 }>;
 
 
-export type SearchPostsQuery = { __typename?: 'Query', searchPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type SearchPostsQuery = { __typename?: 'Query', searchPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type GetCommunityPostsQueryVariables = Exact<{
+  options: GetCommunityPostsInput;
+}>;
+
+
+export type GetCommunityPostsQuery = { __typename?: 'Query', getCommunityPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetSavedPostsIdsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -769,7 +803,7 @@ export type GetSavedPostsQueryVariables = Exact<{
 }>;
 
 
-export type GetSavedPostsQuery = { __typename?: 'Query', getSavedPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetSavedPostsQuery = { __typename?: 'Query', getSavedPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, createdAt: string, updatedAt: string, image?: string | null, confirmed: boolean } | null } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -867,6 +901,7 @@ export const FullCommunityFragmentDoc = gql`
   creatorId
   postsCount
   membersCount
+  isJoined
   creator {
     id
     name
@@ -2049,6 +2084,46 @@ export type GetUserCommunitiesQueryHookResult = ReturnType<typeof useGetUserComm
 export type GetUserCommunitiesLazyQueryHookResult = ReturnType<typeof useGetUserCommunitiesLazyQuery>;
 export type GetUserCommunitiesSuspenseQueryHookResult = ReturnType<typeof useGetUserCommunitiesSuspenseQuery>;
 export type GetUserCommunitiesQueryResult = Apollo.QueryResult<GetUserCommunitiesQuery, GetUserCommunitiesQueryVariables>;
+export const GetCommunityByNameDocument = gql`
+    query GetCommunityByName($name: String!) {
+  getCommunityByName(name: $name) {
+    ...FullCommunityResponse
+  }
+}
+    ${FullCommunityResponseFragmentDoc}`;
+
+/**
+ * __useGetCommunityByNameQuery__
+ *
+ * To run a query within a React component, call `useGetCommunityByNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCommunityByNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCommunityByNameQuery({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useGetCommunityByNameQuery(baseOptions: Apollo.QueryHookOptions<GetCommunityByNameQuery, GetCommunityByNameQueryVariables> & ({ variables: GetCommunityByNameQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCommunityByNameQuery, GetCommunityByNameQueryVariables>(GetCommunityByNameDocument, options);
+      }
+export function useGetCommunityByNameLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCommunityByNameQuery, GetCommunityByNameQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCommunityByNameQuery, GetCommunityByNameQueryVariables>(GetCommunityByNameDocument, options);
+        }
+export function useGetCommunityByNameSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetCommunityByNameQuery, GetCommunityByNameQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCommunityByNameQuery, GetCommunityByNameQueryVariables>(GetCommunityByNameDocument, options);
+        }
+export type GetCommunityByNameQueryHookResult = ReturnType<typeof useGetCommunityByNameQuery>;
+export type GetCommunityByNameLazyQueryHookResult = ReturnType<typeof useGetCommunityByNameLazyQuery>;
+export type GetCommunityByNameSuspenseQueryHookResult = ReturnType<typeof useGetCommunityByNameSuspenseQuery>;
+export type GetCommunityByNameQueryResult = Apollo.QueryResult<GetCommunityByNameQuery, GetCommunityByNameQueryVariables>;
 export const GetHiddenPostsDocument = gql`
     query GetHiddenPosts {
   getHiddenPosts
@@ -2377,6 +2452,46 @@ export type SearchPostsQueryHookResult = ReturnType<typeof useSearchPostsQuery>;
 export type SearchPostsLazyQueryHookResult = ReturnType<typeof useSearchPostsLazyQuery>;
 export type SearchPostsSuspenseQueryHookResult = ReturnType<typeof useSearchPostsSuspenseQuery>;
 export type SearchPostsQueryResult = Apollo.QueryResult<SearchPostsQuery, SearchPostsQueryVariables>;
+export const GetCommunityPostsDocument = gql`
+    query GetCommunityPosts($options: GetCommunityPostsInput!) {
+  getCommunityPosts(options: $options) {
+    ...FullPostResponse
+  }
+}
+    ${FullPostResponseFragmentDoc}`;
+
+/**
+ * __useGetCommunityPostsQuery__
+ *
+ * To run a query within a React component, call `useGetCommunityPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCommunityPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCommunityPostsQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useGetCommunityPostsQuery(baseOptions: Apollo.QueryHookOptions<GetCommunityPostsQuery, GetCommunityPostsQueryVariables> & ({ variables: GetCommunityPostsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCommunityPostsQuery, GetCommunityPostsQueryVariables>(GetCommunityPostsDocument, options);
+      }
+export function useGetCommunityPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCommunityPostsQuery, GetCommunityPostsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCommunityPostsQuery, GetCommunityPostsQueryVariables>(GetCommunityPostsDocument, options);
+        }
+export function useGetCommunityPostsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetCommunityPostsQuery, GetCommunityPostsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCommunityPostsQuery, GetCommunityPostsQueryVariables>(GetCommunityPostsDocument, options);
+        }
+export type GetCommunityPostsQueryHookResult = ReturnType<typeof useGetCommunityPostsQuery>;
+export type GetCommunityPostsLazyQueryHookResult = ReturnType<typeof useGetCommunityPostsLazyQuery>;
+export type GetCommunityPostsSuspenseQueryHookResult = ReturnType<typeof useGetCommunityPostsSuspenseQuery>;
+export type GetCommunityPostsQueryResult = Apollo.QueryResult<GetCommunityPostsQuery, GetCommunityPostsQueryVariables>;
 export const GetSavedPostsIdsDocument = gql`
     query GetSavedPostsIds {
   getSavedPostsIds

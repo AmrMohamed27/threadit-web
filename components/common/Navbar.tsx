@@ -5,7 +5,7 @@ import SearchBar from "./SearchBar";
 
 export default function Navbar() {
   return (
-    <nav className="border-b">
+    <nav className="px-4 border-b">
       <div className="flex justify-between items-center gap-8 mx-auto max-sm:px-4 h-16 container">
         <NavbarLogo />
         <SearchBar hasPagination />

@@ -16,6 +16,8 @@ export const useCurrentPage = () => {
   const searchTerm = searchParams.has("q")
     ? (searchParams.get("q") as string)
     : "";
+  const communityId = searchParams.get("communityId");
+
   const createQueryString = useCallback(
     (name: string, value: string) => {
       return createQueryStringFn(name, value, searchParams);
@@ -37,5 +39,6 @@ export const useCurrentPage = () => {
     pathname,
     sortBy,
     searchTerm,
+    communityId,
   };
 };

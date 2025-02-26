@@ -41,17 +41,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent className="gap-0 mt-12">
         <SidebarGroupContent>
+          {/* Header */}
           <SidebarMenu className="flex flex-col gap-2">
             {sidebarHeader.map(({ id, title, href, icon: Icon }) => (
               <SidebarMenuItem key={id}>
-                <SidebarMenuButton
-                  isActive={href === pathname}
-                  className="flex flex-row items-center gap-2 hover:bg-muted/20 px-6"
-                >
-                  <>
+                <SidebarMenuButton isActive={href === pathname} asChild>
+                  <Link
+                    href={href}
+                    className="flex flex-row items-center gap-2 hover:bg-muted/20 px-6"
+                  >
                     <Icon className="w-12 h-12" />
-                    <Link href={href}>{title}</Link>
-                  </>
+                    <span>{title}</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
@@ -92,24 +93,29 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         {title === "Create a community" && (
-                          <div>
-                            {communities.map(({ id, name, image }) => (
-                              <SidebarMenuItem key={id}>
-                                <SidebarMenuButton
-                                  isActive={href === pathname}
-                                  className="flex flex-row items-center gap-2 hover:bg-muted/20 p-4"
-                                >
-                                  <>
-                                    <AvatarWrapper
-                                      src={image ?? getDefaultAvatar({ name })}
-                                      alt={name}
-                                      className="w-6 h-6"
-                                    />
-                                    <Link href={href}>c/{name}</Link>
-                                  </>
-                                </SidebarMenuButton>
-                              </SidebarMenuItem>
-                            ))}
+                          <div className="flex flex-col gap-2">
+                            {communities.map(({ id, name, image }) => {
+                              const href = `/c/${name}`;
+                              return (
+                                <SidebarMenuItem key={id}>
+                                  <SidebarMenuButton
+                                    isActive={href === pathname}
+                                    className="flex flex-row items-center gap-2 hover:bg-muted/20 p-4"
+                                  >
+                                    <>
+                                      <AvatarWrapper
+                                        src={
+                                          image ?? getDefaultAvatar({ name })
+                                        }
+                                        alt={name}
+                                        className="w-6 h-6"
+                                      />
+                                      <Link href={href}>c/{name}</Link>
+                                    </>
+                                  </SidebarMenuButton>
+                                </SidebarMenuItem>
+                              );
+                            })}
                           </div>
                         )}
                       </div>

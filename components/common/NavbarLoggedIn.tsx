@@ -30,14 +30,7 @@ const NavbarLoggedIn = ({ user }: Props) => {
   const handleLogout = async () => {
     // perform the logout mutation on the server
     await logoutMutation({
-      refetchQueries: [
-        "Me",
-        "GetAllPosts",
-        "GetUserCommunityPosts",
-        "GetPostById",
-        "GetSavedPosts",
-        "GetSavedPostsIds",
-      ],
+      refetchQueries: "all",
     });
   };
   if (logoutError) console.error(logoutError);

@@ -11,6 +11,7 @@ import { z } from "zod";
 import { CreatePostErrorType } from "../../types";
 import InputField from "./InputField";
 import ChooseCommunity from "../communities/ChooseCommunity";
+import { useCurrentPage } from "@/hooks/use-current-page";
 
 interface Props {
   communities: Community[];
@@ -21,13 +22,18 @@ const CreatePostForm = ({ communities }: Props) => {
   const [createPostMutation, { loading }] = useCreatePostMutation();
   // Router
   const router = useRouter();
+  const { communityId: paramsCommunityId } = useCurrentPage();
   // 1. Define your form.
   const form = useForm<z.infer<typeof CreatePostSchema>>({
     resolver: zodResolver(CreatePostSchema),
     defaultValues: {
       title: "",
       content: "",
-      communityId: communities.length > 0 ? communities[0].id : undefined,
+      communityId: paramsCommunityId
+        ? parseInt(paramsCommunityId)
+        : communities.length > 0
+        ? communities[0].id
+        : undefined,
     },
   });
   // 2. Define a submit handler.
@@ -41,7 +47,12 @@ const CreatePostForm = ({ communities }: Props) => {
           communityId,
         },
       },
-      refetchQueries: ["GetAllPosts", "GetUserCommunityPosts"],
+      refetchQueries: [
+        "GetAllPosts",
+        "GetUserCommunityPosts",
+        "GetCommunityPosts",
+        "GetCommunityByName",
+      ],
     });
     const post = data?.createPost.post;
     if (post) {
