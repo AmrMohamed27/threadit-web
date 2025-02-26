@@ -353,6 +353,7 @@ export type Query = {
   getUserPosts: PostResponse;
   getUserVotedPosts: VotedPostsResponse;
   me: UserResponse;
+  searchCommunities: CommunityResponse;
   searchPosts: PostResponse;
 };
 
@@ -424,6 +425,11 @@ export type QueryGetUserCommunityPostsArgs = {
 
 export type QueryGetUserPostsArgs = {
   options: GetUserPostsInput;
+};
+
+
+export type QuerySearchCommunitiesArgs = {
+  options: GetSearchResultInput;
 };
 
 
@@ -746,6 +752,13 @@ export type GetExploreCommunitiesQueryVariables = Exact<{
 
 
 export type GetExploreCommunitiesQuery = { __typename?: 'Query', getExploreCommunities: { __typename?: 'CommunityResponse', count?: number | null, communitiesArray?: Array<{ __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type SearchCommunitiesQueryVariables = Exact<{
+  options: GetSearchResultInput;
+}>;
+
+
+export type SearchCommunitiesQuery = { __typename?: 'Query', searchCommunities: { __typename?: 'CommunityResponse', count?: number | null, communitiesArray?: Array<{ __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, creator?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetHiddenPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2171,6 +2184,46 @@ export type GetExploreCommunitiesQueryHookResult = ReturnType<typeof useGetExplo
 export type GetExploreCommunitiesLazyQueryHookResult = ReturnType<typeof useGetExploreCommunitiesLazyQuery>;
 export type GetExploreCommunitiesSuspenseQueryHookResult = ReturnType<typeof useGetExploreCommunitiesSuspenseQuery>;
 export type GetExploreCommunitiesQueryResult = Apollo.QueryResult<GetExploreCommunitiesQuery, GetExploreCommunitiesQueryVariables>;
+export const SearchCommunitiesDocument = gql`
+    query SearchCommunities($options: GetSearchResultInput!) {
+  searchCommunities(options: $options) {
+    ...FullCommunityArrayResponse
+  }
+}
+    ${FullCommunityArrayResponseFragmentDoc}`;
+
+/**
+ * __useSearchCommunitiesQuery__
+ *
+ * To run a query within a React component, call `useSearchCommunitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchCommunitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchCommunitiesQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useSearchCommunitiesQuery(baseOptions: Apollo.QueryHookOptions<SearchCommunitiesQuery, SearchCommunitiesQueryVariables> & ({ variables: SearchCommunitiesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchCommunitiesQuery, SearchCommunitiesQueryVariables>(SearchCommunitiesDocument, options);
+      }
+export function useSearchCommunitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchCommunitiesQuery, SearchCommunitiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchCommunitiesQuery, SearchCommunitiesQueryVariables>(SearchCommunitiesDocument, options);
+        }
+export function useSearchCommunitiesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SearchCommunitiesQuery, SearchCommunitiesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SearchCommunitiesQuery, SearchCommunitiesQueryVariables>(SearchCommunitiesDocument, options);
+        }
+export type SearchCommunitiesQueryHookResult = ReturnType<typeof useSearchCommunitiesQuery>;
+export type SearchCommunitiesLazyQueryHookResult = ReturnType<typeof useSearchCommunitiesLazyQuery>;
+export type SearchCommunitiesSuspenseQueryHookResult = ReturnType<typeof useSearchCommunitiesSuspenseQuery>;
+export type SearchCommunitiesQueryResult = Apollo.QueryResult<SearchCommunitiesQuery, SearchCommunitiesQueryVariables>;
 export const GetHiddenPostsDocument = gql`
     query GetHiddenPosts {
   getHiddenPosts

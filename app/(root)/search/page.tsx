@@ -5,7 +5,7 @@ import { useSearchPostsQuery } from "@/generated/graphql";
 import { useCurrentPage } from "@/hooks/use-current-page";
 import React from "react";
 
-export const SearchPage = () => {
+const SearchPage = () => {
   const { currentPage, searchTerm } = useCurrentPage();
   const { data, loading, error } = useSearchPostsQuery({
     variables: {

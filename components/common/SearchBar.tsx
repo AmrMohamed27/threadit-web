@@ -49,6 +49,7 @@ const SearchBar = ({
     [searchParams]
   );
   const searchURL =
+    (searchTerm.startsWith("c/") ? "/c" : "") +
     origin +
     "?" +
     createMultipleQueryStrings(

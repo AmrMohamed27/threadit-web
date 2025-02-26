@@ -21,3 +21,9 @@ query GetExploreCommunities($limit: Float!) {
     ...FullCommunityArrayResponse
   }
 }
+
+query SearchCommunities($options: GetSearchResultInput!) {
+  searchCommunities(options: $options) {
+    ...FullCommunityArrayResponse
+  }
+}
