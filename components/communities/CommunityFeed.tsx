@@ -28,6 +28,10 @@ const CommunityFeed = ({ community }: Props) => {
   if (error) return <div>{error.message}</div>;
   const posts = data?.getCommunityPosts.postsArray ?? [];
   const count = data?.getCommunityPosts.count ?? 0;
+  const errors = data?.getCommunityPosts.errors ?? [];
+  if (errors.length > 0) {
+    return <div className="w-full">{errors[0].message}</div>;
+  }
   return <PostsFeed posts={posts} count={count} hasPagination />;
 };
 

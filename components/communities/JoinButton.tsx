@@ -26,6 +26,7 @@ const JoinButton = (props: Props) => {
         "GetUserCommunityPosts",
         "GetCommunityByName",
         "GetExploreCommunities",
+        "GetCommunityPosts",
       ],
     });
     if (errors) {

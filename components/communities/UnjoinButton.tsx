@@ -20,6 +20,7 @@ const UnjoinButton = (props: Props) => {
       "GetUserCommunities",
       "GetUserCommunityPosts",
       "GetCommunityByName",
+      "GetCommunityPosts",
       "GetExploreCommunities",
     ],
   });

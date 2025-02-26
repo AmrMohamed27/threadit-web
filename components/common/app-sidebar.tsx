@@ -76,7 +76,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenu className="flex flex-col gap-2">
             {sidebarHeader.map(({ id, title, href, icon: Icon }) => (
               <SidebarMenuItem key={id}>
-                <SidebarMenuButton isActive={href === pathname} asChild>
+                <SidebarMenuButton
+                  isActive={href === pathname.replace("%20", " ")}
+                  asChild
+                >
                   <Link
                     href={href}
                     className="flex flex-row items-center gap-2 hover:bg-muted/20 px-6"
@@ -114,7 +117,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <div key={id} className="flex flex-col gap-2">
                         <SidebarMenuItem>
                           <SidebarMenuButton
-                            isActive={href === pathname}
+                            isActive={href === pathname.replace("%20", " ")}
                             className="flex flex-row items-center gap-2 hover:bg-muted/20 px-4"
                           >
                             <>
@@ -131,7 +134,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                               return (
                                 <SidebarMenuItem key={id}>
                                   <SidebarMenuButton
-                                    isActive={href === pathname}
+                                    isActive={
+                                      href === pathname.replace("%20", " ")
+                                    }
                                     className="flex flex-row items-center gap-2 hover:bg-muted/20 p-4"
                                   >
                                     <>
@@ -156,7 +161,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       exploreCommunities.map(({ id, name, image }) => (
                         <SidebarMenuItem key={id}>
                           <SidebarMenuButton
-                            isActive={pathname === `/c/${name}`}
+                            isActive={
+                              pathname.replace("%20", " ") === `/c/${name}`
+                            }
                             className="flex flex-row items-center gap-2 hover:bg-muted/20 px-4"
                           >
                             <>

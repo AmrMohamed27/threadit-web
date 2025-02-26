@@ -6,6 +6,7 @@ import AvatarWrapper from "../common/AvatarWrapper";
 import ShareButton from "../common/ShareButton";
 import Votes from "../common/Votes";
 import PostOptionsGetter from "./PostOptionsGetter";
+import Link from "next/link";
 
 interface Props {
   post: Post;
@@ -51,9 +52,12 @@ const PostCard = ({ post }: Props) => {
             <div className="flex flex-col items-start gap-1">
               <div className="flex flex-row items-center gap-2">
                 {/* Community Name */}
-                <span className="font-semibold text-xs">
+                <Link
+                  className="font-semibold text-xs"
+                  href={`/c/${community?.name ?? ""}`}
+                >
                   {community?.name ?? "Community"}
-                </span>
+                </Link>
                 {/* Separator */}
                 <span className="text-muted-foreground text-xs">•</span>
                 {/* Date created */}

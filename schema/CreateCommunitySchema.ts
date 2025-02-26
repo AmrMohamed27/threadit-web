@@ -8,5 +8,7 @@ const CreateCommunitySchema = z.object({
   description: z
     .string()
     .min(5, { message: "Description must be at least 5 characters long" }),
+  isPrivate: z.boolean(),
 });
+
 export default CreateCommunitySchema;

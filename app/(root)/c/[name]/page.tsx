@@ -6,7 +6,7 @@ const CommunityPage = async ({
 }: {
   params: Promise<{ name: string }>;
 }) => {
-  const name = (await params).name;
+  const name = (await params).name.replace("%20", " ");
   return <CommunityGetter name={name} />;
 };
 
