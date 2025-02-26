@@ -23,6 +23,8 @@ export const POSTS_PER_PAGE = 5;
 
 export const MAX_REPLY_DEPTH = 3;
 
+export const EXPLORE_COMMUNITIES_COUNT = 4;
+
 // POSTS
 // Options for logged out users options dropdown
 export const loggedOutUserOptionsDropdown: PostOptions[] = [
@@ -119,7 +121,7 @@ export const sidebarHeader = [
 export const sidebarCollapsibles = [
   {
     id: 1,
-    title: "Communities",
+    title: "Your Communities",
     children: [
       {
         id: 10,
@@ -131,6 +133,11 @@ export const sidebarCollapsibles = [
   },
   {
     id: 2,
+    title: "Explore",
+    children: [],
+  },
+  {
+    id: 3,
     title: "Resources",
     children: [
       { id: 20, title: "About Threadit", href: "/about", icon: AboutIcon },

@@ -1,9 +1,8 @@
 "use client";
 
 import { useJoinCommunityMutation } from "@/generated/graphql";
-import { Button } from "../ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { Loader } from "lucide-react";
+import { Button } from "../ui/button";
 
 type Props = {
   communityId: number;
@@ -15,11 +14,8 @@ const JoinButton = (props: Props) => {
   // Get mutation
   const [JoinCommunityMutation, { loading }] = useJoinCommunityMutation();
 
-  // toast
-  const { toast } = useToast();
-
   const handleJoinCommunity = async () => {
-    const { data, errors } = await JoinCommunityMutation({
+    const { errors } = await JoinCommunityMutation({
       variables: {
         options: {
           communityId,
@@ -29,16 +25,11 @@ const JoinButton = (props: Props) => {
         "GetUserCommunities",
         "GetUserCommunityPosts",
         "GetCommunityByName",
+        "GetExploreCommunities",
       ],
     });
     if (errors) {
       console.error(errors);
-    }
-    if (data?.joinCommunity.success) {
-      toast({
-        title: "You have joined the community",
-        description: "You can now post in this community",
-      });
     }
   };
   return (

@@ -20,18 +20,49 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { sidebarCollapsibles, sidebarHeader } from "@/constants";
+import {
+  EXPLORE_COMMUNITIES_COUNT,
+  sidebarCollapsibles,
+  sidebarHeader,
+} from "@/constants";
 import { usePathname } from "next/navigation";
-import { useGetUserCommunitiesQuery } from "@/generated/graphql";
+import {
+  useGetExploreCommunitiesQuery,
+  useGetUserCommunitiesQuery,
+} from "@/generated/graphql";
 import AvatarWrapper from "./AvatarWrapper";
 import { getDefaultAvatar } from "@/lib/utils";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
-  const { data, loading, error } = useGetUserCommunitiesQuery();
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
-  const communities = data?.getUserCommunities.communitiesArray ?? [];
+  const {
+    data: userCommunities,
+    loading: userCommunitiesLoading,
+    error: userCommunitiesError,
+  } = useGetUserCommunitiesQuery();
+  const {
+    data: exploreCommunitiesResult,
+    loading: exploreLoading,
+    error: exploreError,
+  } = useGetExploreCommunitiesQuery({
+    variables: {
+      limit: EXPLORE_COMMUNITIES_COUNT,
+    },
+  });
+  if (userCommunitiesLoading || exploreLoading) return <div>Loading...</div>;
+  if (userCommunitiesError || exploreError)
+    return (
+      <div>
+        {userCommunitiesError?.message ??
+          exploreError?.message ??
+          "Error loading communities"}
+      </div>
+    );
+
+  const communities =
+    userCommunities?.getUserCommunities.communitiesArray ?? [];
+  const exploreCommunities =
+    exploreCommunitiesResult?.getExploreCommunities.communitiesArray ?? [];
   return (
     <Sidebar {...props} className="px-4">
       <SidebarHeader>
@@ -92,6 +123,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             </>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
+                        {/* Communities */}
                         {title === "Create a community" && (
                           <div className="flex flex-col gap-2">
                             {communities.map(({ id, name, image }) => {
@@ -120,6 +152,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         )}
                       </div>
                     ))}
+                    {title === "Explore" &&
+                      exploreCommunities.map(({ id, name, image }) => (
+                        <SidebarMenuItem key={id}>
+                          <SidebarMenuButton
+                            isActive={pathname === `/c/${name}`}
+                            className="flex flex-row items-center gap-2 hover:bg-muted/20 px-4"
+                          >
+                            <>
+                              <AvatarWrapper
+                                src={image ?? getDefaultAvatar({ name })}
+                                alt={name}
+                                className="w-6 h-6"
+                              />
+                              <Link href={`/c/${name}`}>c/{name}</Link>
+                            </>
+                          </SidebarMenuButton>{" "}
+                        </SidebarMenuItem>
+                      ))}
                   </SidebarMenu>
                 </SidebarGroupContent>
               </CollapsibleContent>

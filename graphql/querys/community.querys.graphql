@@ -15,3 +15,9 @@ query GetCommunityByName($name: String!) {
     ...FullCommunityResponse
   }
 }
+
+query GetExploreCommunities($limit: Float!) {
+  getExploreCommunities(limit: $limit) {
+    ...FullCommunityArrayResponse
+  }
+}

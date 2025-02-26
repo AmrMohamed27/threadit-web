@@ -1,8 +1,6 @@
 import { useLeaveCommunityMutation } from "@/generated/graphql";
-import { useToast } from "@/hooks/use-toast";
-import React from "react";
-import { Button } from "../ui/button";
 import { Loader } from "lucide-react";
+import { Button } from "../ui/button";
 
 type Props = {
   communityId: number;
@@ -22,22 +20,14 @@ const UnjoinButton = (props: Props) => {
       "GetUserCommunities",
       "GetUserCommunityPosts",
       "GetCommunityByName",
+      "GetExploreCommunities",
     ],
   });
 
-  // toast
-  const { toast } = useToast();
-
   const handleLeaveCommunity = async () => {
-    const { data, errors } = await leaveCommunityMutation();
+    const { errors } = await leaveCommunityMutation();
     if (errors) {
       console.error(errors);
-    }
-    if (data?.leaveCommunity.success) {
-      toast({
-        title: "You have left the community",
-        description: "You can not post in this community anymore",
-      });
     }
   };
   return (
