@@ -1,4 +1,5 @@
 "use client";
+import PostsFeedLoading from "@/components/loading/PostsFeedLoading";
 import PostsFeed from "@/components/posts/PostsFeed";
 import { POSTS_PER_PAGE } from "@/constants";
 import { useGetAllPostsQuery } from "@/generated/graphql";
@@ -27,7 +28,7 @@ const AllPostsPage = () => {
   return (
     <>
       {loading ? (
-        <div>Loading...</div>
+        <PostsFeedLoading hasPagination />
       ) : errors || !posts || !count ? (
         <div> {errors ? errors[0].message : "An error occurred"}</div>
       ) : error ? (

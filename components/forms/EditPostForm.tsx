@@ -1,16 +1,16 @@
 "use client";
-import React, { useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import InputField from "./InputField";
 import { Post, useUpdatePostMutation } from "@/generated/graphql";
+import EditPostSchema from "@/schema/EditPostSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { CreatePostErrorType } from "../../types";
-import CreatePostSchema from "@/schema/CreatePostSchema";
+import InputField from "./InputField";
+import { useEffect } from "react";
 
 interface Props {
   post: Post;
@@ -20,24 +20,23 @@ const EditPostForm = ({ post }: Props) => {
   // Destructure post
   const { id: postId, title, content } = post;
   // Define graphql mutation
-  const [
-    updatePostMutation,
-    { data: mutationResult, loading, error: mutationError },
-  ] = useUpdatePostMutation();
+  const [updatePostMutation, { data, loading, error }] =
+    useUpdatePostMutation();
+  console.log(data);
   // Router
   const router = useRouter();
   // 1. Define your form.
-  const form = useForm<z.infer<typeof CreatePostSchema>>({
-    resolver: zodResolver(CreatePostSchema),
+  const form = useForm<z.infer<typeof EditPostSchema>>({
+    resolver: zodResolver(EditPostSchema),
     defaultValues: {
       title,
       content,
     },
   });
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof CreatePostSchema>) {
+  async function onSubmit(values: z.infer<typeof EditPostSchema>) {
     const { title, content } = values;
-    await updatePostMutation({
+    const { data } = await updatePostMutation({
       variables: {
         options: {
           title,
@@ -45,27 +44,31 @@ const EditPostForm = ({ post }: Props) => {
           id: postId,
         },
       },
-      refetchQueries: ["GetPostById", "GetAllPosts", "GetUserCommunityPosts"],
+      refetchQueries: [
+        "GetPostById",
+        "GetAllPosts",
+        "GetUserCommunityPosts",
+        "GetCommunityPosts",
+      ],
     });
-  }
-
-  useEffect(() => {
-    if (mutationError) {
-      console.error(mutationError);
-    }
-    if (mutationResult?.updatePost.errors) {
-      for (const error of mutationResult.updatePost.errors) {
+    const success = data?.updatePost.success;
+    if (success) {
+      // Redirect to home page
+      router.push(`/posts/${postId}`);
+    } else if (data?.updatePost.errors) {
+      for (const error of data.updatePost.errors) {
         form.setError(error.field as CreatePostErrorType, {
           message: error.message,
         });
       }
     }
-    const success = mutationResult?.updatePost.success;
-    if (success) {
-      // Redirect to home page
-      router.push(`/posts/${postId}`);
+  }
+
+  useEffect(() => {
+    if (error) {
+      console.error(error);
     }
-  }, [mutationError, mutationResult, router, form, postId]);
+  }, [error]);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">

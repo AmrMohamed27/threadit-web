@@ -1,5 +1,6 @@
 "use client";
 import ProtectRoute from "@/components/auth/ProtectRoute";
+import PostsFeedLoading from "@/components/loading/PostsFeedLoading";
 import PostsFeed from "@/components/posts/PostsFeed";
 import { POSTS_PER_PAGE } from "@/constants";
 import { useGetSavedPostsQuery } from "@/generated/graphql";
@@ -18,7 +19,7 @@ const SavedPage = () => {
     },
   });
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <PostsFeedLoading hasPagination />;
   if (error) return <div>{error.message}</div>;
   if (data?.getSavedPosts.errors)
     return <div>{data?.getSavedPosts.errors[0].message}</div>;

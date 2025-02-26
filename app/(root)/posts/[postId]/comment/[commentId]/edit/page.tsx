@@ -8,12 +8,7 @@ const CommentEditPage = async ({
 }) => {
   const postId = parseInt((await params).postId);
   const commentId = parseInt((await params).commentId);
-  return (
-    <div className="flex flex-col items-start gap-8 w-full">
-      <h1 className="text-lg">Edit comment</h1>
-      <CommentGetter commentId={commentId} postId={postId} isEdit />
-    </div>
-  );
+  return <CommentGetter commentId={commentId} postId={postId} isEdit />;
 };
 
 export default CommentEditPage;

@@ -1,10 +1,11 @@
 "use client";
 import CreatePostForm from "@/components/forms/CreatePostForm";
+import FormLoading from "@/components/loading/FormLoading";
 import { useGetUserCommunitiesQuery } from "@/generated/graphql";
 
 const CreatePostPage = () => {
   const { data, loading, error } = useGetUserCommunitiesQuery();
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <FormLoading heading="Create post" />;
   if (error) return <div>{error.message}</div>;
   if (data?.getUserCommunities.errors)
     return (

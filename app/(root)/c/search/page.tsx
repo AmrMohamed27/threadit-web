@@ -1,5 +1,6 @@
 "use client";
 import CommunitySearchFeed from "@/components/communities/CommunitySearchFeed";
+import CommunitySearchFeedLoading from "@/components/loading/CommunitySearchFeedLoading";
 import { POSTS_PER_PAGE } from "@/constants";
 import { useSearchCommunitiesQuery } from "@/generated/graphql";
 import { useCurrentPage } from "@/hooks/use-current-page";
@@ -33,7 +34,7 @@ const SearchCommunityPage = () => {
         Search Results for {searchTerm} in Communities
       </h1>
       {loading ? (
-        <div>Loading...</div>
+        <CommunitySearchFeedLoading hasPagination />
       ) : errors || !communities || !count ? (
         <div> {errors ? errors[0].message : "An error occurred"}</div>
       ) : error ? (

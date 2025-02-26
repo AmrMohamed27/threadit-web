@@ -2,18 +2,17 @@
 import PostsFeedLoading from "@/components/loading/PostsFeedLoading";
 import PostsFeed from "@/components/posts/PostsFeed";
 import { POSTS_PER_PAGE } from "@/constants";
-import { useSearchPostsQuery } from "@/generated/graphql";
+import { useGetAllPostsQuery } from "@/generated/graphql";
 import { useCurrentPage } from "@/hooks/use-current-page";
-import React from "react";
 
-const SearchPage = () => {
-  const { currentPage, searchTerm } = useCurrentPage();
-  const { data, loading, error } = useSearchPostsQuery({
+const Sandbox = () => {
+  const { currentPage, sortBy } = useCurrentPage();
+  const { data, error } = useGetAllPostsQuery({
     variables: {
       options: {
         limit: POSTS_PER_PAGE,
         page: currentPage,
-        searchTerm,
+        sortBy,
       },
     },
   });
@@ -21,14 +20,13 @@ const SearchPage = () => {
     postsArray: posts,
     count,
     errors,
-  } = data?.searchPosts ?? {
+  } = data?.getAllPosts ?? {
     postsArray: [],
     count: 0,
   };
+  const loading = true;
   return (
     <>
-      {/* Heading */}
-      <h1 className="text-xl md:text-3xl">Search Results for {searchTerm}</h1>
       {loading ? (
         <PostsFeedLoading hasPagination />
       ) : errors || !posts || !count ? (
@@ -37,11 +35,11 @@ const SearchPage = () => {
         <div>Error: {error?.message ?? "An error occurred"}</div>
       ) : (
         <>
-          <PostsFeed posts={posts} count={count} hasPagination />
+          <PostsFeed posts={posts} count={count} hasPagination={true} />
         </>
       )}
     </>
   );
 };
 
-export default SearchPage;
+export default Sandbox;

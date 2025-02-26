@@ -32,6 +32,7 @@ import {
 } from "@/generated/graphql";
 import AvatarWrapper from "./AvatarWrapper";
 import { getDefaultAvatar } from "@/lib/utils";
+import SidebarLoading from "../loading/SidebarLoading";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
@@ -49,7 +50,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       limit: EXPLORE_COMMUNITIES_COUNT,
     },
   });
-  if (userCommunitiesLoading || exploreLoading) return <div>Loading...</div>;
+  if (userCommunitiesLoading || exploreLoading)
+    return <SidebarLoading />;
   if (userCommunitiesError || exploreError)
     return (
       <div>

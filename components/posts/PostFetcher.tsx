@@ -5,6 +5,7 @@ import { useCurrentPage } from "@/hooks/use-current-page";
 import { SortOptions } from "@/types";
 import PostsFeed from "./PostsFeed";
 import { useSort } from "@/hooks/use-sort";
+import PostsFeedLoading from "../loading/PostsFeedLoading";
 
 interface Props {
   passedSortBy?: SortOptions;
@@ -34,7 +35,7 @@ const PostFetcher = ({ passedSortBy }: Props) => {
   return (
     <>
       {loading ? (
-        <div>Loading...</div>
+        <PostsFeedLoading hasPagination />
       ) : errors || !posts || !count ? (
         <div> {errors ? errors[0].message : "An error occurred"}</div>
       ) : error ? (

@@ -56,7 +56,7 @@ const PostCard = ({ post }: Props) => {
                   className="font-semibold text-xs"
                   href={`/c/${community?.name ?? ""}`}
                 >
-                  {community?.name ?? "Community"}
+                  c/{community?.name ?? "Community"}
                 </Link>
                 {/* Separator */}
                 <span className="text-muted-foreground text-xs">•</span>
@@ -64,6 +64,12 @@ const PostCard = ({ post }: Props) => {
                 <span className="text-muted-foreground text-xs">
                   {timeAgo(createdAt)}
                 </span>
+                {/* Date Updated if updatedAt is different from createdAt */}
+                {updatedAt !== createdAt && (
+                  <span className="hidden md:block text-muted-foreground text-xs">
+                    (Last updated: {timeAgo(updatedAt)})
+                  </span>
+                )}
               </div>
               {/* Author Name */}
               <span className="text-muted-foreground text-xs">
@@ -71,12 +77,6 @@ const PostCard = ({ post }: Props) => {
               </span>
             </div>
           </div>
-          {/* Date Updated if updatedAt is different from createdAt */}
-          {updatedAt !== createdAt && (
-            <span className="hidden md:block text-muted-foreground text-xs">
-              (Last updated: {timeAgo(updatedAt)})
-            </span>
-          )}
         </div>
         {/* Options */}
         <PostOptionsGetter authorId={author?.id ?? 0} postId={postId} />

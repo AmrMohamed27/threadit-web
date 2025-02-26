@@ -6,6 +6,7 @@ import SearchBar from "../common/SearchBar";
 import { MAX_REPLY_DEPTH } from "@/constants";
 import CommentThread from "./CommentThread";
 import GoBackButton from "../common/GoBackButton";
+import CommentFeedLoading from "../loading/CommentFeedLoading";
 
 interface Props {
   postId: number;
@@ -23,7 +24,7 @@ const CommentsFeed = ({ postId }: Props) => {
     },
   });
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <CommentFeedLoading />;
   if (error) return <div>{error.message}</div>;
   const comments = data?.getPostComments.commentsArray ?? [];
   const count = data?.getPostComments.count ?? 0;

@@ -37,8 +37,8 @@ export default function RootLayout({
               <ReduxContextProvider>
                 <SidebarProvider>
                   <AppSidebar />
-                  <SidebarTrigger />
-                  <div className="flex flex-col flex-1 w-full min-h-screen">
+                  <div className="relative flex flex-col flex-1 w-full min-h-screen">
+                    <SidebarTrigger />
                     <ConfirmAlert />
                     <Navbar />
                     <main className="flex-grow">{children}</main>

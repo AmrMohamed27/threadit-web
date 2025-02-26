@@ -1,7 +1,7 @@
 import { POSTS_PER_PAGE } from "@/constants";
 import { Community, useGetCommunityPostsQuery } from "@/generated/graphql";
 import { useCurrentPage } from "@/hooks/use-current-page";
-import React from "react";
+import PostsFeedLoading from "../loading/PostsFeedLoading";
 import PostsFeed from "../posts/PostsFeed";
 
 type Props = {
@@ -24,7 +24,7 @@ const CommunityFeed = ({ community }: Props) => {
       },
     },
   });
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <PostsFeedLoading hasPagination />;
   if (error) return <div>{error.message}</div>;
   const posts = data?.getCommunityPosts.postsArray ?? [];
   const count = data?.getCommunityPosts.count ?? 0;

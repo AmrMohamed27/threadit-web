@@ -8,12 +8,7 @@ const EditPage = async ({
 }) => {
   const postId = (await params).postId;
   const id = parseInt(postId, 10);
-  return (
-    <div className="flex flex-col items-start gap-8 w-full">
-      <h1 className="text-lg">Edit post</h1>
-      <PostGetter postId={id} isEdit />
-    </div>
-  );
+  return <PostGetter postId={id} isEdit />;
 };
 
 export default EditPage;

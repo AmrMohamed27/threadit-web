@@ -10,6 +10,8 @@ import HiddenPost from "./HiddenPost";
 import CommentForm from "../forms/CommentForm";
 import CommentsFeed from "../comments/CommentsFeed";
 import CommentGetter from "../comments/CommentGetter";
+import PostsFeedLoading from "../loading/PostsFeedLoading";
+import FormLoading from "../loading/FormLoading";
 
 interface Props {
   postId: number;
@@ -26,7 +28,12 @@ const PostGetter = ({ postId, isEdit, commentId }: Props) => {
   const { data: hiddenPosts } = useGetHiddenPostsQuery();
 
   const hiddenSet = new Set(hiddenPosts?.getHiddenPosts || []);
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return isEdit ? (
+      <FormLoading heading="Edit post" />
+    ) : (
+      <PostsFeedLoading count={1} />
+    );
   if (data?.getPost.errors)
     return (
       <div>
@@ -45,7 +52,10 @@ const PostGetter = ({ postId, isEdit, commentId }: Props) => {
   }
   return isEdit ? (
     // Render Edit Post Form
-    <EditPostForm post={post} />
+    <div className="flex flex-col items-start gap-8 w-full">
+      <h1 className="text-lg">Edit post</h1>
+      <EditPostForm post={post} />
+    </div>
   ) : commentId ? (
     // Render single comment page
     <div className="flex flex-col gap-4 w-full">

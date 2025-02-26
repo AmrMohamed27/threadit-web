@@ -42,7 +42,7 @@ const CommentCard = ({ comment, depth = 0, maxDepth = 3 }: Props) => {
   const commentLink = `/posts/${comment.postId}/comment/${comment.id}`;
 
   return (
-    <div className="flex flex-col gap-2 p-4 border-muted border-l w-full">
+    <div className="relative flex flex-col gap-2 p-4 pl-8 border-muted border-l w-full">
       {/* Header */}
       <div className="flex flex-row justify-between items-center w-full">
         {/* Info */}

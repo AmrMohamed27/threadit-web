@@ -11,7 +11,12 @@ const NavbarActions = () => {
 
   // render skeleton for loading
   if (isUserLoading)
-    return <Skeleton className="rounded-full w-[40px] h-[40px]"></Skeleton>;
+    return (
+      <div className="flex flex-row items-center gap-8">
+        <Skeleton className="rounded-full w-[80px] h-[40px]"></Skeleton>
+        <Skeleton className="rounded-full w-[40px] h-[40px]"></Skeleton>
+      </div>
+    );
   // log errors
   if (userError) {
     console.error(userError);

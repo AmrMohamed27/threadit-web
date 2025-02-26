@@ -8,6 +8,7 @@ import { Bell as BellIcon, Plus as CreateIcon } from "lucide-react";
 import { Community } from "@/generated/graphql";
 import UnjoinButton from "./UnjoinButton";
 import JoinButton from "./JoinButton";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 type Props = {
   community: Community;
@@ -15,7 +16,9 @@ type Props = {
 
 const CommunityHeader = ({ community }: Props) => {
   // Destructure community
-  const { id, name, cover, image, membersCount, isJoined } = community;
+  const { id, name, cover, image, membersCount, isJoined, creatorId } =
+    community;
+  const { user } = useCurrentUser();
   return (
     <div className="relative flex flex-col gap-4 md:pb-12">
       {/* Cover Image */}
@@ -69,10 +72,14 @@ const CommunityHeader = ({ community }: Props) => {
             <BellIcon size={20} />
           </Button>
           {/* Toggle Joined Button */}
-          {isJoined ? (
-            <UnjoinButton communityId={id} />
+          {user && user.id !== creatorId ? (
+            isJoined ? (
+              <UnjoinButton communityId={id} />
+            ) : (
+              <JoinButton communityId={id} />
+            )
           ) : (
-            <JoinButton communityId={id} />
+            <></>
           )}
           {/* TODO: Options */}
         </div>

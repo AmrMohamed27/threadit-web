@@ -1,9 +1,12 @@
+"use client";
 import React from "react";
 import CommentThread from "./CommentThread";
 import { MAX_REPLY_DEPTH } from "@/constants";
 import { useGetCommentQuery } from "@/generated/graphql";
 import GoBackButton from "../common/GoBackButton";
 import EditCommentForm from "../forms/EditCommentForm";
+import FormLoading from "../loading/FormLoading";
+import CommentFeedLoading from "../loading/CommentFeedLoading";
 
 interface Props {
   commentId: number;
@@ -21,7 +24,12 @@ const CommentGetter = ({ commentId, postId, isEdit }: Props) => {
     },
   });
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return isEdit ? (
+      <FormLoading heading="Edit comment" />
+    ) : (
+      <CommentFeedLoading />
+    );
   if (error) return <div>{error.message}</div>;
   if (data?.getComment.errors)
     return <div>{data?.getComment.errors[0].message}</div>;
@@ -31,7 +39,10 @@ const CommentGetter = ({ commentId, postId, isEdit }: Props) => {
   const comment = comments[0];
 
   return isEdit ? (
-    <EditCommentForm comment={comment} />
+    <div className="flex flex-col items-start gap-8 w-full">
+      <h1 className="text-lg">Edit comment</h1>
+      <EditCommentForm comment={comment} />
+    </div>
   ) : (
     <div className="flex flex-col gap-4 w-full">
       <div className="max-w-[90px]">

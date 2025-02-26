@@ -464,9 +464,9 @@ export type UpdateCommunityInput = {
 };
 
 export type UpdatePostInput = {
-  content?: InputMaybe<Scalars['String']['input']>;
+  content: Scalars['String']['input'];
   id: Scalars['Float']['input'];
-  title?: InputMaybe<Scalars['String']['input']>;
+  title: Scalars['String']['input'];
 };
 
 export type UpdateVoteInput = {
