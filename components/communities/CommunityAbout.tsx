@@ -1,6 +1,10 @@
 import { Community } from "@/generated/graphql";
 import { formatDate, getDefaultAvatar, timeAgo } from "@/lib/utils";
-import { Calendar as CreatedAtIcon, Globe } from "lucide-react";
+import {
+  Calendar as CreatedAtIcon,
+  Globe as PublicIcon,
+  Lock as PrivateIcon,
+} from "lucide-react";
 import React from "react";
 import { Separator } from "../ui/separator";
 import AvatarWrapper from "../common/AvatarWrapper";
@@ -19,6 +23,7 @@ const CommunityAbout = ({ community }: Props) => {
     membersCount,
     postsCount,
     creator,
+    isPrivate,
   } = community;
   return (
     <div className="flex flex-col gap-4 bg-muted dark:bg-black px-4 pt-4 pb-8 rounded-lg min-w-[300px]">
@@ -39,8 +44,10 @@ const CommunityAbout = ({ community }: Props) => {
           </div>
           {/* Public or Private */}
           <div className="flex flex-row gap-2">
-            <Globe size={20} />
-            <span className="text-muted-foreground text-sm">Public</span>
+            {isPrivate ? <PrivateIcon size={20} /> : <PublicIcon size={20} />}
+            <span className="text-muted-foreground text-sm">
+              {isPrivate ? "Private" : "Public"}
+            </span>
           </div>
 
           {/* Stats */}

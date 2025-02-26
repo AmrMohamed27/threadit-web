@@ -118,12 +118,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                         <SidebarMenuItem>
                           <SidebarMenuButton
                             isActive={href === pathname.replace("%20", " ")}
-                            className="flex flex-row items-center gap-2 hover:bg-muted/20 px-4"
+                            asChild
                           >
-                            <>
+                            <Link
+                              href={href}
+                              className="flex flex-row items-center gap-2 hover:bg-muted/20 px-4 w-full"
+                            >
                               <Icon className="w-12 h-12" />
-                              <Link href={href}>{title}</Link>
-                            </>
+                              <span>{title}</span>
+                            </Link>
                           </SidebarMenuButton>
                         </SidebarMenuItem>
                         {/* Communities */}
@@ -137,9 +140,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     isActive={
                                       href === pathname.replace("%20", " ")
                                     }
-                                    className="flex flex-row items-center gap-2 hover:bg-muted/20 p-4"
+                                    asChild
                                   >
-                                    <>
+                                    <Link
+                                      href={href}
+                                      className="flex flex-row items-center gap-2 hover:bg-muted/20 p-4"
+                                    >
                                       <AvatarWrapper
                                         src={
                                           image ?? getDefaultAvatar({ name })
@@ -147,8 +153,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                         alt={name}
                                         className="w-6 h-6"
                                       />
-                                      <Link href={href}>c/{name}</Link>
-                                    </>
+                                      <span>c/{name}</span>
+                                    </Link>
                                   </SidebarMenuButton>
                                 </SidebarMenuItem>
                               );
@@ -164,16 +170,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             isActive={
                               pathname.replace("%20", " ") === `/c/${name}`
                             }
-                            className="flex flex-row items-center gap-2 hover:bg-muted/20 px-4"
+                            asChild
                           >
-                            <>
+                            <Link
+                              href={`/c/${name}`}
+                              className="flex flex-row items-center gap-2 hover:bg-muted/20 px-4"
+                            >
                               <AvatarWrapper
                                 src={image ?? getDefaultAvatar({ name })}
                                 alt={name}
                                 className="w-6 h-6"
                               />
-                              <Link href={`/c/${name}`}>c/{name}</Link>
-                            </>
+                              <span>c/{name}</span>
+                            </Link>
                           </SidebarMenuButton>{" "}
                         </SidebarMenuItem>
                       ))}
