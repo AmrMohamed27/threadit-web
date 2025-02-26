@@ -22,16 +22,18 @@ const CreateCommunityForm = () => {
     defaultValues: {
       name: "",
       description: "",
+      isPrivate: false,
     },
   });
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof CreateCommunitySchema>) {
-    const { name, description } = values;
+    const { name, description, isPrivate } = values;
     const { data } = await createCommunityMutation({
       variables: {
         options: {
           name,
           description,
+          isPrivate,
         },
       },
       refetchQueries: [
@@ -65,6 +67,15 @@ const CreateCommunityForm = () => {
           label="Description"
           isTextArea
         />
+        {/* IsPrivate */}
+        <div className="w-fit">
+          <InputField
+            type="checkbox"
+            name="isPrivate"
+            label="Private Community"
+            control={form.control}
+          />
+        </div>
         <Button type="submit">
           {loading ? (
             <Loader className="animate-spin" />

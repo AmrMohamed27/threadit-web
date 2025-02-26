@@ -12,6 +12,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { Control } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Eye, EyeOff } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface InputFieldProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,7 +44,13 @@ const InputField = ({
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem>
+        <FormItem
+          className={cn(
+            type === "checkbox"
+              ? "flex flex-row-reverse gap-2 items-center"
+              : ""
+          )}
+        >
           <FormLabel>{label}</FormLabel>
           <FormControl>
             {isTextArea ? (
@@ -58,7 +65,10 @@ const InputField = ({
                   type={type === "password" ? passwordInputType : type}
                   placeholder={placeholder}
                   {...field}
-                  className="relative"
+                  className={cn(
+                    "relative",
+                    type === "checkbox" ? "mb-2 w-[15px]" : ""
+                  )}
                   disabled={disabled}
                 />
                 {type === "password" && (
