@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Funnel_Display } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import Navbar from "@/components/common/Navbar";
+import Navbar from "@/components/navbar/Navbar";
 import ApolloProvider from "@/components/providers/apollo-provider";
 import { Toaster } from "@/components/ui/toaster";
 import ConfirmAlert from "@/components/common/ConfirmAlert";

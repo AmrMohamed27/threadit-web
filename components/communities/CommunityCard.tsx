@@ -25,7 +25,7 @@ const CommunityCard = ({ community }: Props) => {
       {/* Info */}
       <div className="flex flex-col gap-4">
         {/* Name */}
-        <span className="font-semibold">{name}</span>
+        <span className="font-semibold">c/{name}</span>
         {/* Description */}
         <p className="text-muted-foreground">{description}</p>
         {/* Members and posts */}

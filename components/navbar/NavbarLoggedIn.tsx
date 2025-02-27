@@ -14,8 +14,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import AvatarWrapper from "./AvatarWrapper";
-import GreyDiv from "./GreyDiv";
+import AvatarWrapper from "../common/AvatarWrapper";
+import GreyDiv from "../common/GreyDiv";
 
 interface Props {
   user: User;

@@ -1,15 +1,15 @@
 "use client";
-import React, { useCallback, useState } from "react";
-import { Input } from "../ui/input";
-import { Search as SearchIcon } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { createMultipleQueryStringsFn } from "@/lib/utils";
 import {
   Popover,
   PopoverAnchor,
   PopoverContent,
 } from "@/components/ui/popover";
+import { createMultipleQueryStringsFn } from "@/lib/utils";
+import { Search as SearchIcon } from "lucide-react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useCallback, useState } from "react";
+import { Input } from "../ui/input";
 
 interface Props {
   origin?: string;
@@ -48,8 +48,10 @@ const SearchBar = ({
     },
     [searchParams]
   );
+  const isCommunitySearch = searchTerm.startsWith("c/");
+  const isUserSearch = searchTerm.startsWith("u/");
   const searchURL =
-    (searchTerm.startsWith("c/") ? "/c" : "") +
+    (isCommunitySearch ? "/c" : isUserSearch ? "/users" : "") +
     origin +
     "?" +
     createMultipleQueryStrings(
@@ -90,9 +92,15 @@ const SearchBar = ({
         />
         {isOpen && (
           <PopoverContent
-            className="z-50 relative flex flex-1 hover:bg-muted w-full md:w-[400px]"
+            className="z-50 relative flex flex-col flex-1 gap-4 hover:bg-muted w-full md:w-[400px]"
             onOpenAutoFocus={(e) => e.preventDefault()}
           >
+            <div>
+              <p className="text-muted-foreground text-xs">
+                Prefix your search with c/ to search for communities or u/ to
+                search for users.
+              </p>
+            </div>
             <Link href={searchURL} className="flex flex-col gap-4 w-full">
               <div className="flex flex-row flex-wrap justify-between items-start gap-2">
                 <SearchIcon className="mt-1 text-muted-foreground" size={18} />

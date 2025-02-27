@@ -39,3 +39,15 @@ query GetUserByName($name: String!) {
     }
   }
 }
+
+query SearchForUser($options: GetSearchResultInput!) {
+  searchForUser(options: $options) {
+    userArray {
+      ...FullUser
+    }
+    errors {
+      ...FullErrorField
+    }
+    count
+  }
+}

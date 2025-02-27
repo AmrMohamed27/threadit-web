@@ -385,6 +385,7 @@ export type Query = {
   getUserVotedPosts: PostResponse;
   me: UserResponse;
   searchCommunities: CommunityResponse;
+  searchForUser: UserResponse;
   searchPosts: PostResponse;
 };
 
@@ -484,6 +485,11 @@ export type QuerySearchCommunitiesArgs = {
 };
 
 
+export type QuerySearchForUserArgs = {
+  options: GetSearchResultInput;
+};
+
+
 export type QuerySearchPostsArgs = {
   options: GetSearchResultInput;
 };
@@ -540,8 +546,10 @@ export type User = {
 
 export type UserResponse = {
   __typename?: 'UserResponse';
+  count?: Maybe<Scalars['Int']['output']>;
   errors?: Maybe<Array<FieldError>>;
   user?: Maybe<User>;
+  userArray?: Maybe<Array<User>>;
 };
 
 export type Vote = {
@@ -918,6 +926,13 @@ export type GetUserByNameQueryVariables = Exact<{
 
 
 export type GetUserByNameQuery = { __typename?: 'Query', getUserByName: { __typename?: 'UserResponse', user?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type SearchForUserQueryVariables = Exact<{
+  options: GetSearchResultInput;
+}>;
+
+
+export type SearchForUserQuery = { __typename?: 'Query', searchForUser: { __typename?: 'UserResponse', count?: number | null, userArray?: Array<{ __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export const FullAuthorFragmentDoc = gql`
     fragment FullAuthor on User {
@@ -2954,3 +2969,50 @@ export type GetUserByNameQueryHookResult = ReturnType<typeof useGetUserByNameQue
 export type GetUserByNameLazyQueryHookResult = ReturnType<typeof useGetUserByNameLazyQuery>;
 export type GetUserByNameSuspenseQueryHookResult = ReturnType<typeof useGetUserByNameSuspenseQuery>;
 export type GetUserByNameQueryResult = Apollo.QueryResult<GetUserByNameQuery, GetUserByNameQueryVariables>;
+export const SearchForUserDocument = gql`
+    query SearchForUser($options: GetSearchResultInput!) {
+  searchForUser(options: $options) {
+    userArray {
+      ...FullUser
+    }
+    errors {
+      ...FullErrorField
+    }
+    count
+  }
+}
+    ${FullUserFragmentDoc}
+${FullErrorFieldFragmentDoc}`;
+
+/**
+ * __useSearchForUserQuery__
+ *
+ * To run a query within a React component, call `useSearchForUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchForUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchForUserQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useSearchForUserQuery(baseOptions: Apollo.QueryHookOptions<SearchForUserQuery, SearchForUserQueryVariables> & ({ variables: SearchForUserQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchForUserQuery, SearchForUserQueryVariables>(SearchForUserDocument, options);
+      }
+export function useSearchForUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchForUserQuery, SearchForUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchForUserQuery, SearchForUserQueryVariables>(SearchForUserDocument, options);
+        }
+export function useSearchForUserSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SearchForUserQuery, SearchForUserQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SearchForUserQuery, SearchForUserQueryVariables>(SearchForUserDocument, options);
+        }
+export type SearchForUserQueryHookResult = ReturnType<typeof useSearchForUserQuery>;
+export type SearchForUserLazyQueryHookResult = ReturnType<typeof useSearchForUserLazyQuery>;
+export type SearchForUserSuspenseQueryHookResult = ReturnType<typeof useSearchForUserSuspenseQuery>;
+export type SearchForUserQueryResult = Apollo.QueryResult<SearchForUserQuery, SearchForUserQueryVariables>;

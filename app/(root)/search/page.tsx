@@ -1,4 +1,5 @@
 "use client";
+import SearchSwitch from "@/components/common/SearchSwitch";
 import PostsFeedLoading from "@/components/loading/PostsFeedLoading";
 import PostsFeed from "@/components/posts/PostsFeed";
 import { POSTS_PER_PAGE } from "@/constants";
@@ -36,9 +37,10 @@ const SearchPage = () => {
       ) : error ? (
         <div>Error: {error?.message ?? "An error occurred"}</div>
       ) : (
-        <>
+        <div className="flex flex-col gap-4 w-full">
+          <SearchSwitch />
           <PostsFeed posts={posts} count={count} hasPagination />
-        </>
+        </div>
       )}
     </>
   );

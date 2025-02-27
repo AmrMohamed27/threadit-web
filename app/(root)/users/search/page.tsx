@@ -1,17 +1,16 @@
 "use client";
 import SearchSwitch from "@/components/common/SearchSwitch";
-import CommunitySearchFeed from "@/components/communities/CommunitySearchFeed";
-import CommunitySearchFeedLoading from "@/components/loading/CommunitySearchFeedLoading";
+import UserSearchFeed from "@/components/user/UserSearchFeed";
 import { POSTS_PER_PAGE } from "@/constants";
-import { useSearchCommunitiesQuery } from "@/generated/graphql";
+import { useSearchForUserQuery } from "@/generated/graphql";
 import { useCurrentPage } from "@/hooks/use-current-page";
 
-const SearchCommunityPage = () => {
+const SearchUserPage = () => {
   const { currentPage, searchTerm: paramSearch } = useCurrentPage();
-  const searchTerm = paramSearch.startsWith("c/")
+  const searchTerm = paramSearch.startsWith("u/")
     ? paramSearch.slice(2)
     : paramSearch;
-  const { data, loading, error } = useSearchCommunitiesQuery({
+  const { data, loading, error } = useSearchForUserQuery({
     variables: {
       options: {
         limit: POSTS_PER_PAGE,
@@ -21,37 +20,33 @@ const SearchCommunityPage = () => {
     },
   });
   const {
-    communitiesArray: communities,
+    userArray: users,
     count,
     errors,
-  } = data?.searchCommunities ?? {
-    communitiesArray: [],
+  } = data?.searchForUser ?? {
+    userArray: [],
     count: 0,
   };
   return (
     <>
       {/* Heading */}
       <h1 className="text-xl md:text-3xl">
-        Search Results for {searchTerm} in Communities
+        Search Results for {searchTerm} in Users
       </h1>
       {loading ? (
-        <CommunitySearchFeedLoading hasPagination />
-      ) : errors || !communities || !count ? (
+        <div>Loading...</div>
+      ) : errors || !users || !count ? (
         <div> {errors ? errors[0].message : "An error occurred"}</div>
       ) : error ? (
         <div>Error: {error?.message ?? "An error occurred"}</div>
       ) : (
         <div className="flex flex-col gap-4 w-full">
           <SearchSwitch />
-          <CommunitySearchFeed
-            communities={communities}
-            count={count}
-            hasPagination
-          />
+          <UserSearchFeed users={users} count={count} hasPagination />
         </div>
       )}
     </>
   );
 };
 
-export default SearchCommunityPage;
+export default SearchUserPage;

@@ -2,7 +2,7 @@ import { Comment } from "@/generated/graphql";
 import { useCurrentPage } from "@/hooks/use-current-page";
 import React from "react";
 import SortBy from "../common/SortBy";
-import SearchBar from "../common/SearchBar";
+import SearchBar from "../navbar/SearchBar";
 import { MAX_REPLY_DEPTH } from "@/constants";
 import CommentThread from "./CommentThread";
 import GoBackButton from "../common/GoBackButton";

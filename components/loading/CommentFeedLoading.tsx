@@ -1,6 +1,6 @@
 import React from "react";
 import SortBy from "../common/SortBy";
-import SearchBar from "../common/SearchBar";
+import SearchBar from "../navbar/SearchBar";
 import { usePathname } from "next/navigation";
 import CommentCardLoading from "./CommentCardLoading";
 import PaginationComponent from "../common/Pagination";
