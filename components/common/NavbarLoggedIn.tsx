@@ -10,8 +10,7 @@ import { useLogoutMutation, User } from "@/generated/graphql";
 import { cn, getDefaultAvatar } from "@/lib/utils";
 import {
   Plus as CreateIcon,
-  LogOut as LogOutIcon,
-  Bookmark as SavedIcon,
+  LogOut as LogOutIcon
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
@@ -78,16 +77,6 @@ const NavbarLoggedIn = ({ user }: Props) => {
                   u/{user.name}
                 </span>
               </div>
-            </Link>
-          </DropdownMenuItem>
-          {/* Saved Posts link */}
-          <DropdownMenuItem>
-            <Link
-              className="flex flex-row items-center gap-2 py-2"
-              href="/saved"
-            >
-              <SavedIcon size={16} aria-label="Saved Posts Icon" />
-              Saved posts
             </Link>
           </DropdownMenuItem>
           {/* Logout Button */}
