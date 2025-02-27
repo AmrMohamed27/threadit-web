@@ -28,3 +28,14 @@ query GetUserById($id: Int!) {
     }
   }
 }
+
+query GetUserByName($name: String!) {
+  getUserByName(name: $name) {
+    user {
+      ...FullUser
+    }
+    errors {
+      ...FullErrorField
+    }
+  }
+}

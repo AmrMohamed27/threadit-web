@@ -5,6 +5,8 @@ export const env = createEnv({
   server: {
     GRAPHQL_API: z.string(),
     COOKIE_NAME: z.string(),
+    UPLOADTHING_TOKEN: z.string(),
+    UPLOADTHING_SECRET_KEY: z.string(),
   },
   client: {
     NEXT_PUBLIC_API_URL: z.string(),
@@ -15,5 +17,7 @@ export const env = createEnv({
     GRAPHQL_API: process.env.GRAPHQL_API,
     COOKIE_NAME: process.env.COOKIE_NAME,
     NEXT_PUBLIC_HOME_URL: process.env.NEXT_PUBLIC_HOME_URL,
+    UPLOADTHING_TOKEN: process.env.UPLOADTHING_TOKEN,
+    UPLOADTHING_SECRET_KEY: process.env.UPLOADTHING_SECRET_KEY,
   },
 });

@@ -10,6 +10,7 @@ import {
 import { useCurrentUser } from "@/hooks/use-current-user";
 import {
   useDeletePostMutation,
+  useGetUserHiddenPostsQuery,
   useHidePostMutation,
   useSavePostMutation,
   useUnsavePostMutation,
@@ -36,8 +37,23 @@ const PostOptionsGetter = ({ authorId, postId }: Props) => {
   );
   const savedSet = new Set(savedArray);
   const isSaved = savedSet.has(postId);
+  const { data: hiddenPosts } = useGetUserHiddenPostsQuery({
+    variables: {
+      options: {
+        limit: 999999,
+        page: 1,
+      },
+    },
+  });
+
+  const hiddenSet = new Set(
+    hiddenPosts?.getUserHiddenPosts?.postsArray
+      ? hiddenPosts.getUserHiddenPosts.postsArray.map((p) => p.id)
+      : []
+  );
+  const isHidden = hiddenSet.has(postId);
   // Get options  depending on if the user is logged in, and if they are the author of the post, and the state of the post if it is saved or hidden
-  const options = user
+  const fetchedOptions = user
     ? user.id === authorId
       ? isSaved
         ? savedUserPostOptionsDropdown
@@ -46,6 +62,10 @@ const PostOptionsGetter = ({ authorId, postId }: Props) => {
       ? savedPostOptionsDropdown
       : postOptionsDropdown
     : loggedOutUserOptionsDropdown;
+
+  const options = isHidden
+    ? fetchedOptions.filter((o) => o.id !== "hide")
+    : fetchedOptions;
 
   const dispatch = useDispatch();
   const reduxToggleSavedPost = (postId: number) => {
@@ -62,8 +82,11 @@ const PostOptionsGetter = ({ authorId, postId }: Props) => {
         refetchQueries: [
           "GetAllPosts",
           "GetPostById",
-          "GetHiddenPosts",
           "GetUserCommunityPosts",
+          "GetUserPosts",
+          "GetUserHiddenPosts",
+          "GetCommunityPosts",
+          "GetUserVotedPosts",
         ],
       });
       if (data?.hidePost?.success) {
@@ -143,7 +166,12 @@ const PostOptionsGetter = ({ authorId, postId }: Props) => {
       variables: {
         id: postId,
       },
-      refetchQueries: ["GetAllPosts", "GetUserCommunityPosts", "GetPostById"],
+      refetchQueries: [
+        "GetAllPosts",
+        "GetUserCommunityPosts",
+        "GetPostById",
+        "GetUserPosts",
+      ],
     });
     if (data?.deletePost.success) {
       toast({

@@ -37,7 +37,14 @@ const PostFetcher = ({ passedSortBy }: Props) => {
       {loading ? (
         <PostsFeedLoading hasPagination />
       ) : errors || !posts || !count ? (
-        <div> {errors ? errors[0].message : "An error occurred"}</div>
+        <div>
+          {" "}
+          {errors
+            ? errors[0].message.includes("No posts found")
+              ? "Please join a community to see posts in your home feed"
+              : errors[0].message
+            : "An error occurred"}
+        </div>
       ) : error ? (
         <div>Error: {error?.message ?? "An error occurred"}</div>
       ) : (

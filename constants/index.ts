@@ -1,22 +1,27 @@
+import UserCommentsFeed from "@/components/user/UserCommentsFeed";
+import UserHiddenFeed from "@/components/user/UserHiddenFeed";
+import UserPostsFeed from "@/components/user/UserPostsFeed";
+import UserSavedFeed from "@/components/user/UserSavedFeed";
+import UserVotedFeed from "@/components/user/UserVotedFeed";
 import { Community } from "@/generated/graphql";
 import { CommentOptions, PostOptions, SortingObjects } from "@/types";
 import {
-  Bookmark as SaveIcon,
-  EyeOff as HideIcon,
-  Flag as ReportIcon,
+  Book as AboutIcon,
+  Globe as AllIcon,
+  Trophy as BestIcon,
   Trash as DeleteIcon,
   Pencil as EditIcon,
-  BookmarkX as UnsaveIcon,
-  Trophy as BestIcon,
-  Flame as HotIcon,
-  ClockArrowDown as OldIcon,
-  ClockArrowUp as NewIcon,
-  SquareArrowUp as TopIcon,
+  EyeOff as HideIcon,
   Home as HomeIcon,
-  Flame as PopularIcon,
-  Globe as AllIcon,
+  Flame as HotIcon,
+  ClockArrowUp as NewIcon,
+  ClockArrowDown as OldIcon,
   PlusIcon,
-  Book as AboutIcon,
+  Flame as PopularIcon,
+  Flag as ReportIcon,
+  Bookmark as SaveIcon,
+  SquareArrowUp as TopIcon,
+  BookmarkX as UnsaveIcon,
 } from "lucide-react";
 
 export const POSTS_PER_PAGE = 5;
@@ -166,3 +171,17 @@ export const sidebarResourcesCollapsible = [
 ] as const;
 
 export const sidebarCollapsiblesMap = [] as const;
+
+export const userFeeds = [
+  { id: 1, value: "Posts", component: UserPostsFeed },
+  { id: 2, value: "Comments", component: UserCommentsFeed },
+] as const;
+
+export const profileFeeds = [
+  userFeeds[0],
+  userFeeds[1],
+  { id: 3, value: "Saved", component: UserSavedFeed },
+  { id: 4, value: "Hidden", component: UserHiddenFeed },
+  { id: 5, value: "Upvoted", component: UserVotedFeed },
+  { id: 6, value: "Downvoted", component: UserVotedFeed },
+];

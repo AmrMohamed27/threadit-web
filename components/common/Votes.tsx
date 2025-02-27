@@ -75,6 +75,7 @@ const Votes = ({ upvotesCount, isUpvoted, postId, commentId }: Props) => {
         "GetUserCommunityPosts",
         "GetPostComments",
         "GetCommentById",
+        "GetUserVotedPosts",
       ],
     });
   };

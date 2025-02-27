@@ -16,8 +16,6 @@ const PostCardLoading = () => {
               <div className="flex flex-row items-center gap-2">
                 {/* Community Name */}
                 <Skeleton className="w-8 h-2" />
-                {/* Separator */}
-                <span className="text-muted-foreground text-xs">•</span>
                 {/* Date created */}
                 <Skeleton className="w-8 h-2" />
               </div>

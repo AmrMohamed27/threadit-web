@@ -59,3 +59,12 @@ mutation ResetPassword($options: ResetPasswordInput!) {
     }
   }
 }
+
+mutation UpdateUserImage($options: UpdateUserImageInput!) {
+  updateUserImage(options: $options) {
+    success
+    errors {
+      ...FullErrorField
+    }
+  }
+}

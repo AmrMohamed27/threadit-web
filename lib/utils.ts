@@ -1,4 +1,6 @@
+import { OurFileRouter } from "@/app/api/uploadthing/core";
 import { FieldError } from "@/generated/graphql";
+import { generateUploadButton, generateUploadDropzone } from "@uploadthing/react";
 import { clsx, type ClassValue } from "clsx";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { twMerge } from "tailwind-merge";
@@ -102,3 +104,7 @@ export const isArabic = (text: string) => {
   const arabicRegex = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
   return arabicRegex.test(text);
 };
+
+
+export const UploadButton = generateUploadButton<OurFileRouter>();
+export const UploadDropzone = generateUploadDropzone<OurFileRouter>();

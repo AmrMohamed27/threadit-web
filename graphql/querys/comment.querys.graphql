@@ -4,8 +4,8 @@ query GetComment($options: GetCommentByIdInput!) {
   }
 }
 
-query GetUserComments {
-  getUserComments {
+query GetUserComments($options: GetUserCommentsInput!) {
+  getUserComments(options: $options) {
     ...FullCommentArrayResponse
   }
 }

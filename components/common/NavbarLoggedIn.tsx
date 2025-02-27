@@ -58,6 +58,28 @@ const NavbarLoggedIn = ({ user }: Props) => {
               <span>Create a post</span>
             </Link>
           </DropdownMenuItem>
+          {/* Profile link */}
+          <DropdownMenuItem>
+            <Link
+              className="flex flex-row items-center gap-2 py-2"
+              href={`/users/${user.name}`}
+            >
+              {/* Image */}
+              <AvatarWrapper
+                src={user.image ?? getDefaultAvatar({ name: user.name })}
+                alt={`${user.name}'s profile picture`}
+                loading={isLogoutLoading}
+                className="w-8 h-8"
+              />
+              {/* Name */}
+              <div className="flex flex-col gap-0">
+                <span>View Profile</span>
+                <span className="text-muted-foreground text-xs">
+                  u/{user.name}
+                </span>
+              </div>
+            </Link>
+          </DropdownMenuItem>
           {/* Saved Posts link */}
           <DropdownMenuItem>
             <Link

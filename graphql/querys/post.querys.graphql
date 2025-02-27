@@ -33,17 +33,6 @@ query GetUserPosts($options: GetUserPostsInput!) {
   }
 }
 
-query GetUserVotedPosts {
-  getUserVotedPosts {
-    posts {
-      ...FullPost
-    }
-    errors {
-      ...FullErrorField
-    }
-  }
-}
-
 query SearchPosts($options: GetSearchResultInput!) {
   searchPosts(options: $options) {
     ...FullPostResponse
@@ -52,6 +41,12 @@ query SearchPosts($options: GetSearchResultInput!) {
 
 query GetCommunityPosts($options: GetCommunityPostsInput!) {
   getCommunityPosts(options: $options) {
+    ...FullPostResponse
+  }
+}
+
+query GetUserVotedPosts($options: GetUserVotedPostsOptions!) {
+  getUserVotedPosts(options: $options) {
     ...FullPostResponse
   }
 }

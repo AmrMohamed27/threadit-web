@@ -52,6 +52,7 @@ const CreatePostForm = ({ communities }: Props) => {
         "GetUserCommunityPosts",
         "GetCommunityPosts",
         "GetCommunityByName",
+        "GetUserPosts",
       ],
     });
     const post = data?.createPost.post;

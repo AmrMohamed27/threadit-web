@@ -1,17 +1,16 @@
 "use client";
 import {
-  useGetHiddenPostsQuery,
   useGetPostByIdQuery,
+  useGetUserHiddenPostsQuery
 } from "@/generated/graphql";
-import React from "react";
-import PostsFeed from "./PostsFeed";
-import EditPostForm from "../forms/EditPostForm";
-import HiddenPost from "./HiddenPost";
-import CommentForm from "../forms/CommentForm";
-import CommentsFeed from "../comments/CommentsFeed";
 import CommentGetter from "../comments/CommentGetter";
-import PostsFeedLoading from "../loading/PostsFeedLoading";
+import CommentsFeedGetter from "../comments/CommentsFeedGetter";
+import CommentForm from "../forms/CommentForm";
+import EditPostForm from "../forms/EditPostForm";
 import FormLoading from "../loading/FormLoading";
+import PostsFeedLoading from "../loading/PostsFeedLoading";
+import HiddenPost from "./HiddenPost";
+import PostsFeed from "./PostsFeed";
 
 interface Props {
   postId: number;
@@ -25,9 +24,20 @@ const PostGetter = ({ postId, isEdit, commentId }: Props) => {
       id: postId,
     },
   });
-  const { data: hiddenPosts } = useGetHiddenPostsQuery();
+  const { data: hiddenPosts } = useGetUserHiddenPostsQuery({
+    variables: {
+      options: {
+        limit: 999999,
+        page: 1,
+      },
+    },
+  });
 
-  const hiddenSet = new Set(hiddenPosts?.getHiddenPosts || []);
+  const hiddenSet = new Set(
+    hiddenPosts?.getUserHiddenPosts?.postsArray
+      ? hiddenPosts.getUserHiddenPosts.postsArray.map((p) => p.id)
+      : []
+  );
   if (loading)
     return isEdit ? (
       <FormLoading heading="Edit post" />
@@ -64,10 +74,10 @@ const PostGetter = ({ postId, isEdit, commentId }: Props) => {
     </div>
   ) : (
     // Render single post page
-    <div className="flex flex-col gap-4 w-full">
+    <div className="flex flex-col gap-8 w-full">
       <PostsFeed posts={[post]} count={1} />
       <CommentForm postId={postId} />
-      <CommentsFeed postId={postId} />
+      <CommentsFeedGetter postId={postId} />
     </div>
   );
 };

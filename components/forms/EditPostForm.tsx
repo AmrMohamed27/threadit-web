@@ -49,6 +49,7 @@ const EditPostForm = ({ post }: Props) => {
         "GetAllPosts",
         "GetUserCommunityPosts",
         "GetCommunityPosts",
+        "GetUserPosts",
       ],
     });
     const success = data?.updatePost.success;

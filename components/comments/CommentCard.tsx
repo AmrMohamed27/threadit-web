@@ -79,10 +79,10 @@ const CommentCard = ({ comment, depth = 0, maxDepth = 3 }: Props) => {
       </div>
       {/* Content */}
       <div dir={isArabicContent ? "rtl" : "ltr"}>
-        {<p className={cn("text-muted-foreground text-sm")}>{content}</p>}
+        {<p className={cn(" text-sm")}>{content}</p>}
       </div>
       {/* Interactions */}
-      <div className="flex flex-row items-center gap-4">
+      <div className="flex flex-row flex-wrap items-center gap-4">
         <Votes
           upvotesCount={upvotesCount ?? 0}
           isUpvoted={isUpvoted}

@@ -10,6 +10,9 @@ import ReduxProvider from "@/components/providers/redux-provider";
 import ReduxContextProvider from "@/components/providers/redux-context-provider";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/common/app-sidebar";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "./api/uploadthing/core";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 
 const funnel_display = Funnel_Display({ subsets: ["latin"] });
 
@@ -36,6 +39,15 @@ export default function RootLayout({
             <ReduxProvider>
               <ReduxContextProvider>
                 <SidebarProvider>
+                  <NextSSRPlugin
+                    /**
+                     * The `extractRouterConfig` will extract **only** the route configs
+                     * from the router to prevent additional information from being
+                     * leaked to the client. The data passed to the client is the same
+                     * as if you were to fetch `/api/uploadthing` directly.
+                     */
+                    routerConfig={extractRouterConfig(ourFileRouter)}
+                  />
                   <AppSidebar />
                   <div className="relative flex flex-col flex-1 w-full min-h-screen">
                     <SidebarTrigger />
