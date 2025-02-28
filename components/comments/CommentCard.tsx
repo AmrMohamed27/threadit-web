@@ -49,13 +49,17 @@ const CommentCard = ({ comment, depth = 0, maxDepth = 3 }: Props) => {
         <div className="flex md:flex-row flex-col items-center gap-2">
           <div className="flex flex-row items-center gap-2">
             {/* Image */}
-            <AvatarWrapper
-              src={author?.image ?? getDefaultAvatar({ name: author?.name })}
-              alt={`${author?.name ?? "Author"}'s profile picture`}
-              className="w-6 h-6"
-            />
+            <Link href={`/users/${author?.name ?? "#"}`}>
+              <AvatarWrapper
+                src={author?.image ?? getDefaultAvatar({ name: author?.name })}
+                alt={`${author?.name ?? "Author"}'s profile picture`}
+                className="w-6 h-6"
+              />
+            </Link>
             {/* Name */}
-            <span className="text-xs">{author?.name ?? "Author"}</span>
+            <Link href={`/users/${author?.name ?? "#"}`} className="text-xs">
+              {author?.name ?? "Author"}
+            </Link>
             {/* Separator */}
             <span className="text-muted-foreground text-xs">•</span>
             {/* Date created */}

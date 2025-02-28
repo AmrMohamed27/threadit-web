@@ -68,3 +68,12 @@ mutation UpdateUserImage($options: UpdateUserImageInput!) {
     }
   }
 }
+
+mutation UpdateUserName($options: UpdateUserNameInput!) {
+  updateUserName(options: $options) {
+    success
+    errors {
+      ...FullErrorField
+    }
+  }
+}

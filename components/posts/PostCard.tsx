@@ -40,14 +40,16 @@ const PostCard = ({ post }: Props) => {
         <div className="flex md:flex-row flex-col items-center gap-2">
           <div className="flex flex-row items-center gap-2">
             {/* Community Image */}
-            <AvatarWrapper
-              src={
-                community?.image ??
-                getDefaultAvatar({ name: community?.name ?? "Community" })
-              }
-              alt={`${community?.name ?? "Community"}'s profile picture`}
-              className="w-6 h-6"
-            />
+            <Link href={`/c/${community?.name ?? ""}`}>
+              <AvatarWrapper
+                src={
+                  community?.image ??
+                  getDefaultAvatar({ name: community?.name ?? "Community" })
+                }
+                alt={`${community?.name ?? "Community"}'s profile picture`}
+                className="w-6 h-6"
+              />
+            </Link>
             {/* Names */}
             <div className="flex flex-col items-start gap-1">
               <div className="flex flex-row items-center gap-2">
@@ -72,9 +74,12 @@ const PostCard = ({ post }: Props) => {
                 )}
               </div>
               {/* Author Name */}
-              <span className="text-muted-foreground text-xs">
+              <Link
+                href={`/users/${author?.name ?? "#"}`}
+                className="text-muted-foreground text-xs"
+              >
                 {author?.name ?? "Author"}
-              </span>
+              </Link>
             </div>
           </div>
         </div>

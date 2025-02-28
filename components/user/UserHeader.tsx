@@ -3,6 +3,8 @@ import { getDefaultAvatar } from "@/lib/utils";
 import AvatarWrapper from "../common/AvatarWrapper";
 import UploadProfileImage from "./UploadProfileImage";
 
+import EditUsernameDialog from "./EditUsernameDialog";
+
 type Props = {
   user: User;
   isMe: boolean;
@@ -24,9 +26,12 @@ const UserHeader = ({ user, isMe }: Props) => {
       </div>
       {/* Name */}
       <div className="flex flex-col gap-0 w-full">
-        <span className="font-bold text-xl md:text-2xl lg:text-3xl">
-          {name}
-        </span>
+        <div className="flex flex-row items-center gap-4">
+          <span className="font-bold text-xl md:text-2xl lg:text-3xl">
+            {name}
+          </span>
+          <EditUsernameDialog />
+        </div>
         <span className="text-muted-foreground">u/{name}</span>
       </div>
     </div>

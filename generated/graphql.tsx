@@ -212,6 +212,7 @@ export type Mutation = {
   updateCommunity: ConfirmResponse;
   updatePost: ConfirmResponse;
   updateUserImage: ConfirmResponse;
+  updateUserName: ConfirmResponse;
   updateVote?: Maybe<ConfirmResponse>;
 };
 
@@ -328,6 +329,11 @@ export type MutationUpdatePostArgs = {
 
 export type MutationUpdateUserImageArgs = {
   options: UpdateUserImageInput;
+};
+
+
+export type MutationUpdateUserNameArgs = {
+  options: UpdateUserNameInput;
 };
 
 
@@ -526,6 +532,10 @@ export type UpdatePostInput = {
 
 export type UpdateUserImageInput = {
   image: Scalars['String']['input'];
+};
+
+export type UpdateUserNameInput = {
+  name: Scalars['String']['input'];
 };
 
 export type UpdateVoteInput = {
@@ -752,6 +762,13 @@ export type UpdateUserImageMutationVariables = Exact<{
 
 
 export type UpdateUserImageMutation = { __typename?: 'Mutation', updateUserImage: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type UpdateUserNameMutationVariables = Exact<{
+  options: UpdateUserNameInput;
+}>;
+
+
+export type UpdateUserNameMutation = { __typename?: 'Mutation', updateUserName: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type CreateVoteMutationVariables = Exact<{
   options: CreateVoteInput;
@@ -1917,6 +1934,42 @@ export function useUpdateUserImageMutation(baseOptions?: Apollo.MutationHookOpti
 export type UpdateUserImageMutationHookResult = ReturnType<typeof useUpdateUserImageMutation>;
 export type UpdateUserImageMutationResult = Apollo.MutationResult<UpdateUserImageMutation>;
 export type UpdateUserImageMutationOptions = Apollo.BaseMutationOptions<UpdateUserImageMutation, UpdateUserImageMutationVariables>;
+export const UpdateUserNameDocument = gql`
+    mutation UpdateUserName($options: UpdateUserNameInput!) {
+  updateUserName(options: $options) {
+    success
+    errors {
+      ...FullErrorField
+    }
+  }
+}
+    ${FullErrorFieldFragmentDoc}`;
+export type UpdateUserNameMutationFn = Apollo.MutationFunction<UpdateUserNameMutation, UpdateUserNameMutationVariables>;
+
+/**
+ * __useUpdateUserNameMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserNameMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserNameMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserNameMutation, { data, loading, error }] = useUpdateUserNameMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useUpdateUserNameMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserNameMutation, UpdateUserNameMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserNameMutation, UpdateUserNameMutationVariables>(UpdateUserNameDocument, options);
+      }
+export type UpdateUserNameMutationHookResult = ReturnType<typeof useUpdateUserNameMutation>;
+export type UpdateUserNameMutationResult = Apollo.MutationResult<UpdateUserNameMutation>;
+export type UpdateUserNameMutationOptions = Apollo.BaseMutationOptions<UpdateUserNameMutation, UpdateUserNameMutationVariables>;
 export const CreateVoteDocument = gql`
     mutation CreateVote($options: CreateVoteInput!) {
   createVote(options: $options) {
