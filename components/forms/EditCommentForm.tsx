@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { CommentErrorType } from "../../types";
 import InputField from "./InputField";
+import sanitizeHtml from "sanitize-html";
 
 interface Props {
   comment: Comment;
@@ -30,10 +31,13 @@ const EditCommentForm = ({ comment, toggleShowEditForm }: Props) => {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof CommentSchema>) {
     const { content } = values;
+    const safeContent = sanitizeHtml(content, {
+      allowedTags: [],
+    });
     const { data } = await updateCommentMutation({
       variables: {
         options: {
-          content,
+          content: safeContent,
           id: commentId,
         },
       },

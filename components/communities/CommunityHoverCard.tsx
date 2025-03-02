@@ -19,10 +19,10 @@ type Props = {
 
 const CommunityHoverCard = ({ community, children }: Props) => {
   return (
-    <Link href={`/c/${community?.name ?? ""}`}>
-      <HoverCard>
-        <HoverCardTrigger asChild>{children}</HoverCardTrigger>
-        <HoverCardContent className="p-0 w-96">
+    <HoverCard>
+      <HoverCardTrigger asChild>{children}</HoverCardTrigger>
+      <HoverCardContent className="p-0 w-96">
+        <Link href={`/c/${community?.name ?? ""}`}>
           <div className="flex flex-col gap-4 w-full">
             {/* Cover */}
             <Image
@@ -71,9 +71,9 @@ const CommunityHoverCard = ({ community, children }: Props) => {
               </div>
             </div>
           </div>
-        </HoverCardContent>
-      </HoverCard>
-    </Link>
+        </Link>
+      </HoverCardContent>
+    </HoverCard>
   );
 };
 

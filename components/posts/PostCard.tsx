@@ -12,6 +12,7 @@ import AvatarWrapper from "../common/AvatarWrapper";
 import UserHoverCard from "../user/UserHoverCard";
 import { useState } from "react";
 import EditPostForm from "../forms/EditPostForm";
+import MarkdownEditor from "@uiw/react-markdown-editor";
 
 interface Props {
   post: Post;
@@ -109,11 +110,15 @@ const PostCard = ({ post }: Props) => {
               </div>
             </div>
             {/* Options */}
-            <PostOptionsGetter authorId={author?.id ?? 0} postId={postId} handleEdit={toggleShowEditForm} />
+            <PostOptionsGetter
+              authorId={author?.id ?? 0}
+              postId={postId}
+              handleEdit={toggleShowEditForm}
+            />
           </div>
           {/* Title */}
           <span
-            className="font-bold text-lg"
+            className="font-bold text-xl md:text-2xl"
             dir={isArabicContent ? "rtl" : "ltr"}
           >
             {title}
@@ -122,14 +127,13 @@ const PostCard = ({ post }: Props) => {
           {/* Clip content to a constant number of words when not on post page */}
           <div dir={isArabicContent ? "rtl" : "ltr"}>
             {
-              <p
+              <MarkdownEditor.Markdown
                 className={cn(
-                  "text-muted-foreground text-sm",
+                  "!text-foreground !bg-transparent ",
                   !isPostPage ? "line-clamp-3 lg:line-clamp-4" : ""
                 )}
-              >
-                {content}
-              </p>
+                source={content}
+              ></MarkdownEditor.Markdown>
             }
           </div>
           {/* Interactions */}

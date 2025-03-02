@@ -12,6 +12,7 @@ import { CreatePostErrorType } from "../../types";
 import InputField from "./InputField";
 import ChooseCommunity from "../communities/ChooseCommunity";
 import { useCurrentPage } from "@/hooks/use-current-page";
+import sanitizeHtml from "sanitize-html";
 
 interface Props {
   communities: Community[];
@@ -39,11 +40,15 @@ const CreatePostForm = ({ communities }: Props) => {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof CreatePostSchema>) {
     const { title, content, communityId } = values;
+    // Sanitize html to prevent xss attacks
+    const safeContent = sanitizeHtml(content, {
+      allowedTags: [],
+    });
     const { data } = await createPostMutation({
       variables: {
         options: {
           title,
-          content,
+          content: safeContent,
           communityId,
         },
       },
@@ -86,7 +91,7 @@ const CreatePostForm = ({ communities }: Props) => {
           control={form.control}
           name="content"
           label="Content"
-          isTextArea
+          isMarkdown
         />
         <Button type="submit">
           {loading ? <Loader className="animate-spin" /> : <span>Post</span>}

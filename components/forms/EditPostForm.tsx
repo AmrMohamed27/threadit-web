@@ -10,6 +10,7 @@ import { z } from "zod";
 import { CreatePostErrorType } from "../../types";
 import InputField from "./InputField";
 import { useEffect } from "react";
+import sanitizeHtml from "sanitize-html";
 
 interface Props {
   post: Post;
@@ -32,11 +33,14 @@ const EditPostForm = ({ post, toggleShowEditForm }: Props) => {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof EditPostSchema>) {
     const { title, content } = values;
+    const safeContent = sanitizeHtml(content, {
+      allowedTags: [],
+    });
     const { data } = await updatePostMutation({
       variables: {
         options: {
           title,
-          content,
+          content: safeContent,
           id: postId,
         },
       },
@@ -75,7 +79,7 @@ const EditPostForm = ({ post, toggleShowEditForm }: Props) => {
           control={form.control}
           name="content"
           label="Content"
-          isTextArea
+          isMarkdown
         />
         <div className="flex flex-row justify-end items-center gap-4">
           <Button type="submit">

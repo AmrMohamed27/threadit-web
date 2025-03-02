@@ -9,6 +9,7 @@ import { useCreateCommentMutation } from "@/generated/graphql";
 import { Loader } from "lucide-react";
 import { CommentErrorType } from "../../types";
 import CommentSchema from "@/schema/CommentSchema";
+import sanitizeHtml from "sanitize-html";
 
 interface Props {
   postId: number;
@@ -30,12 +31,15 @@ const CommentForm = ({ postId, parentCommentId, hideForm }: Props) => {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof CommentSchema>) {
     const { content } = values;
+    const safeContent = sanitizeHtml(content, {
+      allowedTags: [], // Remove all HTML if you only want raw Markdown
+    });
     // Perform the mutation
     const { data } = await createCommentMutation({
       variables: {
         options: {
           postId,
-          content,
+          content: safeContent,
           parentCommentId,
         },
       },

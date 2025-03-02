@@ -13,6 +13,8 @@ import { Control } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
+import MarkdownEditor from "@uiw/react-markdown-editor";
+import { useTheme } from "next-themes";
 
 interface InputFieldProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,6 +24,7 @@ interface InputFieldProps {
   placeholder?: string;
   type?: string;
   isTextArea?: boolean;
+  isMarkdown?: boolean;
   showPassword?: boolean;
   disabled?: boolean;
   handleToggleShowPassword?: () => void;
@@ -34,11 +37,13 @@ const InputField = ({
   placeholder,
   type = "text",
   isTextArea = false,
+  isMarkdown = false,
   showPassword = false,
   handleToggleShowPassword,
   disabled = false,
 }: InputFieldProps) => {
   const passwordInputType = showPassword ? "text" : "password";
+  const { resolvedTheme } = useTheme();
   return (
     <FormField
       control={control}
@@ -58,6 +63,14 @@ const InputField = ({
                 className="flex bg-transparent disabled:opacity-50 shadow-sm px-3 py-2 border border-input rounded-md focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring w-full min-h-[60px] placeholder:text-muted-foreground md:text-sm text-base resize-none disabled:cursor-not-allowed"
                 placeholder={placeholder}
                 {...field}
+              />
+            ) : isMarkdown ? (
+              <MarkdownEditor
+                {...field}
+                className="!bg-transparent *:max-w-full !text-foreground"
+                height="400px"
+                enableScroll={false}
+                theme={resolvedTheme === "dark" ? "dark" : "light"}
               />
             ) : (
               <div className="relative">
