@@ -101,6 +101,11 @@ export type CreateVoteInput = {
   postId?: InputMaybe<Scalars['Float']['input']>;
 };
 
+export type DeleteVoteOptions = {
+  commentId?: InputMaybe<Scalars['Int']['input']>;
+  postId?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type FieldError = {
   __typename?: 'FieldError';
   field: Scalars['String']['output'];
@@ -115,7 +120,6 @@ export type GetAllPostsInput = {
 
 export type GetCommentByIdInput = {
   commentId: Scalars['Int']['input'];
-  postId?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type GetCommunityPostsInput = {
@@ -194,6 +198,7 @@ export type Mutation = {
   deleteComment: ConfirmResponse;
   deleteCommunity: ConfirmResponse;
   deletePost: ConfirmResponse;
+  deleteUser: ConfirmResponse;
   deleteVote: ConfirmResponse;
   hidePost: ConfirmResponse;
   joinCommunity: ConfirmResponse;
@@ -257,8 +262,13 @@ export type MutationDeletePostArgs = {
 };
 
 
-export type MutationDeleteVoteArgs = {
+export type MutationDeleteUserArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationDeleteVoteArgs = {
+  options: DeleteVoteOptions;
 };
 
 
@@ -371,14 +381,12 @@ export type Query = {
   getAllCommunities: CommunityResponse;
   getAllPosts: PostResponse;
   getComment: CommentResponse;
-  getCommentVotes: VoteResponse;
   getCommunityByName: CommunityResponse;
   getCommunityPosts: PostResponse;
   getExploreCommunities: CommunityResponse;
   getHiddenPosts: Array<Scalars['Float']['output']>;
   getPost: PostResponse;
   getPostComments: CommentResponse;
-  getPostVotes: VoteResponse;
   getSavedPosts: PostResponse;
   getSavedPostsIds: Array<Scalars['Float']['output']>;
   getUserById: UserResponse;
@@ -411,11 +419,6 @@ export type QueryGetCommentArgs = {
 };
 
 
-export type QueryGetCommentVotesArgs = {
-  commentId: Scalars['Int']['input'];
-};
-
-
 export type QueryGetCommunityByNameArgs = {
   name: Scalars['String']['input'];
 };
@@ -438,11 +441,6 @@ export type QueryGetPostArgs = {
 
 export type QueryGetPostCommentsArgs = {
   options: GetPostCommentsInput;
-};
-
-
-export type QueryGetPostVotesArgs = {
-  postId: Scalars['Int']['input'];
 };
 
 
@@ -539,8 +537,9 @@ export type UpdateUserNameInput = {
 };
 
 export type UpdateVoteInput = {
-  id: Scalars['Float']['input'];
+  commentId?: InputMaybe<Scalars['Int']['input']>;
   isUpvote: Scalars['Boolean']['input'];
+  postId?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type User = {
@@ -778,7 +777,7 @@ export type CreateVoteMutationVariables = Exact<{
 export type CreateVoteMutation = { __typename?: 'Mutation', createVote: { __typename?: 'VoteResponse', vote?: { __typename?: 'Vote', id: number, isUpvote: boolean, createdAt: string, updatedAt: string, userId: number, postId?: number | null, commentId?: number | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type DeleteVoteMutationVariables = Exact<{
-  id: Scalars['Int']['input'];
+  options: DeleteVoteOptions;
 }>;
 
 
@@ -870,13 +869,6 @@ export type GetPostByIdQueryVariables = Exact<{
 
 
 export type GetPostByIdQuery = { __typename?: 'Query', getPost: { __typename?: 'PostResponse', post?: { __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, isPrivate: boolean, creator?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
-
-export type GetPostVotesQueryVariables = Exact<{
-  postId: Scalars['Int']['input'];
-}>;
-
-
-export type GetPostVotesQuery = { __typename?: 'Query', getPostVotes: { __typename?: 'VoteResponse', votesArray?: Array<{ __typename?: 'Vote', id: number, isUpvote: boolean, createdAt: string, updatedAt: string, userId: number, postId?: number | null, commentId?: number | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetUserPostsQueryVariables = Exact<{
   options: GetUserPostsInput;
@@ -2010,8 +2002,8 @@ export type CreateVoteMutationHookResult = ReturnType<typeof useCreateVoteMutati
 export type CreateVoteMutationResult = Apollo.MutationResult<CreateVoteMutation>;
 export type CreateVoteMutationOptions = Apollo.BaseMutationOptions<CreateVoteMutation, CreateVoteMutationVariables>;
 export const DeleteVoteDocument = gql`
-    mutation DeleteVote($id: Int!) {
-  deleteVote(id: $id) {
+    mutation DeleteVote($options: DeleteVoteOptions!) {
+  deleteVote(options: $options) {
     success
     errors {
       ...FullErrorField
@@ -2034,7 +2026,7 @@ export type DeleteVoteMutationFn = Apollo.MutationFunction<DeleteVoteMutation, D
  * @example
  * const [deleteVoteMutation, { data, loading, error }] = useDeleteVoteMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      options: // value for 'options'
  *   },
  * });
  */
@@ -2559,52 +2551,6 @@ export type GetPostByIdQueryHookResult = ReturnType<typeof useGetPostByIdQuery>;
 export type GetPostByIdLazyQueryHookResult = ReturnType<typeof useGetPostByIdLazyQuery>;
 export type GetPostByIdSuspenseQueryHookResult = ReturnType<typeof useGetPostByIdSuspenseQuery>;
 export type GetPostByIdQueryResult = Apollo.QueryResult<GetPostByIdQuery, GetPostByIdQueryVariables>;
-export const GetPostVotesDocument = gql`
-    query GetPostVotes($postId: Int!) {
-  getPostVotes(postId: $postId) {
-    votesArray {
-      ...FullVote
-    }
-    errors {
-      ...FullErrorField
-    }
-  }
-}
-    ${FullVoteFragmentDoc}
-${FullErrorFieldFragmentDoc}`;
-
-/**
- * __useGetPostVotesQuery__
- *
- * To run a query within a React component, call `useGetPostVotesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPostVotesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetPostVotesQuery({
- *   variables: {
- *      postId: // value for 'postId'
- *   },
- * });
- */
-export function useGetPostVotesQuery(baseOptions: Apollo.QueryHookOptions<GetPostVotesQuery, GetPostVotesQueryVariables> & ({ variables: GetPostVotesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetPostVotesQuery, GetPostVotesQueryVariables>(GetPostVotesDocument, options);
-      }
-export function useGetPostVotesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPostVotesQuery, GetPostVotesQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetPostVotesQuery, GetPostVotesQueryVariables>(GetPostVotesDocument, options);
-        }
-export function useGetPostVotesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetPostVotesQuery, GetPostVotesQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetPostVotesQuery, GetPostVotesQueryVariables>(GetPostVotesDocument, options);
-        }
-export type GetPostVotesQueryHookResult = ReturnType<typeof useGetPostVotesQuery>;
-export type GetPostVotesLazyQueryHookResult = ReturnType<typeof useGetPostVotesLazyQuery>;
-export type GetPostVotesSuspenseQueryHookResult = ReturnType<typeof useGetPostVotesSuspenseQuery>;
-export type GetPostVotesQueryResult = Apollo.QueryResult<GetPostVotesQuery, GetPostVotesQueryVariables>;
 export const GetUserPostsDocument = gql`
     query GetUserPosts($options: GetUserPostsInput!) {
   getUserPosts(options: $options) {

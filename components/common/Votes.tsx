@@ -1,9 +1,14 @@
 "use client";
-import { useCreateVoteMutation, VoteOptions } from "@/generated/graphql";
+import {
+  useCreateVoteMutation,
+  useDeleteVoteMutation,
+  useUpdateVoteMutation,
+  VoteOptions,
+} from "@/generated/graphql";
 import { cn } from "@/lib/utils";
 import {
-  ArrowBigUp as UpvoteIcon,
   ArrowBigDown as DownvoteIcon,
+  ArrowBigUp as UpvoteIcon,
 } from "lucide-react";
 import React, { useState } from "react";
 
@@ -59,25 +64,48 @@ const Votes = ({ upvotesCount, isUpvoted, postId, commentId }: Props) => {
     }
   };
   const [createVoteMutation] = useCreateVoteMutation();
+  const [updateVoteMutation] = useUpdateVoteMutation();
+  const [deleteVoteMutation] = useDeleteVoteMutation();
 
   const addVote = async (isUpvote: boolean) => {
-    await createVoteMutation({
-      variables: {
-        options: {
-          isUpvote,
-          postId,
-          commentId,
+    // If the passed vote is equal to the current vote, delete the vote
+    if (
+      (isUpvote && vote === VoteOptions.Upvote) ||
+      (!isUpvote && vote === VoteOptions.Downvote)
+    ) {
+      await deleteVoteMutation({
+        variables: {
+          options: {
+            postId,
+            commentId,
+          },
         },
-      },
-      refetchQueries: [
-        "GetPostById",
-        "GetAllPosts",
-        "GetUserCommunityPosts",
-        "GetPostComments",
-        "GetCommentById",
-        "GetUserVotedPosts",
-      ],
-    });
+      });
+    }
+    // If it's not equal, check if there was a previous vote, if not, create one
+    else if (vote === VoteOptions.None) {
+      await createVoteMutation({
+        variables: {
+          options: {
+            isUpvote,
+            commentId,
+            postId,
+          },
+        },
+      });
+    }
+    // If there is a previous vote, update it
+    else {
+      await updateVoteMutation({
+        variables: {
+          options: {
+            isUpvote,
+            commentId,
+            postId,
+          },
+        },
+      });
+    }
   };
   return (
     <div

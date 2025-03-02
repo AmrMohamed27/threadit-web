@@ -19,7 +19,6 @@ const CommentGetter = ({ commentId, postId, isEdit }: Props) => {
     variables: {
       options: {
         commentId,
-        postId,
       },
     },
   });

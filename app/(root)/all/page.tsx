@@ -32,7 +32,7 @@ const AllPostsPage = () => {
       ) : errors || !posts || !count ? (
         <div> {errors ? errors[0].message : "An error occurred"}</div>
       ) : error ? (
-        <div>Error: {error?.message ?? "An error occurred"}</div>
+        <div> {error?.message ?? "An error occurred"}</div>
       ) : (
         <>
           <PostsFeed posts={posts} count={count} hasPagination={true} />

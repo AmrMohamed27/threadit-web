@@ -11,7 +11,7 @@ export const useCurrentUser = () => {
     loading: queryLoading,
   } = useMeQuery({
     fetchPolicy: "cache-first", // Ensure fresh data
-    context: { credentials: "include" }, // Send cookies
+    context: { credentials: "include" }, // Send opts
   });
   const [user, setUser] = useState<User | null>(data?.me.user ?? null);
   const [errorMap, setErrorMap] = useState<Record<string, string>>({});

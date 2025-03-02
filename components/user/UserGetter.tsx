@@ -21,7 +21,7 @@ const UserGetter = ({ name }: Props) => {
   });
   const { user: currentUser } = useCurrentUser();
   if (loading) return <UserProfileLoading />;
-  if (error) return <div>Error: {error.message}</div>;
+  if (error) return <div> {error.message}</div>;
   if (userResult?.getUserByName.errors)
     return (
       <div>

@@ -9,8 +9,8 @@ mutation CreateVote($options: CreateVoteInput!) {
   }
 }
 
-mutation DeleteVote($id: Int!) {
-  deleteVote(id: $id) {
+mutation DeleteVote($options: DeleteVoteOptions!) {
+  deleteVote(options: $options) {
     success
     errors {
       ...FullErrorField

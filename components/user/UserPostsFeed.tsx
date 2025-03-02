@@ -24,9 +24,9 @@ const UserPostsFeed = ({ user }: Props) => {
     },
   });
   if (loading) return <PostsFeedLoading hasPagination />;
-  if (error) return <div>Error: {error.message}</div>;
+  if (error) return <div> {error.message}</div>;
   if (data?.getUserPosts.errors)
-    return <div>Error: {data?.getUserPosts.errors[0].message}</div>;
+    return <div> {data?.getUserPosts.errors[0].message}</div>;
   const posts = data?.getUserPosts.postsArray ?? [];
   const count = data?.getUserPosts.count ?? 0;
   if (posts.length === 0) return <div>No posts found</div>;

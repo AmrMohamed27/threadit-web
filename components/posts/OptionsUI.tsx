@@ -15,6 +15,7 @@ interface Props {
   postId: number;
   commentId?: number;
   handleHide?: () => Promise<void>;
+  handleUnhide?: () => Promise<void>;
   handleSave?: () => Promise<void>;
   handleUnsave?: () => Promise<void>;
   handleDelete: () => Promise<void>;
@@ -26,6 +27,7 @@ const OptionsUI = ({
   postId,
   commentId,
   handleHide,
+  handleUnhide,
   handleSave,
   handleUnsave,
   handleDelete,
@@ -63,6 +65,8 @@ const OptionsUI = ({
                 onClick={
                   id === "hide"
                     ? handleHide
+                    : id === "unhide"
+                    ? handleUnhide
                     : id === "save" && !isSaved
                     ? handleSave
                     : id === "unsave" && isSaved

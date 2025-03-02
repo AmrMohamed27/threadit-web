@@ -22,7 +22,7 @@ const UserVotedFeed = ({ isUpvoted }: Props) => {
     },
   });
   if (loading) return <PostsFeedLoading hasPagination />;
-  if (error) return <div>Error: {error.message}</div>;
+  if (error) return <div> {error.message}</div>;
   if (data?.getUserVotedPosts.errors)
     return <div>{data?.getUserVotedPosts.errors[0].message}</div>;
   const posts = data?.getUserVotedPosts.postsArray ?? [];

@@ -1,26 +1,29 @@
 "use client";
-import React from "react";
 import {
-  loggedOutUserOptionsDropdown,
-  postOptionsDropdown,
-  savedPostOptionsDropdown,
-  savedUserPostOptionsDropdown,
-  userPostOptionsDropdown,
+  deletePostOption,
+  editPostOption,
+  hidePostOption,
+  reportPostOption,
+  savePostOption,
+  unhidePostOption,
+  unsavePostOption,
 } from "@/constants";
-import { useCurrentUser } from "@/hooks/use-current-user";
 import {
   useDeletePostMutation,
   useGetUserHiddenPostsQuery,
   useHidePostMutation,
   useSavePostMutation,
+  useUnhidePostMutation,
   useUnsavePostMutation,
 } from "@/generated/graphql";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { useToast } from "@/hooks/use-toast";
-import OptionsUI from "./OptionsUI";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/lib/store";
 import { toggleSavePost } from "@/lib/features/savedPostsSlice";
+import { RootState } from "@/lib/store";
+import { PostOptions } from "@/types";
 import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import OptionsUI from "./OptionsUI";
 
 interface Props {
   authorId: number;
@@ -52,20 +55,30 @@ const PostOptionsGetter = ({ authorId, postId }: Props) => {
       : []
   );
   const isHidden = hiddenSet.has(postId);
-  // Get options  depending on if the user is logged in, and if they are the author of the post, and the state of the post if it is saved or hidden
-  const fetchedOptions = user
-    ? user.id === authorId
-      ? isSaved
-        ? savedUserPostOptionsDropdown
-        : userPostOptionsDropdown
-      : isSaved
-      ? savedPostOptionsDropdown
-      : postOptionsDropdown
-    : loggedOutUserOptionsDropdown;
 
-  const options = isHidden
-    ? fetchedOptions.filter((o) => o.id !== "hide")
-    : fetchedOptions;
+  const options: PostOptions[] = [];
+  if (user) {
+    // Hidden options
+    if (isHidden) {
+      options.push(unhidePostOption);
+    } else {
+      options.push(hidePostOption);
+    }
+    // Saved options
+    if (isSaved) {
+      options.push(unsavePostOption);
+    } else {
+      options.push(savePostOption);
+    }
+    if (user.id === authorId) {
+      // Author options
+      options.push(editPostOption);
+      options.push(deletePostOption);
+    } else {
+      // Non-author options
+      options.push(reportPostOption);
+    }
+  }
 
   const dispatch = useDispatch();
   const reduxToggleSavedPost = (postId: number) => {
@@ -101,7 +114,31 @@ const PostOptionsGetter = ({ authorId, postId }: Props) => {
       console.error(error);
     }
   };
+  const [unhideMutation] = useUnhidePostMutation();
 
+  const handleUnhide = async () => {
+    try {
+      const { data } = await unhideMutation({
+        variables: {
+          postId: postId,
+        },
+        refetchQueries: [
+          "GetAllPosts",
+          "GetPostById",
+          "GetUserCommunityPosts",
+          "GetUserHiddenPosts",
+        ],
+      });
+      if (!data?.unhidePost?.success) {
+        console.error(
+          "Error Hiding post: ",
+          data?.unhidePost?.errors?.[0]?.message
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const [savePostMutation] = useSavePostMutation();
   const handleSavePost = async () => {
     try {
@@ -191,6 +228,7 @@ const PostOptionsGetter = ({ authorId, postId }: Props) => {
       options={options}
       postId={postId}
       handleHide={handleHidePost}
+      handleUnhide={handleUnhide}
       handleSave={handleSavePost}
       handleUnsave={handleUnsavePost}
       handleDelete={handleDeletePost}

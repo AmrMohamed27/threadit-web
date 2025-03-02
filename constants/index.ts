@@ -12,6 +12,7 @@ import {
   Trash as DeleteIcon,
   Pencil as EditIcon,
   EyeOff as HideIcon,
+  Eye as UnhideIcon,
   Home as HomeIcon,
   Flame as HotIcon,
   ClockArrowUp as NewIcon,
@@ -32,81 +33,95 @@ export const EXPLORE_COMMUNITIES_COUNT = 4;
 
 // POSTS
 // Options for logged out users options dropdown
+export const savePostOption: PostOptions = {
+  id: "save",
+  label: "Save",
+  icon: SaveIcon,
+} as const;
+export const unsavePostOption: PostOptions = {
+  id: "unsave",
+  label: "Unsave",
+  icon: UnsaveIcon,
+} as const;
+export const deletePostOption: PostOptions = {
+  id: "delete",
+  label: "Delete",
+  icon: DeleteIcon,
+} as const;
+export const hidePostOption: PostOptions = {
+  id: "hide",
+  label: "Hide",
+  icon: HideIcon,
+} as const;
+export const unhidePostOption: PostOptions = {
+  id: "unhide",
+  label: "Unhide",
+  icon: UnhideIcon,
+} as const;
+export const editPostOption: PostOptions = {
+  id: "edit",
+  label: "Edit post",
+  icon: EditIcon,
+  href: ({ postId }) => `/posts/${postId}/edit`,
+} as const;
+export const reportPostOption: PostOptions = {
+  id: "report",
+  label: "Report",
+  icon: ReportIcon,
+} as const;
+
 export const loggedOutUserOptionsDropdown: PostOptions[] = [
-  { id: "report", label: "Report", icon: ReportIcon },
+  reportPostOption,
 ] as const;
 
 // Options for post options dropdown if post is not saved
 export const postOptionsDropdown: PostOptions[] = [
-  { id: "save", label: "Save", icon: SaveIcon },
-  { id: "hide", label: "Hide", icon: HideIcon },
-  loggedOutUserOptionsDropdown[0],
+  hidePostOption,
+  reportPostOption,
 ] as const;
 
 export const savedPostOptionsDropdown: PostOptions[] = [
-  { id: "unsave", label: "Unsave", icon: UnsaveIcon },
-  loggedOutUserOptionsDropdown[0],
+  unsavePostOption,
+  reportPostOption,
 ] as const;
 
 // Options for user's post options dropdown
 export const userPostOptionsDropdown: PostOptions[] = [
-  {
-    id: "edit",
-    label: "Edit post",
-    icon: EditIcon,
-    href: ({ postId }) => `/posts/${postId}/edit`,
-  },
-  postOptionsDropdown[0],
-  postOptionsDropdown[1],
-  {
-    id: "delete",
-    label: "Delete",
-    icon: DeleteIcon,
-  },
-  postOptionsDropdown[2],
+  editPostOption,
+  hidePostOption,
+  savePostOption,
+  deletePostOption,
+  reportPostOption,
 ] as const;
 
 // options for user's post options dropdown if post is saved
 export const savedUserPostOptionsDropdown: PostOptions[] = [
-  {
-    id: "edit",
-    label: "Edit post",
-    icon: EditIcon,
-    href: ({ postId }) => `/posts/${postId}/edit`,
-  },
-  savedPostOptionsDropdown[0],
-  savedPostOptionsDropdown[1],
-  {
-    id: "delete",
-    label: "Delete",
-    icon: DeleteIcon,
-  },
+  editPostOption,
+  unsavePostOption,
+  reportPostOption,
+  deletePostOption,
 ];
 
 // COMMENTS
+export const editCommentOption: CommentOptions = {
+  id: "edit",
+  label: "Edit comment",
+  icon: EditIcon,
+  href: ({ postId, commentId }) => `/posts/${postId}/comment/${commentId}/edit`,
+} as const;
 // Options for logged out users options dropdown
 export const loggedOutUserCommentOptionsDropdown: CommentOptions[] = [
-  { id: "report", label: "Report", icon: ReportIcon },
+  reportPostOption,
 ] as const;
 // Options for comment options dropdown
 export const commentOptionsDropdown: CommentOptions[] = [
-  loggedOutUserCommentOptionsDropdown[0],
+  reportPostOption,
 ] as const;
 // Options for user's comment options dropdown
 export const userCommentOptionsDropdown: CommentOptions[] = [
-  {
-    id: "edit",
-    label: "Edit comment",
-    icon: EditIcon,
-    href: ({ postId, commentId }) =>
-      `/posts/${postId}/comment/${commentId}/edit`,
-  },
-  {
-    id: "delete",
-    label: "Delete",
-    icon: DeleteIcon,
-  },
-  loggedOutUserCommentOptionsDropdown[0],
+  editCommentOption,
+  deletePostOption,
+  reportPostOption,
 ] as const;
 
 export const sortingOptions: SortingObjects[] = [

@@ -39,7 +39,7 @@ const SearchCommunityPage = () => {
       ) : errors || !communities || !count ? (
         <div> {errors ? errors[0].message : "An error occurred"}</div>
       ) : error ? (
-        <div>Error: {error?.message ?? "An error occurred"}</div>
+        <div> {error?.message ?? "An error occurred"}</div>
       ) : (
         <div className="flex flex-col gap-4 w-full">
           <SearchSwitch />

@@ -1,5 +1,4 @@
 "use client";
-import ProtectRoute from "@/components/auth/ProtectRoute";
 import PostsFeedLoading from "@/components/loading/PostsFeedLoading";
 import PostsFeed from "@/components/posts/PostsFeed";
 import { POSTS_PER_PAGE } from "@/constants";
@@ -25,11 +24,7 @@ const SavedPostsGetter = () => {
     return <div>{data?.getSavedPosts.errors[0].message}</div>;
   const posts = data?.getSavedPosts.postsArray ?? [];
   const count = data?.getSavedPosts.count ?? 0;
-  return (
-    <ProtectRoute>
-      <PostsFeed posts={posts} count={count} hasPagination />
-    </ProtectRoute>
-  );
+  return <PostsFeed posts={posts} count={count} hasPagination />;
 };
 
 export default SavedPostsGetter;

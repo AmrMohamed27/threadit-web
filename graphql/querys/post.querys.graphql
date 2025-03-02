@@ -16,17 +16,6 @@ query GetPostById($id: Int!) {
   }
 }
 
-query GetPostVotes($postId: Int!) {
-  getPostVotes(postId: $postId) {
-    votesArray {
-      ...FullVote
-    }
-    errors {
-      ...FullErrorField
-    }
-  }
-}
-
 query GetUserPosts($options: GetUserPostsInput!) {
   getUserPosts(options: $options) {
     ...FullPostResponse

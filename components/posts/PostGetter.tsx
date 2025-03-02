@@ -1,7 +1,7 @@
 "use client";
 import {
   useGetPostByIdQuery,
-  useGetUserHiddenPostsQuery
+  useGetUserHiddenPostsQuery,
 } from "@/generated/graphql";
 import CommentGetter from "../comments/CommentGetter";
 import CommentsFeedGetter from "../comments/CommentsFeedGetter";
@@ -54,7 +54,7 @@ const PostGetter = ({ postId, isEdit, commentId }: Props) => {
       </div>
     );
 
-  if (error) return <div>Error: {error.message}</div>;
+  if (error) return <div>{error.message}</div>;
   const post = data?.getPost.post;
   if (!post) return <div>Error 404 - No post found</div>;
   if (hiddenSet.has(postId)) {

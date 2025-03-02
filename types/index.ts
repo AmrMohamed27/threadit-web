@@ -59,6 +59,7 @@ export interface CommentOptions {
 
 export type OptionIds =
   | "hide"
+  | "unhide"
   | "edit"
   | "delete"
   | "report"
