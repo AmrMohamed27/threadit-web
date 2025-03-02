@@ -5,7 +5,6 @@ import { Post, useUpdatePostMutation } from "@/generated/graphql";
 import EditPostSchema from "@/schema/EditPostSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { CreatePostErrorType } from "../../types";
@@ -14,17 +13,14 @@ import { useEffect } from "react";
 
 interface Props {
   post: Post;
+  toggleShowEditForm: () => void;
 }
 
-const EditPostForm = ({ post }: Props) => {
+const EditPostForm = ({ post, toggleShowEditForm }: Props) => {
   // Destructure post
   const { id: postId, title, content } = post;
   // Define graphql mutation
-  const [updatePostMutation, { data, loading, error }] =
-    useUpdatePostMutation();
-  console.log(data);
-  // Router
-  const router = useRouter();
+  const [updatePostMutation, { loading, error }] = useUpdatePostMutation();
   // 1. Define your form.
   const form = useForm<z.infer<typeof EditPostSchema>>({
     resolver: zodResolver(EditPostSchema),
@@ -54,8 +50,7 @@ const EditPostForm = ({ post }: Props) => {
     });
     const success = data?.updatePost.success;
     if (success) {
-      // Redirect to home page
-      router.push(`/posts/${postId}`);
+      toggleShowEditForm();
     } else if (data?.updatePost.errors) {
       for (const error of data.updatePost.errors) {
         form.setError(error.field as CreatePostErrorType, {
@@ -82,9 +77,18 @@ const EditPostForm = ({ post }: Props) => {
           label="Content"
           isTextArea
         />
-        <Button type="submit">
-          {loading ? <Loader className="animate-spin" /> : <span>Save</span>}
-        </Button>
+        <div className="flex flex-row justify-end items-center gap-4">
+          <Button type="submit">
+            {loading ? <Loader className="animate-spin" /> : <span>Save</span>}
+          </Button>
+          <Button
+            variant={"red"}
+            className="w-auto"
+            onClick={toggleShowEditForm}
+          >
+            Cancel
+          </Button>
+        </div>
       </form>
     </Form>
   );

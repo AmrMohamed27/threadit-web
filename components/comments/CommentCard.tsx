@@ -10,6 +10,7 @@ import Votes from "../common/Votes";
 import CommentForm from "../forms/CommentForm";
 import CommentOptionsGetter from "../posts/CommentOptionsGetter";
 import { Button } from "../ui/button";
+import EditCommentForm from "../forms/EditCommentForm";
 
 interface Props {
   comment: Comment;
@@ -31,12 +32,16 @@ const CommentCard = ({ comment, depth = 0, maxDepth = 3 }: Props) => {
 
   const isArabicContent = isArabic(content);
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
 
   const showForm = () => {
     setIsFormVisible(true);
   };
   const hideForm = () => {
     setIsFormVisible(false);
+  };
+  const toggleShowEditForm = () => {
+    setShowEditForm((prev) => !prev);
   };
 
   const commentLink = `/posts/${comment.postId}/comment/${comment.id}`;
@@ -79,44 +84,54 @@ const CommentCard = ({ comment, depth = 0, maxDepth = 3 }: Props) => {
           commentId={commentId}
           postId={comment.postId}
           authorId={comment.authorId}
+          toggleShowEditForm={toggleShowEditForm}
         />
       </div>
       {/* Content */}
-      <div dir={isArabicContent ? "rtl" : "ltr"}>
-        {<p className={cn(" text-sm")}>{content}</p>}
-      </div>
-      {/* Interactions */}
-      <div className="flex flex-row flex-wrap items-center gap-4">
-        <Votes
-          upvotesCount={upvotesCount ?? 0}
-          isUpvoted={isUpvoted}
-          commentId={commentId}
+      {showEditForm ? (
+        <EditCommentForm
+          comment={comment}
+          toggleShowEditForm={toggleShowEditForm}
         />
-        {/* Comment Buttons */}
-        <div>
-          <Button
-            className="flex flex-row items-center gap-2 px-4 py-2 text-foreground"
-            variant={"grey"}
-            onClick={showForm}
-          >
-            <CommentIcon size={20} aria-label="Comment Icon" />
-            {/* Comments Count */}
-            <span className="text-sm">Reply</span>
-          </Button>
+      ) : (
+        <div dir={isArabicContent ? "rtl" : "ltr"}>
+          {<p className={cn(" text-sm")}>{content}</p>}
         </div>
-        <div>
-          <ShareButton commentId={comment.id} postId={comment.postId} />
+      )}
+      {/* Interactions */}
+      {!showEditForm && (
+        <div className="flex flex-row flex-wrap items-center gap-4">
+          <Votes
+            upvotesCount={upvotesCount ?? 0}
+            isUpvoted={isUpvoted}
+            commentId={commentId}
+          />
+          {/* Comment Buttons */}
+          <div>
+            <Button
+              className="flex flex-row items-center gap-2 px-4 py-2 text-foreground"
+              variant={"grey"}
+              onClick={showForm}
+            >
+              <CommentIcon size={20} aria-label="Comment Icon" />
+              {/* Comments Count */}
+              <span className="text-sm">Reply</span>
+            </Button>
+          </div>
+          <div>
+            <ShareButton commentId={comment.id} postId={comment.postId} />
+          </div>
+          <div>
+            <Link
+              href={commentLink}
+              className="flex flex-row items-center gap-2 bg-muted hover:bg-muted-foreground/30 px-4 py-2 rounded-full"
+            >
+              <GoToIcon size={20} aria-label="Go to comment" />
+              <span className="text-sm">Go to comment</span>
+            </Link>
+          </div>
         </div>
-        <div>
-          <Link
-            href={commentLink}
-            className="flex flex-row items-center gap-2 bg-muted hover:bg-muted-foreground/30 px-4 py-2 rounded-full"
-          >
-            <GoToIcon size={20} aria-label="Go to comment" />
-            <span className="text-sm">Go to comment</span>
-          </Link>
-        </div>
-      </div>
+      )}
       {isFormVisible && (
         <CommentForm
           postId={comment.postId}

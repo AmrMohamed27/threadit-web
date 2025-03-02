@@ -28,9 +28,10 @@ import OptionsUI from "./OptionsUI";
 interface Props {
   authorId: number;
   postId: number;
+  handleEdit?: () => void;
 }
 
-const PostOptionsGetter = ({ authorId, postId }: Props) => {
+const PostOptionsGetter = ({ authorId, postId, handleEdit }: Props) => {
   // Get current user
   const { user } = useCurrentUser();
   // Toast
@@ -232,6 +233,7 @@ const PostOptionsGetter = ({ authorId, postId }: Props) => {
       handleSave={handleSavePost}
       handleUnsave={handleUnsavePost}
       handleDelete={handleDeletePost}
+      handleEdit={handleEdit}
       isSaved={isSaved}
     />
   );

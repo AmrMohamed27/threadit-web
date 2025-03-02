@@ -19,6 +19,7 @@ interface Props {
   handleSave?: () => Promise<void>;
   handleUnsave?: () => Promise<void>;
   handleDelete: () => Promise<void>;
+  handleEdit?: () => void;
   isSaved?: boolean;
 }
 
@@ -31,6 +32,7 @@ const OptionsUI = ({
   handleSave,
   handleUnsave,
   handleDelete,
+  handleEdit,
   isSaved,
 }: Props) => {
   return (
@@ -71,6 +73,8 @@ const OptionsUI = ({
                     ? handleSave
                     : id === "unsave" && isSaved
                     ? handleUnsave
+                    : id === "edit" && handleEdit
+                    ? handleEdit
                     : undefined
                 }
                 href={href}

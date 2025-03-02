@@ -9,6 +9,7 @@ import { Community } from "@/generated/graphql";
 import UnjoinButton from "./UnjoinButton";
 import JoinButton from "./JoinButton";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { DEFAULT_COVER_PHOTO_URL } from "@/constants";
 
 type Props = {
   community: Community;
@@ -24,9 +25,7 @@ const CommunityHeader = ({ community }: Props) => {
       {/* Cover Image */}
       <div className="rounded-md w-full h-16 md:h-24 lg:h-32">
         <Image
-          src={
-            cover ?? "https://flowbite.com/docs/images/examples/image-3@2x.jpg"
-          }
+          src={cover ?? DEFAULT_COVER_PHOTO_URL}
           alt={`Cover image for ${name} Community`}
           width={1400}
           height={800}

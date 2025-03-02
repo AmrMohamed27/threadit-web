@@ -1,27 +1,25 @@
 "use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import InputField from "./InputField";
 import { Comment, useUpdateCommentMutation } from "@/generated/graphql";
-import { Loader } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { CommentErrorType } from "../../types";
 import CommentSchema from "@/schema/CommentSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { CommentErrorType } from "../../types";
+import InputField from "./InputField";
 
 interface Props {
   comment: Comment;
+  toggleShowEditForm: () => void;
 }
 
-const EditCommentForm = ({ comment }: Props) => {
+const EditCommentForm = ({ comment, toggleShowEditForm }: Props) => {
   // Destructure comment
   const { id: commentId, content } = comment;
   // Define graphql mutation
   const [updateCommentMutation, { loading }] = useUpdateCommentMutation();
-  // Router
-  const router = useRouter();
   // 1. Define your form.
   const form = useForm<z.infer<typeof CommentSchema>>({
     resolver: zodResolver(CommentSchema),
@@ -50,7 +48,7 @@ const EditCommentForm = ({ comment }: Props) => {
     const success = data?.updateComment?.success;
     if (success) {
       // Redirect to home page
-      router.push(`/posts/${comment.postId}/comment/${commentId}`);
+      toggleShowEditForm();
     } else if (data?.updateComment?.errors) {
       for (const error of data.updateComment.errors) {
         form.setError(error.field as CommentErrorType, {
@@ -64,15 +62,19 @@ const EditCommentForm = ({ comment }: Props) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
         {/* Content */}
-        <InputField
-          control={form.control}
-          name="content"
-          label="Content"
-          isTextArea
-        />
-        <Button type="submit">
-          {loading ? <Loader className="animate-spin" /> : <span>Save</span>}
-        </Button>
+        <InputField control={form.control} name="content" label="" isTextArea />
+        <div className="flex flex-row justify-end items-center gap-4">
+          <Button type="submit">
+            {loading ? <Loader className="animate-spin" /> : <span>Save</span>}
+          </Button>
+          <Button
+            variant={"red"}
+            onClick={toggleShowEditForm}
+            className="w-auto"
+          >
+            Cancel
+          </Button>
+        </div>
       </form>
     </Form>
   );

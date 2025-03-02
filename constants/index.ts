@@ -31,6 +31,9 @@ export const MAX_REPLY_DEPTH = 3;
 
 export const EXPLORE_COMMUNITIES_COUNT = 4;
 
+export const DEFAULT_COVER_PHOTO_URL =
+  "https://flowbite.com/docs/images/examples/image-3@2x.jpg";
+
 // POSTS
 // Options for logged out users options dropdown
 export const savePostOption: PostOptions = {
@@ -62,7 +65,6 @@ export const editPostOption: PostOptions = {
   id: "edit",
   label: "Edit post",
   icon: EditIcon,
-  href: ({ postId }) => `/posts/${postId}/edit`,
 } as const;
 export const reportPostOption: PostOptions = {
   id: "report",
@@ -107,7 +109,6 @@ export const editCommentOption: CommentOptions = {
   id: "edit",
   label: "Edit comment",
   icon: EditIcon,
-  href: ({ postId, commentId }) => `/posts/${postId}/comment/${commentId}/edit`,
 } as const;
 // Options for logged out users options dropdown
 export const loggedOutUserCommentOptionsDropdown: CommentOptions[] = [

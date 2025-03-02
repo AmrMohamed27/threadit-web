@@ -15,9 +15,15 @@ interface Props {
   authorId: number;
   commentId: number;
   postId: number;
+  toggleShowEditForm?: () => void;
 }
 
-const CommentOptionsGetter = ({ authorId, commentId, postId }: Props) => {
+const CommentOptionsGetter = ({
+  authorId,
+  commentId,
+  postId,
+  toggleShowEditForm,
+}: Props) => {
   // Get current user
   const { user } = useCurrentUser();
   // Toast
@@ -65,6 +71,7 @@ const CommentOptionsGetter = ({ authorId, commentId, postId }: Props) => {
       commentId={commentId}
       postId={postId}
       handleDelete={handleDeleteComment}
+      handleEdit={toggleShowEditForm}
     />
   );
 };
