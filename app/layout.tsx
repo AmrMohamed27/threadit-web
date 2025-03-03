@@ -51,9 +51,12 @@ export default function RootLayout({
                   <AppSidebar />
                   <div className="relative flex flex-col flex-1 w-full min-h-screen">
                     <SidebarTrigger />
-                    <ConfirmAlert />
                     <Navbar />
-                    <main className="flex-grow">{children}</main>
+
+                    <main className="flex flex-col flex-grow justify-center items-center mt-[80px]">
+                      <ConfirmAlert />
+                      {children}
+                    </main>
                     <Toaster />
                   </div>
                 </SidebarProvider>

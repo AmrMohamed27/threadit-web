@@ -1,5 +1,5 @@
 import { Community, useGetUserByIdLazyQuery } from "@/generated/graphql";
-import { formatDate, getDefaultAvatar, timeAgo } from "@/lib/utils";
+import { cn, formatDate, getDefaultAvatar, timeAgo } from "@/lib/utils";
 import {
   Calendar as CreatedAtIcon,
   Globe as PublicIcon,
@@ -12,9 +12,10 @@ import Link from "next/link";
 
 type Props = {
   community: Community;
+  className?: string;
 };
 
-const CommunityAbout = ({ community }: Props) => {
+const CommunityAbout = ({ community, className = "" }: Props) => {
   // Destructure community
   const {
     name,
@@ -45,7 +46,12 @@ const CommunityAbout = ({ community }: Props) => {
     fetchCreator();
   }, [creator, getUserByIdQuery]);
   return (
-    <div className="flex flex-col gap-4 bg-muted dark:bg-black px-4 pt-4 pb-8 rounded-lg min-w-[300px]">
+    <div
+      className={cn(
+        "md:top-20 md:right-4 md:sticky flex flex-col gap-4 bg-muted dark:bg-black px-4 pt-4 pb-8 rounded-lg min-w-[300px] h-full max-h-[700px]",
+        className
+      )}
+    >
       {/* Header */}
       <div className="flex flex-col gap-4">
         {/* Name */}

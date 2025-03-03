@@ -56,12 +56,16 @@ const PostGetter = ({ postId, commentId }: Props) => {
   const community = post.community;
   return commentId ? (
     // Render single comment page
-    <div className="flex flex-row gap-8 w-full">
+    <div className="relative flex flex-row gap-8 w-full">
       <div className="flex flex-col gap-4 w-full">
         <PostsFeed posts={[post]} count={1} />
         <CommentGetter commentId={commentId} postId={postId} />
       </div>
-      {community ? <CommunityAbout community={community} /> : <></>}
+      {community ? (
+        <CommunityAbout community={community} className="max-lg:hidden" />
+      ) : (
+        <></>
+      )}
     </div>
   ) : (
     // Render single post page
@@ -71,7 +75,11 @@ const PostGetter = ({ postId, commentId }: Props) => {
         <CommentForm postId={postId} />
         <CommentsFeedGetter postId={postId} />
       </div>
-      {community ? <CommunityAbout community={community} /> : <></>}
+      {community ? (
+        <CommunityAbout community={community} className="max-lg:hidden" />
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
