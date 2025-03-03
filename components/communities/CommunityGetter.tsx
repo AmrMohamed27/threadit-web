@@ -14,7 +14,6 @@ const CommunityGetter = (props: Props) => {
     variables: {
       name,
     },
-    fetchPolicy: "no-cache",
   });
 
   if (loading)

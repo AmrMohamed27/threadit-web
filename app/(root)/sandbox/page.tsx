@@ -5,7 +5,7 @@ import { useState } from "react";
 
 const Sandbox = () => {
   const [imageUrl, setImageUrl] = useState("");
-  const handleUploadComplete = (url: string) => {
+  const handleUploadComplete = async (url: string) => {
     setImageUrl(url);
   };
   return (

@@ -5,7 +5,7 @@ const f = createUploadthing();
 
 // Define what file types and sizes you allow
 export const ourFileRouter = {
-  imageUploader: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } }) // Adjust size as needed
+  imageUploader: f({ image: { maxFileSize: "4MB", maxFileCount: 24 } }) // Adjust size as needed
     .onUploadComplete(async ({ metadata, file }) => {
       console.log("File uploaded:", file.ufsUrl);
       return { fileUrl: file.ufsUrl, metadata };
@@ -19,3 +19,5 @@ export const ourFileRouter = {
 
 export type OurFileRouter = typeof ourFileRouter;
 export const utapi = new UTApi();
+
+

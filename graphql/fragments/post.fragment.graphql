@@ -6,6 +6,7 @@ fragment FullPost on Post {
   updatedAt
   authorId
   communityId
+  media
 }
 
 fragment FullPostResponse on PostResponse {

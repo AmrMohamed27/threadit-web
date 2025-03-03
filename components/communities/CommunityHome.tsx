@@ -29,7 +29,7 @@ const CommunityHome = (props: Props) => {
         </TabsContent>
       </Tabs>
       {/* Feed and about desktop */}
-      <div className="hidden lg:flex flex-row gap-8">
+      <div className="hidden relative lg:flex flex-row gap-8">
         <CommunityFeed community={community} />
         <CommunityAbout community={community} />
       </div>

@@ -81,7 +81,7 @@ const EditPostForm = ({ post, toggleShowEditForm }: Props) => {
           label="Content"
           isMarkdown
         />
-        <div className="flex flex-row justify-end items-center gap-4">
+        <div className="flex flex-row items-center gap-4">
           <Button type="submit">
             {loading ? <Loader className="animate-spin" /> : <span>Save</span>}
           </Button>

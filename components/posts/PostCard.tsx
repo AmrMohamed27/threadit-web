@@ -13,6 +13,8 @@ import UserHoverCard from "../user/UserHoverCard";
 import { useState } from "react";
 import EditPostForm from "../forms/EditPostForm";
 import MarkdownEditor from "@uiw/react-markdown-editor";
+import Image from "next/image";
+import { ImageCarousel } from "./ImageCarousel";
 
 interface Props {
   post: Post;
@@ -135,6 +137,26 @@ const PostCard = ({ post }: Props) => {
                 source={content}
               ></MarkdownEditor.Markdown>
             }
+          </div>
+          {/* Media */}
+          <div className="max-w-xl">
+            {post.media ? (
+              post.media.length === 1 ? (
+                <Image
+                  src={post.media[0]}
+                  alt="Post Media"
+                  width={128}
+                  height={128}
+                  className="rounded-md w-full object-cover"
+                />
+              ) : post.media.length > 1 ? (
+                <ImageCarousel media={post.media} />
+              ) : (
+                <></>
+              )
+            ) : (
+              <></>
+            )}
           </div>
           {/* Interactions */}
           <div className="flex flex-row items-center gap-4">

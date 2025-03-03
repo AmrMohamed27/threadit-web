@@ -1,13 +1,14 @@
-import { Community } from "@/generated/graphql";
+import { Community, useGetUserByIdLazyQuery } from "@/generated/graphql";
 import { formatDate, getDefaultAvatar, timeAgo } from "@/lib/utils";
 import {
   Calendar as CreatedAtIcon,
   Globe as PublicIcon,
   Lock as PrivateIcon,
 } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Separator } from "../ui/separator";
 import AvatarWrapper from "../common/AvatarWrapper";
+import Link from "next/link";
 
 type Props = {
   community: Community;
@@ -22,15 +23,38 @@ const CommunityAbout = ({ community }: Props) => {
     updatedAt,
     membersCount,
     postsCount,
-    creator,
+    creator: passedCreator,
+    creatorId,
     isPrivate,
   } = community;
+  const [getUserByIdQuery] = useGetUserByIdLazyQuery({
+    variables: {
+      id: creatorId,
+    },
+  });
+  const [creator, setCreator] = useState(passedCreator);
+  useEffect(() => {
+    const fetchCreator = async () => {
+      if (!creator) {
+        const { data } = await getUserByIdQuery();
+        if (data?.getUserById.user) {
+          setCreator(data?.getUserById.user);
+        }
+      }
+    };
+    fetchCreator();
+  }, [creator, getUserByIdQuery]);
   return (
     <div className="flex flex-col gap-4 bg-muted dark:bg-black px-4 pt-4 pb-8 rounded-lg min-w-[300px]">
       {/* Header */}
       <div className="flex flex-col gap-4">
         {/* Name */}
-        <span className="font-semibold">{name}</span>
+        <Link
+          className="font-semibold hover:underline"
+          href={`/c/${name ?? ""}`}
+        >
+          c/{name}
+        </Link>
         {/* Description */}
         <p className="text-muted-foreground text-sm">{description}</p>
         {/* Info */}
@@ -77,7 +101,10 @@ const CommunityAbout = ({ community }: Props) => {
         <div className="flex flex-col gap-4">
           {/* Label */}
           <span className="text-muted-foreground uppercase">Creator</span>
-          <div className="flex flex-row items-center gap-2">
+          <Link
+            className="flex flex-row items-center gap-2"
+            href={`/users/${creator?.name ?? ""}`}
+          >
             <AvatarWrapper
               src={
                 creator?.image ??
@@ -86,7 +113,7 @@ const CommunityAbout = ({ community }: Props) => {
               alt={creator?.name ?? "Anonymous"}
             />
             <span>{creator?.name ?? "Anonymous"}</span>
-          </div>
+          </Link>
         </div>
       </div>
     </div>

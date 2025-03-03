@@ -2,17 +2,18 @@
 import { Button } from "@/components/ui/button";
 import { Form, FormLabel } from "@/components/ui/form";
 import { Community, useCreatePostMutation } from "@/generated/graphql";
+import { useCurrentPage } from "@/hooks/use-current-page";
 import CreatePostSchema from "@/schema/CreatePostSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import sanitizeHtml from "sanitize-html";
 import { z } from "zod";
 import { CreatePostErrorType } from "../../types";
-import InputField from "./InputField";
+import UploadDialog from "../common/UploadDialog";
 import ChooseCommunity from "../communities/ChooseCommunity";
-import { useCurrentPage } from "@/hooks/use-current-page";
-import sanitizeHtml from "sanitize-html";
+import InputField from "./InputField";
 
 interface Props {
   communities: Community[];
@@ -37,9 +38,16 @@ const CreatePostForm = ({ communities }: Props) => {
         : undefined,
     },
   });
+  // Handle upload
+  async function handleUploadComplete(url: string) {
+    form.setValue(
+      "media",
+      form.getValues("media") ? [...form.getValues("media")!, url] : [url]
+    );
+  }
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof CreatePostSchema>) {
-    const { title, content, communityId } = values;
+    const { title, content, communityId, media } = values;
     // Sanitize html to prevent xss attacks
     const safeContent = sanitizeHtml(content, {
       allowedTags: [],
@@ -50,6 +58,7 @@ const CreatePostForm = ({ communities }: Props) => {
           title,
           content: safeContent,
           communityId,
+          media,
         },
       },
       refetchQueries: [
@@ -93,9 +102,15 @@ const CreatePostForm = ({ communities }: Props) => {
           label="Content"
           isMarkdown
         />
-        <Button type="submit">
-          {loading ? <Loader className="animate-spin" /> : <span>Post</span>}
-        </Button>
+        <div className="flex flex-row items-center gap-4">
+          {/* Add media */}
+          <UploadDialog handleUploadComplete={handleUploadComplete}>
+            <Button variant={"default"}>Add media</Button>
+          </UploadDialog>
+          <Button type="submit">
+            {loading ? <Loader className="animate-spin" /> : <span>Post</span>}
+          </Button>
+        </div>
       </form>
     </Form>
   );
