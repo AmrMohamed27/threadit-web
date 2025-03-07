@@ -1,0 +1,11 @@
+query GetChat($user2: Int!) {
+  getChat(user2: $user2) {
+    ...MessageArrayResponse
+  }
+}
+
+query GetUserChats {
+  getUserChats {
+    ...ChatResponse
+  }
+}

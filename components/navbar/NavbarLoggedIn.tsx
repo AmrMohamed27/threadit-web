@@ -10,12 +10,14 @@ import { useLogoutMutation, User } from "@/generated/graphql";
 import { cn, getDefaultAvatar } from "@/lib/utils";
 import {
   Plus as CreateIcon,
-  LogOut as LogOutIcon
+  LogOut as LogOutIcon,
+  MessageCircleMore as ChatIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import AvatarWrapper from "../common/AvatarWrapper";
 import GreyDiv from "../common/GreyDiv";
+import ChatTrigger from "../chat/ChatTrigger";
 
 interface Props {
   user: User;
@@ -34,7 +36,7 @@ const NavbarLoggedIn = ({ user }: Props) => {
   };
   if (logoutError) console.error(logoutError);
   return (
-    <div className="flex flex-row-reverse items-center gap-4">
+    <div className="flex flex-row-reverse items-center gap-2">
       {/* Avatar and dropdown menu */}
       <DropdownMenu>
         <DropdownMenuTrigger>
@@ -103,6 +105,12 @@ const NavbarLoggedIn = ({ user }: Props) => {
           <CreateIcon size={20} />
           <span>Create</span>
         </Link>
+      </GreyDiv>
+      {/* Desktop Chat button */}
+      <GreyDiv className={cn("bg-transparent p-2 hidden md:block")}>
+        <ChatTrigger className="flex flex-row justify-center items-center gap-2 cursor-pointer">
+          <ChatIcon size={20} />
+        </ChatTrigger>
       </GreyDiv>
     </div>
   );

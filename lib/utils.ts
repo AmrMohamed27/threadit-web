@@ -1,6 +1,9 @@
 import { OurFileRouter } from "@/app/api/uploadthing/core";
 import { FieldError } from "@/generated/graphql";
-import { generateUploadButton, generateUploadDropzone } from "@uploadthing/react";
+import {
+  generateUploadButton,
+  generateUploadDropzone,
+} from "@uploadthing/react";
 import { clsx, type ClassValue } from "clsx";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { twMerge } from "tailwind-merge";
@@ -105,6 +108,19 @@ export const isArabic = (text: string) => {
   return arabicRegex.test(text);
 };
 
-
 export const UploadButton = generateUploadButton<OurFileRouter>();
 export const UploadDropzone = generateUploadDropzone<OurFileRouter>();
+
+export const getMessageString = ({
+  content,
+  senderId,
+  userId,
+  chatterName,
+}: {
+  content: string;
+  senderId: number;
+  userId: number;
+  chatterName: string;
+}) => {
+  return senderId === userId ? `You: ${content}` : `${chatterName}: ${content}`;
+};

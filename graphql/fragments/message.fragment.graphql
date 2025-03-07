@@ -1,0 +1,57 @@
+fragment FullMessage on Message {
+  id
+  content
+  createdAt
+  updatedAt
+  senderId
+  receiverId
+  media
+  sender {
+    ...FullUser
+  }
+  receiver {
+    ...FullUser
+  }
+}
+
+fragment MessageArrayResponse on MessageResponse {
+  count
+  errors {
+    ...FullErrorField
+  }
+  messagesArray {
+    ...FullMessage
+  }
+}
+
+fragment SingleMessageResponse on MessageResponse {
+  message {
+    ...FullMessage
+  }
+  errors {
+    ...FullErrorField
+  }
+}
+
+fragment ChatResponse on MessageResponse {
+  chats {
+    senderId
+    receiverId
+    sender {
+      ...FullUser
+    }
+    receiver {
+      ...FullUser
+    }
+    messages {
+      ...FullMessage
+    }
+  }
+}
+
+fragment ConfirmResponse on ConfirmResponse {
+  success
+  errors {
+    ...FullErrorField
+  }
+}

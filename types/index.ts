@@ -23,6 +23,7 @@ export type CreateCommunityErrorType =
   | `root.${string}`;
 
 export type CommentErrorType = "content" | "root" | `root.${string}`;
+export type MessageErrorType = "content" | "root" | `root.${string}`;
 
 export type ResetPasswordErrorType =
   | "root"

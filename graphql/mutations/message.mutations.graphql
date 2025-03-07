@@ -1,0 +1,17 @@
+mutation CreateMessage($options: CreateMessageInput!) {
+  createMessage(options: $options) {
+    ...SingleMessageResponse
+  }
+}
+
+mutation UpdateMessage($options: UpdateMessageInput!) {
+  updateMessage(options: $options) {
+    ...ConfirmResponse
+  }
+}
+
+mutation DeleteMessage($messageId: Float!) {
+  deleteMessage(messageId: $messageId) {
+    ...ConfirmResponse
+  }
+}

@@ -53,7 +53,7 @@ const InputField = ({
           className={cn(
             type === "checkbox"
               ? "flex flex-row-reverse gap-2 items-center"
-              : ""
+              : "flex-1"
           )}
         >
           <FormLabel>{label}</FormLabel>
