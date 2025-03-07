@@ -11,6 +11,8 @@ import React from "react";
 import AvatarWrapper from "../common/AvatarWrapper";
 import { Separator } from "../ui/separator";
 import Link from "next/link";
+import JoinButton from "./JoinButton";
+import UnjoinButton from "./UnjoinButton";
 
 type Props = {
   community?: Community | null;
@@ -18,6 +20,7 @@ type Props = {
 };
 
 const CommunityHoverCard = ({ community, children }: Props) => {
+  console.log(community?.isJoined);
   return (
     <HoverCard>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
@@ -34,21 +37,32 @@ const CommunityHoverCard = ({ community, children }: Props) => {
             />
             {/* Info */}
             <div className="flex flex-col gap-4 px-4 pb-4">
-              {/* Name and Image */}
-              <div className="flex flex-row items-center gap-4">
-                {/* Image */}
-                <AvatarWrapper
-                  src={
-                    community?.image ??
-                    getDefaultAvatar({ name: community?.name ?? "Community" })
-                  }
-                  alt={`${community?.name ?? "Community"}'s profile picture`}
-                  className="w-12 h-12"
-                />
-                {/* Name */}
-                <span className="font-bold text-lg">
-                  c/{community?.name ?? "Community"}
-                </span>
+              {/* Name, Image and join button */}
+              <div className="flex flex-row justify-between items-center w-full">
+                {/* Name and Image */}
+                <div className="flex flex-row items-center gap-4">
+                  {/* Image */}
+                  <AvatarWrapper
+                    src={
+                      community?.image ??
+                      getDefaultAvatar({ name: community?.name ?? "Community" })
+                    }
+                    alt={`${community?.name ?? "Community"}'s profile picture`}
+                    className="w-12 h-12"
+                  />
+                  {/* Name */}
+                  <span className="font-bold text-lg">
+                    c/{community?.name ?? "Community"}
+                  </span>
+                </div>
+                {/* Join Button */}
+                {community ? (
+                  community?.isJoined ? (
+                    <UnjoinButton communityId={community.id} />
+                  ) : (
+                    <JoinButton communityId={community.id} />
+                  )
+                ) : null}
               </div>
               {/* Description */}
               <p className="text-muted-foreground text-sm">

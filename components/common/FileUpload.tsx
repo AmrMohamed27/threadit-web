@@ -13,7 +13,7 @@ export default function FileUpload({ onUploadComplete, className }: Props) {
   return (
     <UploadDropzone
       className={cn("", className)}
-      endpoint="imageUploader"
+      endpoint="mediaUploader"
       onClientUploadComplete={async (res) => {
         res.forEach(async (file) => {
           await onUploadComplete(file.ufsUrl);

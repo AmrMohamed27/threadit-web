@@ -117,3 +117,4 @@ const CreatePostForm = ({ communities }: Props) => {
 };
 
 export default CreatePostForm;
+
