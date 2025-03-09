@@ -18,6 +18,8 @@ import { Button } from "../ui/button";
 import AvatarWrapper from "../common/AvatarWrapper";
 import GreyDiv from "../common/GreyDiv";
 import ChatTrigger from "../chat/ChatTrigger";
+import { useDispatch } from "react-redux";
+import { closeChat } from "@/lib/features/chatSlice";
 
 interface Props {
   user: User;
@@ -27,12 +29,16 @@ const NavbarLoggedIn = ({ user }: Props) => {
   // Logout mutation
   const [logoutMutation, { loading: isLogoutLoading, error: logoutError }] =
     useLogoutMutation();
+  // dispatcher
+  const dispatch = useDispatch();
   // Logout handler function
   const handleLogout = async () => {
     // perform the logout mutation on the server
     await logoutMutation({
       refetchQueries: "all",
     });
+    // Close the chat window if it's open
+    dispatch(closeChat());
   };
   if (logoutError) console.error(logoutError);
   return (

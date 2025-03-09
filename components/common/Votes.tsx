@@ -63,6 +63,7 @@ const Votes = ({ upvotesCount, isUpvoted, postId, commentId }: Props) => {
       setVote(newOption);
     }
   };
+
   const [createVoteMutation] = useCreateVoteMutation();
   const [updateVoteMutation] = useUpdateVoteMutation();
   const [deleteVoteMutation] = useDeleteVoteMutation();

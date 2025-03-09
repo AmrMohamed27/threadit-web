@@ -36,8 +36,9 @@ const CreateMessageForm = ({ receiverId }: Props) => {
           receiverId,
         },
       },
-      refetchQueries: [],
+      refetchQueries: ["GetUserChats"],
     });
+    form.setValue("content", "");
     if (errors) {
       console.error(errors);
     } else if (data?.createMessage?.errors) {
@@ -57,7 +58,10 @@ const CreateMessageForm = ({ receiverId }: Props) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="bottom-0 z-50 sticky space-y-8 bg-background dark:bg-black w-full"
+      >
         <div className="flex flex-row items-center gap-2 px-4 py-2 w-full">
           {/* Media */}
           <UploadDialog handleUploadComplete={handleUploadComplete}>

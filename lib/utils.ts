@@ -48,7 +48,10 @@ export const createMultipleQueryStringsFn = ({
 
 export function timeAgo(timestamp: string): string {
   const now = Date.now();
-  const date = new Date(parseInt(timestamp, 10)); // Convert string to number
+  const parsedTimestamp = /^17\d+$/.test(timestamp)
+    ? parseInt(timestamp)
+    : timestamp;
+  const date = new Date(parsedTimestamp);
   const secondsAgo = Math.floor((now - date.getTime()) / 1000);
 
   const intervals: { label: string; seconds: number }[] = [
@@ -72,7 +75,10 @@ export function timeAgo(timestamp: string): string {
 }
 
 export function formatDate(timestamp: string): string {
-  const date = new Date(parseInt(timestamp));
+  const parsedTimestamp = /^17\d+$/.test(timestamp)
+    ? parseInt(timestamp)
+    : timestamp;
+  const date = new Date(parsedTimestamp);
 
   return date.toLocaleDateString("en-US", {
     month: "short",

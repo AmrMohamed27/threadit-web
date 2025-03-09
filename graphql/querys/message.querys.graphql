@@ -9,3 +9,9 @@ query GetUserChats {
     ...ChatResponse
   }
 }
+
+subscription NewMessage($userId: Int) {
+  newMessage(userId: $userId) {
+    ...SingleMessageResponse
+  }
+}

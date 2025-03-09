@@ -25,7 +25,13 @@ const RequestConfirmButton = () => {
   };
   if (error) console.error(error);
   return (
-    <Button onClick={handleRequest} className="min-w-[200px]">
+    <Button
+      onClick={(e) => {
+        e.preventDefault();
+        handleRequest();
+      }}
+      className="min-w-[200px]"
+    >
       {loading ? (
         <Loader className="animate-spin" />
       ) : (

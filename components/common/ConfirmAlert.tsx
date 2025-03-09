@@ -21,7 +21,7 @@ const ConfirmAlert = () => {
   };
   return (
     !isClosed && (
-      <div className="relative flex flex-col justify-center items-center space-y-4 bg-red-950 p-4">
+      <div className="relative flex flex-col justify-center items-center space-y-4 bg-red-950 p-4 w-full">
         <p>Please Confirm your email to be able to post and comment.</p>
         <ConfirmForm />
         <Button

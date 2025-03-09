@@ -14,6 +14,7 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface Props {
   handleChatClick: (chatId: number) => void;
+  openNewChatWindow: () => void;
   loading: boolean;
   error?: ApolloError;
   chats?: Chat[] | null;
@@ -22,6 +23,7 @@ interface Props {
 
 const ChatList = ({
   handleChatClick,
+  openNewChatWindow,
   loading,
   chats,
   error,
@@ -37,6 +39,7 @@ const ChatList = ({
           size={"icon"}
           variant={"ghost"}
           className="hover:bg-transparent rounded-full"
+          onClick={openNewChatWindow}
         >
           <AddChatIcon size={20} />
         </Button>
@@ -83,14 +86,14 @@ const ChatList = ({
                               ? "You"
                               : chatee?.name ?? "Receiver"}
                           </span>
-                          <span className="text-muted-foreground text-xs">
+                          <span className="max-lg:hidden text-muted-foreground text-xs">
                             {formatDate(
                               chat.messages[chat.messages.length - 1].createdAt
                             )}
                           </span>
                         </div>
                         {/* Message content */}
-                        <span className="text-muted-foreground text-sm">
+                        <span className="max-w-[30%] sm:max-w-[40%] lg:max-w-[70%] text-muted-foreground text-xs truncate">
                           {getMessageString({
                             content:
                               chat.messages[chat.messages.length - 1].content,

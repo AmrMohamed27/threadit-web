@@ -9,8 +9,6 @@ const PopularPage = () => {
   const { sortBy: currentSortBy } = useCurrentPage();
   useEffect(() => {
     handleSortByChange("Hot");
-    console.log("From useSort: ", sortBy);
-    console.log("From useCurrentPage: ", currentSortBy);
   }, [handleSortByChange, sortBy, currentSortBy]);
   return <PostFetcher passedSortBy="Hot" />;
 };

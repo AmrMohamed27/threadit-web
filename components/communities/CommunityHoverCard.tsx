@@ -20,7 +20,6 @@ type Props = {
 };
 
 const CommunityHoverCard = ({ community, children }: Props) => {
-  console.log(community?.isJoined);
   return (
     <HoverCard>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>

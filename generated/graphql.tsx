@@ -575,6 +575,16 @@ export type ResetPasswordInput = {
   token: Scalars['String']['input'];
 };
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  newMessage: MessageResponse;
+};
+
+
+export type SubscriptionNewMessageArgs = {
+  userId?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type UpdateCommentInput = {
   content: Scalars['String']['input'];
   id: Scalars['Float']['input'];
@@ -961,6 +971,13 @@ export type GetUserChatsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetUserChatsQuery = { __typename?: 'Query', getUserChats: { __typename?: 'MessageResponse', chats?: Array<{ __typename?: 'Chat', senderId: number, receiverId: number, sender?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null, receiver?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null, messages: Array<{ __typename?: 'Message', id: number, content: string, createdAt: string, updatedAt: string, senderId: number, receiverId: number, media?: string | null, sender?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null, receiver?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null }> }> | null } };
+
+export type NewMessageSubscriptionVariables = Exact<{
+  userId?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type NewMessageSubscription = { __typename?: 'Subscription', newMessage: { __typename?: 'MessageResponse', message?: { __typename?: 'Message', id: number, content: string, createdAt: string, updatedAt: string, senderId: number, receiverId: number, media?: string | null, sender?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null, receiver?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetAllPostsQueryVariables = Exact<{
   options: GetAllPostsInput;
@@ -2789,6 +2806,36 @@ export type GetUserChatsQueryHookResult = ReturnType<typeof useGetUserChatsQuery
 export type GetUserChatsLazyQueryHookResult = ReturnType<typeof useGetUserChatsLazyQuery>;
 export type GetUserChatsSuspenseQueryHookResult = ReturnType<typeof useGetUserChatsSuspenseQuery>;
 export type GetUserChatsQueryResult = Apollo.QueryResult<GetUserChatsQuery, GetUserChatsQueryVariables>;
+export const NewMessageDocument = gql`
+    subscription NewMessage($userId: Int) {
+  newMessage(userId: $userId) {
+    ...SingleMessageResponse
+  }
+}
+    ${SingleMessageResponseFragmentDoc}`;
+
+/**
+ * __useNewMessageSubscription__
+ *
+ * To run a query within a React component, call `useNewMessageSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useNewMessageSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNewMessageSubscription({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useNewMessageSubscription(baseOptions?: Apollo.SubscriptionHookOptions<NewMessageSubscription, NewMessageSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<NewMessageSubscription, NewMessageSubscriptionVariables>(NewMessageDocument, options);
+      }
+export type NewMessageSubscriptionHookResult = ReturnType<typeof useNewMessageSubscription>;
+export type NewMessageSubscriptionResult = Apollo.SubscriptionResult<NewMessageSubscription>;
 export const GetAllPostsDocument = gql`
     query GetAllPosts($options: GetAllPostsInput!) {
   getAllPosts(options: $options) {
