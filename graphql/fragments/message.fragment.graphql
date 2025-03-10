@@ -4,12 +4,9 @@ fragment FullMessage on Message {
   createdAt
   updatedAt
   senderId
-  receiverId
+  chatId
   media
   sender {
-    ...FullUser
-  }
-  receiver {
     ...FullUser
   }
 }
@@ -30,22 +27,6 @@ fragment SingleMessageResponse on MessageResponse {
   }
   errors {
     ...FullErrorField
-  }
-}
-
-fragment ChatResponse on MessageResponse {
-  chats {
-    senderId
-    receiverId
-    sender {
-      ...FullUser
-    }
-    receiver {
-      ...FullUser
-    }
-    messages {
-      ...FullMessage
-    }
   }
 }
 

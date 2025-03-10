@@ -1,17 +1,5 @@
-query GetChat($user2: Int!) {
-  getChat(user2: $user2) {
-    ...MessageArrayResponse
-  }
-}
-
-query GetUserChats {
-  getUserChats {
-    ...ChatResponse
-  }
-}
-
-subscription NewMessage($userId: Int) {
-  newMessage(userId: $userId) {
+subscription NewMessage($chatId: Int) {
+  newMessage(chatId: $chatId) {
     ...SingleMessageResponse
   }
 }

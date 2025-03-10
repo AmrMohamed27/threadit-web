@@ -1,0 +1,34 @@
+query GetChatById($chatId: Float!) {
+  getChatById(chatId: $chatId) {
+    ...SingleChatResponse
+  }
+}
+
+query GetUserChats {
+  getUserChats {
+    ...ChatArrayResponse
+  }
+}
+
+query GetChatParticipants($chatId: Float!) {
+  getChatParticipants(chatId: $chatId) {
+    ...UserArrayResponse
+  }
+}
+
+query CheckChatParticipant($chatId: Float!) {
+  checkChatParticipant(chatId: $chatId) {
+    ...ConfirmResponse
+  }
+}
+
+query GetChatMessages($chatId: Float!) {
+  getChatMessages(chatId: $chatId) {
+    ...MessageArrayResponse
+  }
+}
+subscription NewChat {
+  newChat {
+    ...SingleChatResponse
+  }
+}

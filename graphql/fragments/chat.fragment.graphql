@@ -1,0 +1,31 @@
+fragment FullChat on Chat {
+  id
+  name
+  createdAt
+  updatedAt
+  creatorId
+  isGroupChat
+  lastReadMessageId
+  creator {
+    ...FullUser
+  }
+}
+
+fragment SingleChatResponse on ChatResponse {
+  chat {
+    ...FullChat
+  }
+  errors {
+    ...FullErrorField
+  }
+}
+
+fragment ChatArrayResponse on ChatResponse {
+  chatsArray {
+    ...FullChat
+  }
+  count
+  errors {
+    ...FullErrorField
+  }
+}

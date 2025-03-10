@@ -18,3 +18,13 @@ fragment FullAuthor on User {
   name
   updatedAt
 }
+
+fragment UserArrayResponse on UserResponse {
+  userArray {
+    ...FullUser
+  }
+  errors {
+    ...FullErrorField
+  }
+  count
+}

@@ -1,0 +1,29 @@
+mutation CreateChat($options: CreateChatInput!) {
+  createChat(options: $options) {
+    ...SingleChatResponse
+  }
+}
+
+mutation DeleteChat($chatId: Float!) {
+  deleteChat(chatId: $chatId) {
+    ...ConfirmResponse
+  }
+}
+
+mutation UpdateChat($options: UpdateChatInput!) {
+  updateChat(options: $options) {
+    ...ConfirmResponse
+  }
+}
+
+mutation AddChatParticipant($options: AddChatParticipantInput!) {
+  addChatParticipant(options: $options) {
+    ...ConfirmResponse
+  }
+}
+
+mutation RemoveChatParticipant($options: AddChatParticipantInput!) {
+  removeChatParticipant(options: $options) {
+    ...ConfirmResponse
+  }
+}
