@@ -10,7 +10,6 @@ import {
 import { useCurrentUser } from "@/hooks/use-current-user";
 import {
   addMessage,
-  mergeMessages,
   setChats,
   setCurrentChatId,
 } from "@/lib/features/chatSlice";
