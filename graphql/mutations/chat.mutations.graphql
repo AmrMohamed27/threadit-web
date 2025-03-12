@@ -12,7 +12,7 @@ mutation DeleteChat($chatId: Float!) {
 
 mutation UpdateChat($options: UpdateChatInput!) {
   updateChat(options: $options) {
-    ...ConfirmResponse
+    ...SingleChatResponse
   }
 }
 

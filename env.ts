@@ -11,6 +11,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_API_URL: z.string(),
     NEXT_PUBLIC_HOME_URL: z.string(),
+    NEXT_PUBLIC_SESSION_COOKIE_NAME: z.string(),
   },
   runtimeEnv: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
@@ -19,5 +20,7 @@ export const env = createEnv({
     NEXT_PUBLIC_HOME_URL: process.env.NEXT_PUBLIC_HOME_URL,
     UPLOADTHING_TOKEN: process.env.UPLOADTHING_TOKEN,
     UPLOADTHING_SECRET_KEY: process.env.UPLOADTHING_SECRET_KEY,
+    NEXT_PUBLIC_SESSION_COOKIE_NAME:
+      process.env.NEXT_PUBLIC_SESSION_COOKIE_NAME,
   },
 });

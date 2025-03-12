@@ -12,7 +12,7 @@ const AuthPage = ({ header, Form, children }: Props) => {
     <>
       <h1 className="font-bold text-lg">{header}</h1>
       {/* Terms and conditions */}
-      <div className="max-w-xs text-muted-foreground text-xs text-center">
+      <div className="w-full sm:max-w-xs text-muted-foreground text-xs text-center">
         By continuing, you agree to our{" "}
         <Link href="/terms" className="text-theme-blue">
           terms and conditions

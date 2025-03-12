@@ -1,30 +1,30 @@
 "use client";
 import {
-  useCreateMessageMutation,
+  useCreateChatMutation,
+  User,
   useSearchForUserLazyQuery,
 } from "@/generated/graphql";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { getDefaultAvatar } from "@/lib/utils";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import AvatarWrapper from "../common/AvatarWrapper";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import ChatControls from "./ChatControls";
-import { useCurrentUser } from "@/hooks/use-current-user";
+import { MultiValueInput } from "../forms/MultiValueInput";
 
 type Props = {
   closeNewChatWindow: () => void;
 };
 
 const NewChatWindow = ({ closeNewChatWindow }: Props) => {
+  const [tags, setTags] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
-  };
+
   const [searchForUsersQuery, { data, loading }] = useSearchForUserLazyQuery();
-  const [createMessageMutation, { loading: startChatLoading }] =
-    useCreateMessageMutation();
+  const [createChatMutation, { loading: startChatLoading }] =
+    useCreateChatMutation();
 
   const { user: currentUser } = useCurrentUser();
 
@@ -35,8 +35,12 @@ const NewChatWindow = ({ closeNewChatWindow }: Props) => {
     filteredUsers = users.filter((user) => user.id !== currentUser?.id);
   }
 
-  // Debounce the search query
+  // Update the isDisabled state based on selectedUsers
+  useEffect(() => {
+    setIsDisabled(tags.length === 0);
+  }, [tags]);
 
+  // Debounce the search query for the last tag input value
   useEffect(() => {
     if (!searchValue) return;
 
@@ -50,26 +54,58 @@ const NewChatWindow = ({ closeNewChatWindow }: Props) => {
           },
         },
       });
-    }, 2000); // Wait for 2 seconds
+    }, 1000);
 
-    return () => clearTimeout(delayDebounce); // Cleanup function to reset timeout on input change
+    return () => clearTimeout(delayDebounce);
   }, [searchValue, searchForUsersQuery]);
 
   const handleStartChat = async () => {
-    await createMessageMutation({
-      variables: {
-        options: {
-          content: "Hi there!",
-          receiverId: users ? users[0].id : 0,
+    if (filteredUsers && currentUser && tags.length > 0) {
+      // Find the user IDs for selected usernames
+      const participantIds = [currentUser.id];
+
+      tags.forEach((username) => {
+        const selectedUser = filteredUsers?.find(
+          (user) => user.name === username
+        );
+        if (selectedUser) {
+          participantIds.push(selectedUser.id);
+        }
+      });
+      await createChatMutation({
+        variables: {
+          options: {
+            name: tags.join(", "),
+            participantIds: participantIds,
+            isGroupChat: participantIds.length > 2, // Make it a group chat if more than 2 people
+          },
         },
-      },
-      refetchQueries: ["GetUserChats"],
-    });
+      });
+    }
     closeNewChatWindow();
   };
 
+  const handleTagsChange = (tags: string[]) => {
+    setTags(tags);
+
+    // If there are tags, use the last one as search input
+    if (tags.length > 0) {
+      setSearchValue(tags[tags.length - 1]);
+    } else {
+      setSearchValue("");
+    }
+  };
+
+  const handleUserSelect = (user: User) => {
+    // Add user to selected users if not already there
+    if (!tags.includes(user.name)) {
+      setTags((prev) => [...prev, user.name]);
+      setSearchValue(""); // Clear search value after selection
+    }
+  };
+
   return (
-    <>
+    <div className="flex flex-col gap-0 w-full">
       {/* Header */}
       <div className="top-0 z-50 sticky flex flex-row justify-between items-center bg-background dark:bg-black px-4 py-2 border-muted border-b-2 w-ful">
         <div className="flex flex-row flex-1 items-center gap-4">
@@ -81,32 +117,30 @@ const NewChatWindow = ({ closeNewChatWindow }: Props) => {
       {/*  Search Form */}
       <div className="flex flex-col flex-1 items-center gap-4 w-full">
         {/* Input and Results */}
-        <div className="flex flex-col flex-1 items-center gap-4 bg-muted px-4 py-2 w-full">
+        <div className="flex flex-col flex-1 items-center gap-4 px-4 py-2 w-full">
           {/* Search input */}
           <div className="flex flex-col items-start gap-2 w-full">
-            <Input
-              placeholder="Type username"
-              value={searchValue}
-              onChange={handleChange}
-              className="bg-background"
+            {/* MultiValueInput replaces normal Input */}
+            <MultiValueInput
+              label="Add participants"
+              placeholder="Type username to search"
+              maxTags={10}
+              onTagsChange={handleTagsChange}
+              onInputChange={(value) => setSearchValue(value)}
+              tags={tags}
+              setTags={setTags}
             />
-            <span className="text-muted-foreground text-xs">
-              Search for people by username to chat with them.
-            </span>
           </div>
           {/* Search Results */}
           <div className="flex flex-col items-start gap-2 bg-background p-4 rounded-lg w-full min-h-[180px]">
             {loading ? (
               <Loader className="animate-spin" />
-            ) : filteredUsers ? (
+            ) : filteredUsers && searchValue ? (
               filteredUsers.map((user) => (
                 <div
                   key={user.id}
                   className="flex flex-row items-center gap-4 hover:bg-muted/40 p-2 rounded-lg w-full cursor-pointer"
-                  onClick={() => {
-                    setSearchValue(user.name);
-                    setIsDisabled(false);
-                  }}
+                  onClick={() => handleUserSelect(user)}
                 >
                   <AvatarWrapper
                     src={user.image ?? getDefaultAvatar({ name: user.name })}
@@ -148,7 +182,7 @@ const NewChatWindow = ({ closeNewChatWindow }: Props) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -28,6 +28,7 @@ export type Chat = {
   creator?: Maybe<User>;
   creatorId: Scalars['Int']['output'];
   id: Scalars['Int']['output'];
+  image?: Maybe<Scalars['String']['output']>;
   isGroupChat: Scalars['Boolean']['output'];
   lastReadMessageId?: Maybe<Scalars['Int']['output']>;
   messages?: Maybe<Array<Message>>;
@@ -281,7 +282,7 @@ export type Mutation = {
   toggleConfirmed: Scalars['Boolean']['output'];
   unhidePost: ConfirmResponse;
   unsavePost: ConfirmResponse;
-  updateChat: ConfirmResponse;
+  updateChat: ChatResponse;
   updateComment?: Maybe<ConfirmResponse>;
   updateCommunity: ConfirmResponse;
   updateMessage: ConfirmResponse;
@@ -806,7 +807,7 @@ export type UpdateChatMutationVariables = Exact<{
 }>;
 
 
-export type UpdateChatMutation = { __typename?: 'Mutation', updateChat: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type UpdateChatMutation = { __typename?: 'Mutation', updateChat: { __typename?: 'ChatResponse', chat?: { __typename?: 'Chat', id: number, name: string, createdAt: string, updatedAt: string, creatorId: number, isGroupChat: boolean, lastReadMessageId?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type AddChatParticipantMutationVariables = Exact<{
   options: AddChatParticipantInput;
@@ -1569,10 +1570,10 @@ export type DeleteChatMutationOptions = Apollo.BaseMutationOptions<DeleteChatMut
 export const UpdateChatDocument = gql`
     mutation UpdateChat($options: UpdateChatInput!) {
   updateChat(options: $options) {
-    ...ConfirmResponse
+    ...SingleChatResponse
   }
 }
-    ${ConfirmResponseFragmentDoc}`;
+    ${SingleChatResponseFragmentDoc}`;
 export type UpdateChatMutationFn = Apollo.MutationFunction<UpdateChatMutation, UpdateChatMutationVariables>;
 
 /**

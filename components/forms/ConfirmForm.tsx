@@ -55,6 +55,8 @@ const ConfirmForm = () => {
       router.push("/");
     }
   }, [confirmError, confirmResult, router, form]);
+
+  const codeValue = form.watch("code");
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -67,7 +69,7 @@ const ConfirmForm = () => {
         />
         {/* Buttons */}
         <div className="flex flex-row flex-wrap gap-4">
-          <Button type="submit">
+          <Button type="submit" disabled={codeValue.length === 0}>
             {loading ? (
               <Loader className="animate-spin" />
             ) : (

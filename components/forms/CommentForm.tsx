@@ -77,7 +77,7 @@ const CommentForm = ({ postId, parentCommentId, hideForm }: Props) => {
           isTextArea
         />
         <div className="flex flex-row gap-4">
-          <Button type="submit">
+          <Button type="submit" variant={"red"} className="w-auto">
             {loading ? (
               <Loader className="animate-spin" />
             ) : (

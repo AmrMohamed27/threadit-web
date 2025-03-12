@@ -8,14 +8,14 @@ import { Camera, Loader, SendHorizontal as SendIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { MessageErrorType } from "../../types";
-import InputField from "./InputField";
 import UploadDialog from "../common/UploadDialog";
+import InputField from "./InputField";
 
 type Props = {
-  receiverId: number;
+  chatId: number;
 };
 
-const CreateMessageForm = ({ receiverId }: Props) => {
+const CreateMessageForm = ({ chatId }: Props) => {
   // Define graphql mutation
   const [createMessageMutation, { loading }] = useCreateMessageMutation();
   // 1. Define your form.
@@ -33,10 +33,9 @@ const CreateMessageForm = ({ receiverId }: Props) => {
         options: {
           content,
           media,
-          receiverId,
+          chatId,
         },
       },
-      refetchQueries: ["GetUserChats"],
     });
     form.setValue("content", "");
     if (errors) {

@@ -107,7 +107,7 @@ const CreatePostForm = ({ communities }: Props) => {
           <UploadDialog handleUploadComplete={handleUploadComplete}>
             <Button variant={"default"}>Add media</Button>
           </UploadDialog>
-          <Button type="submit">
+          <Button type="submit" variant={"red"} className="w-auto">
             {loading ? <Loader className="animate-spin" /> : <span>Post</span>}
           </Button>
         </div>
@@ -117,4 +117,3 @@ const CreatePostForm = ({ communities }: Props) => {
 };
 
 export default CreatePostForm;
-

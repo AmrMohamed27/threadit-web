@@ -13,6 +13,7 @@ import { AppSidebar } from "@/components/common/app-sidebar";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import Footer from "@/components/common/Footer";
 
 const funnel_display = Funnel_Display({ subsets: ["latin"] });
 
@@ -56,6 +57,7 @@ export default function RootLayout({
                       <ConfirmAlert />
                       {children}
                     </main>
+                    <Footer />
                     <Toaster />
                   </div>
                 </SidebarProvider>
