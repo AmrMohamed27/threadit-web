@@ -3,7 +3,7 @@ import { Chat, UserResponse } from "@/generated/graphql";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import {
   cn,
-  formatDate,
+  formatNumericDate,
   getDefaultAvatar,
   getMessageString,
 } from "@/lib/utils";
@@ -49,20 +49,19 @@ const ChatList = ({
   }
 
   return (
-    <div className="flex flex-col gap-0 border-muted sm:border-r-2 max-sm:border-b-2 sm:w-[200px] sm:max-w-[30%] sm:min-h-full">
+    <div className="flex flex-col gap-0 border-muted border-r-2 max-sm:w-[80px] sm:w-[300px] sm:max-w-[33%] sm:min-h-full">
       {/* Header */}
       <div className="flex flex-row justify-between items-center p-4 w-full">
-        <span className="font-bold text-lg">Chats</span>
+        <span className="max-sm:hidden font-bold text-lg">Chats</span>
         <Button
           size={"icon"}
           variant={"ghost"}
-          className="hover:bg-transparent rounded-full"
+          className="rounded-full"
           onClick={openNewChatWindow}
         >
           <AddChatIcon size={20} />
         </Button>
       </div>
-
       {/* Chat List */}
       <div className="flex flex-col gap-2 w-full">
         {chats.map((chat) => {
@@ -71,7 +70,6 @@ const ChatList = ({
           const conversee = isGroupChat
             ? null
             : chatParticipants.find((parti) => parti.id !== user?.id);
-
           return (
             <div
               key={chat.id}
@@ -105,24 +103,26 @@ const ChatList = ({
                     }
                     className="size-6"
                   />
-                  <div className="flex flex-col gap-1">
+                  <div className="max-sm:hidden flex flex-col items-start gap-1">
                     {/* Name and time */}
-                    <div className="flex flex-row items-center gap-1">
+                    <div className="flex flex-col items-start gap-1">
+                      {/* Name */}
                       <span className="text-xs truncate">
                         {isGroupChat
                           ? chat.name ?? "Group"
                           : conversee?.name ?? "Chat"}
                       </span>
-                      <span className="max-lg:hidden text-muted-foreground text-xs">
+                      {/* Time */}
+                      <span className="max-lg:hidden text-[10px] text-muted-foreground">
                         {chat.messages && chat.messages.length > 0
-                          ? formatDate(
+                          ? formatNumericDate(
                               chat.messages[chat.messages.length - 1].createdAt
                             )
                           : ""}
                       </span>
                     </div>
                     {/* Message content */}
-                    <span className="max-w-[30%] sm:max-w-[40%] lg:max-w-[70%] text-muted-foreground text-xs truncate">
+                    <span className="max-md:hidden max-w-[30%] sm:max-w-[40%] lg:max-w-full text-muted-foreground text-xs">
                       {chat.messages && chat.messages.length > 0
                         ? getMessageString({
                             content:

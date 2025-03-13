@@ -15,6 +15,10 @@ import {
   MessageCircleMore as ChatIcon,
 } from "lucide-react";
 import { Button } from "../ui/button";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { useChatManager } from "@/hooks/use-chat-manager";
+import { useDispatch } from "react-redux";
+import { openChat } from "@/lib/features/chatSlice";
 
 type Props = {
   user?: User | null;
@@ -22,6 +26,17 @@ type Props = {
 };
 
 const UserHoverCard = ({ user, children }: Props) => {
+  const { user: currentUser } = useCurrentUser();
+  const { chatStarter } = useChatManager();
+  const dispatch = useDispatch();
+  const handleStartChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const participantIds = currentUser && user ? [currentUser.id, user.id] : [];
+    const chatName = user ? user.name : "Chat";
+    await chatStarter(participantIds, chatName);
+    dispatch(openChat());
+  };
+
   return (
     <HoverCard>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
@@ -61,22 +76,25 @@ const UserHoverCard = ({ user, children }: Props) => {
               </div>
               <Separator />
               {/* Follow and Chat Buttons */}
-              <div className="flex flex-row items-center gap-4">
-                <Button
-                  className="flex flex-row items-center gap-2 w-auto"
-                  variant={"red"}
-                >
-                  <FollowIcon size={20} />
-                  <span className="">Follow</span>
-                </Button>
-                <Button
-                  className="flex flex-row items-center gap-2 w-auto"
-                  variant={"grey"}
-                >
-                  <ChatIcon size={20} />
-                  <span className="">Start Chat</span>
-                </Button>
-              </div>
+              {currentUser && user && user.id !== currentUser.id && (
+                <div className="flex flex-row items-center gap-4">
+                  <Button
+                    className="flex flex-row items-center gap-2 w-auto"
+                    variant={"red"}
+                  >
+                    <FollowIcon size={20} />
+                    <span className="">Follow</span>
+                  </Button>
+                  <Button
+                    className="flex flex-row items-center gap-2 w-auto"
+                    variant={"grey"}
+                    onClick={handleStartChat}
+                  >
+                    <ChatIcon size={20} />
+                    <span className="">Start Chat</span>
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </Link>

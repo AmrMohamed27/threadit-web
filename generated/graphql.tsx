@@ -37,6 +37,22 @@ export type Chat = {
   updatedAt: Scalars['String']['output'];
 };
 
+export type ChatConfirmResponse = {
+  __typename?: 'ChatConfirmResponse';
+  chatId: Scalars['Float']['output'];
+  errors?: Maybe<Array<FieldError>>;
+  operation: ChatOperation;
+  participantIds?: Maybe<Array<Scalars['Int']['output']>>;
+};
+
+export type ChatOperation = {
+  __typename?: 'ChatOperation';
+  addParticipant?: Maybe<Scalars['Boolean']['output']>;
+  delete?: Maybe<Scalars['Boolean']['output']>;
+  removeParticipant?: Maybe<Scalars['Boolean']['output']>;
+  update?: Maybe<Scalars['Boolean']['output']>;
+};
+
 export type ChatResponse = {
   __typename?: 'ChatResponse';
   chat?: Maybe<Chat>;
@@ -253,7 +269,7 @@ export type MessageResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addChatParticipant: ConfirmResponse;
+  addChatParticipant: ChatConfirmResponse;
   confirmUser: ConfirmResponse;
   createChat: ChatResponse;
   createComment: CommentResponse;
@@ -261,7 +277,7 @@ export type Mutation = {
   createMessage: MessageResponse;
   createPost: PostResponse;
   createVote: VoteResponse;
-  deleteChat: ConfirmResponse;
+  deleteChat: ChatConfirmResponse;
   deleteComment: ConfirmResponse;
   deleteCommunity: ConfirmResponse;
   deleteMessage: ConfirmResponse;
@@ -274,7 +290,7 @@ export type Mutation = {
   loginUser: UserResponse;
   logoutUser: Scalars['Boolean']['output'];
   registerUser: UserResponse;
-  removeChatParticipant: ConfirmResponse;
+  removeChatParticipant: ChatConfirmResponse;
   requestConfirmationCode: ConfirmResponse;
   requestPasswordReset: ConfirmResponse;
   resetPassword: ConfirmResponse;
@@ -650,6 +666,7 @@ export type ResetPasswordInput = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  chatUpdates: ChatConfirmResponse;
   newChat: ChatResponse;
   newMessage: MessageResponse;
 };
@@ -752,6 +769,8 @@ export type SingleChatResponseFragment = { __typename?: 'ChatResponse', chat?: {
 
 export type ChatArrayResponseFragment = { __typename?: 'ChatResponse', count?: number | null, chatsArray?: Array<{ __typename?: 'Chat', id: number, name: string, createdAt: string, updatedAt: string, creatorId: number, isGroupChat: boolean, lastReadMessageId?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
+export type FullChatConfirmResponseFragment = { __typename?: 'ChatConfirmResponse', chatId: number, participantIds?: Array<number> | null, operation: { __typename?: 'ChatOperation', delete?: boolean | null, addParticipant?: boolean | null, removeParticipant?: boolean | null, update?: boolean | null }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
+
 export type FullCommentFragment = { __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null };
 
 export type FullCommentResponseFragment = { __typename?: 'CommentResponse', comment?: { __typename?: 'Comment', id: number, content: string, createdAt: string, updatedAt: string, authorId: number, postId: number, upvotesCount?: number | null, isUpvoted?: VoteOptions | null, parentCommentId?: number | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
@@ -800,7 +819,7 @@ export type DeleteChatMutationVariables = Exact<{
 }>;
 
 
-export type DeleteChatMutation = { __typename?: 'Mutation', deleteChat: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type DeleteChatMutation = { __typename?: 'Mutation', deleteChat: { __typename?: 'ChatConfirmResponse', chatId: number, participantIds?: Array<number> | null, operation: { __typename?: 'ChatOperation', delete?: boolean | null, addParticipant?: boolean | null, removeParticipant?: boolean | null, update?: boolean | null }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type UpdateChatMutationVariables = Exact<{
   options: UpdateChatInput;
@@ -814,14 +833,14 @@ export type AddChatParticipantMutationVariables = Exact<{
 }>;
 
 
-export type AddChatParticipantMutation = { __typename?: 'Mutation', addChatParticipant: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type AddChatParticipantMutation = { __typename?: 'Mutation', addChatParticipant: { __typename?: 'ChatConfirmResponse', chatId: number, participantIds?: Array<number> | null, operation: { __typename?: 'ChatOperation', delete?: boolean | null, addParticipant?: boolean | null, removeParticipant?: boolean | null, update?: boolean | null }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type RemoveChatParticipantMutationVariables = Exact<{
   options: AddChatParticipantInput;
 }>;
 
 
-export type RemoveChatParticipantMutation = { __typename?: 'Mutation', removeChatParticipant: { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type RemoveChatParticipantMutation = { __typename?: 'Mutation', removeChatParticipant: { __typename?: 'ChatConfirmResponse', chatId: number, participantIds?: Array<number> | null, operation: { __typename?: 'ChatOperation', delete?: boolean | null, addParticipant?: boolean | null, removeParticipant?: boolean | null, update?: boolean | null }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type CreateCommentMutationVariables = Exact<{
   options: CreateCommentInput;
@@ -1060,6 +1079,11 @@ export type NewChatSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 export type NewChatSubscription = { __typename?: 'Subscription', newChat: { __typename?: 'ChatResponse', chat?: { __typename?: 'Chat', id: number, name: string, createdAt: string, updatedAt: string, creatorId: number, isGroupChat: boolean, lastReadMessageId?: number | null, creator?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
+export type ChatUpdatesSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ChatUpdatesSubscription = { __typename?: 'Subscription', chatUpdates: { __typename?: 'ChatConfirmResponse', chatId: number, participantIds?: Array<number> | null, operation: { __typename?: 'ChatOperation', delete?: boolean | null, addParticipant?: boolean | null, removeParticipant?: boolean | null, update?: boolean | null }, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
 export type GetCommentQueryVariables = Exact<{
   options: GetCommentByIdInput;
 }>;
@@ -1274,6 +1298,22 @@ export const ChatArrayResponseFragmentDoc = gql`
 }
     ${FullChatFragmentDoc}
 ${FullErrorFieldFragmentDoc}`;
+export const FullChatConfirmResponseFragmentDoc = gql`
+    fragment FullChatConfirmResponse on ChatConfirmResponse {
+  operation {
+    delete
+    addParticipant
+    removeParticipant
+    update
+  }
+  chatId
+  participantIds
+  errors {
+    field
+    message
+  }
+}
+    `;
 export const FullAuthorFragmentDoc = gql`
     fragment FullAuthor on User {
   id
@@ -1537,10 +1577,10 @@ export type CreateChatMutationOptions = Apollo.BaseMutationOptions<CreateChatMut
 export const DeleteChatDocument = gql`
     mutation DeleteChat($chatId: Float!) {
   deleteChat(chatId: $chatId) {
-    ...ConfirmResponse
+    ...FullChatConfirmResponse
   }
 }
-    ${ConfirmResponseFragmentDoc}`;
+    ${FullChatConfirmResponseFragmentDoc}`;
 export type DeleteChatMutationFn = Apollo.MutationFunction<DeleteChatMutation, DeleteChatMutationVariables>;
 
 /**
@@ -1603,10 +1643,10 @@ export type UpdateChatMutationOptions = Apollo.BaseMutationOptions<UpdateChatMut
 export const AddChatParticipantDocument = gql`
     mutation AddChatParticipant($options: AddChatParticipantInput!) {
   addChatParticipant(options: $options) {
-    ...ConfirmResponse
+    ...FullChatConfirmResponse
   }
 }
-    ${ConfirmResponseFragmentDoc}`;
+    ${FullChatConfirmResponseFragmentDoc}`;
 export type AddChatParticipantMutationFn = Apollo.MutationFunction<AddChatParticipantMutation, AddChatParticipantMutationVariables>;
 
 /**
@@ -1636,10 +1676,10 @@ export type AddChatParticipantMutationOptions = Apollo.BaseMutationOptions<AddCh
 export const RemoveChatParticipantDocument = gql`
     mutation RemoveChatParticipant($options: AddChatParticipantInput!) {
   removeChatParticipant(options: $options) {
-    ...ConfirmResponse
+    ...FullChatConfirmResponse
   }
 }
-    ${ConfirmResponseFragmentDoc}`;
+    ${FullChatConfirmResponseFragmentDoc}`;
 export type RemoveChatParticipantMutationFn = Apollo.MutationFunction<RemoveChatParticipantMutation, RemoveChatParticipantMutationVariables>;
 
 /**
@@ -2937,6 +2977,35 @@ export function useNewChatSubscription(baseOptions?: Apollo.SubscriptionHookOpti
       }
 export type NewChatSubscriptionHookResult = ReturnType<typeof useNewChatSubscription>;
 export type NewChatSubscriptionResult = Apollo.SubscriptionResult<NewChatSubscription>;
+export const ChatUpdatesDocument = gql`
+    subscription ChatUpdates {
+  chatUpdates {
+    ...FullChatConfirmResponse
+  }
+}
+    ${FullChatConfirmResponseFragmentDoc}`;
+
+/**
+ * __useChatUpdatesSubscription__
+ *
+ * To run a query within a React component, call `useChatUpdatesSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useChatUpdatesSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChatUpdatesSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useChatUpdatesSubscription(baseOptions?: Apollo.SubscriptionHookOptions<ChatUpdatesSubscription, ChatUpdatesSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<ChatUpdatesSubscription, ChatUpdatesSubscriptionVariables>(ChatUpdatesDocument, options);
+      }
+export type ChatUpdatesSubscriptionHookResult = ReturnType<typeof useChatUpdatesSubscription>;
+export type ChatUpdatesSubscriptionResult = Apollo.SubscriptionResult<ChatUpdatesSubscription>;
 export const GetCommentDocument = gql`
     query GetComment($options: GetCommentByIdInput!) {
   getComment(options: $options) {

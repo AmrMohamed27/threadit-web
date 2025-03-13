@@ -66,7 +66,7 @@ const SearchBar = ({
   };
 
   return (
-    <div className="relative flex flex-1 max-w-[400px]">
+    <div className="relative flex flex-wrap flex-1 w-full md:max-w-[400px]">
       <Popover open={isOpen} modal={false}>
         <PopoverAnchor className="w-full">
           <Input
@@ -92,10 +92,10 @@ const SearchBar = ({
         />
         {isOpen && (
           <PopoverContent
-            className="z-50 relative flex flex-col flex-1 gap-4 hover:bg-muted w-full md:w-[400px]"
+            className="z-50 relative flex flex-col flex-1 gap-4 hover:bg-muted w-[300px] md:w-[400px]"
             onOpenAutoFocus={(e) => e.preventDefault()}
           >
-            <div>
+            <div className="flex flex-wrap w-full">
               <p className="text-muted-foreground text-xs">
                 Prefix your search with c/ to search for communities or u/ to
                 search for users.

@@ -1,17 +1,14 @@
 "use client";
-import {
-  useCreateChatMutation,
-  User,
-  useSearchForUserLazyQuery,
-} from "@/generated/graphql";
+import { User, useSearchForUserLazyQuery } from "@/generated/graphql";
+import { useChatManager } from "@/hooks/use-chat-manager";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { getDefaultAvatar } from "@/lib/utils";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import AvatarWrapper from "../common/AvatarWrapper";
+import { MultiValueInput } from "../forms/MultiValueInput";
 import { Button } from "../ui/button";
 import ChatControls from "./ChatControls";
-import { MultiValueInput } from "../forms/MultiValueInput";
 
 type Props = {
   closeNewChatWindow: () => void;
@@ -23,8 +20,8 @@ const NewChatWindow = ({ closeNewChatWindow }: Props) => {
   const [isDisabled, setIsDisabled] = useState(true);
 
   const [searchForUsersQuery, { data, loading }] = useSearchForUserLazyQuery();
-  const [createChatMutation, { loading: startChatLoading }] =
-    useCreateChatMutation();
+
+  const { chatStarter } = useChatManager();
 
   const { user: currentUser } = useCurrentUser();
 
@@ -72,35 +69,20 @@ const NewChatWindow = ({ closeNewChatWindow }: Props) => {
           participantIds.push(selectedUser.id);
         }
       });
-      await createChatMutation({
-        variables: {
-          options: {
-            name: tags.join(", "),
-            participantIds: participantIds,
-            isGroupChat: participantIds.length > 2, // Make it a group chat if more than 2 people
-          },
-        },
-      });
+      const chatName = tags.join(", ");
+      await chatStarter(participantIds, chatName);
     }
     closeNewChatWindow();
   };
 
   const handleTagsChange = (tags: string[]) => {
     setTags(tags);
-
-    // If there are tags, use the last one as search input
-    if (tags.length > 0) {
-      setSearchValue(tags[tags.length - 1]);
-    } else {
-      setSearchValue("");
-    }
   };
 
   const handleUserSelect = (user: User) => {
     // Add user to selected users if not already there
     if (!tags.includes(user.name)) {
       setTags((prev) => [...prev, user.name]);
-      setSearchValue(""); // Clear search value after selection
     }
   };
 
@@ -173,11 +155,7 @@ const NewChatWindow = ({ closeNewChatWindow }: Props) => {
               disabled={isDisabled}
               onClick={handleStartChat}
             >
-              {startChatLoading ? (
-                <Loader className="animate-spin" />
-              ) : (
-                "Start Chat"
-              )}
+              Start Chat
             </Button>
           </div>
         </div>

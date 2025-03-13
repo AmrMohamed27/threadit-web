@@ -1,4 +1,3 @@
-// chatSlice.ts
 import { Chat, Message } from "@/generated/graphql";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
@@ -21,6 +20,9 @@ const chatSlice = createSlice({
     setChats: (state, action: PayloadAction<Chat[]>) => {
       state.chats = action.payload;
     },
+    removeChat: (state, action: PayloadAction<number>) => {
+      state.chats = state.chats.filter((chat) => chat.id !== action.payload);
+    },
     setCurrentChatId: (state, action: PayloadAction<number | null>) => {
       state.currentChatId = action.payload;
     },
@@ -40,10 +42,8 @@ const chatSlice = createSlice({
           messages,
           updatedAt: message.createdAt,
         };
-        console.log("SUCCESS");
       }
     },
-    // Add this to your chatSlice.ts
     mergeMessages: (
       state,
       action: PayloadAction<{ chatId: number; messages: Message[] }>
@@ -93,5 +93,6 @@ export const {
   setCurrentChatId,
   addMessage,
   mergeMessages,
+  removeChat,
 } = chatSlice.actions;
 export default chatSlice.reducer;

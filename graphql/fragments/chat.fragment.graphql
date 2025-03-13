@@ -29,3 +29,18 @@ fragment ChatArrayResponse on ChatResponse {
     ...FullErrorField
   }
 }
+
+fragment FullChatConfirmResponse on ChatConfirmResponse {
+  operation {
+    delete
+    addParticipant
+    removeParticipant
+    update
+  }
+  chatId
+  participantIds
+  errors {
+    field
+    message
+  }
+}

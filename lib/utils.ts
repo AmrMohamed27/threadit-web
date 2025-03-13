@@ -86,6 +86,18 @@ export function formatDate(timestamp: string): string {
     year: "numeric",
   });
 }
+export function formatNumericDate(timestamp: string): string {
+  const parsedTimestamp = /^17\d+$/.test(timestamp)
+    ? parseInt(timestamp)
+    : timestamp;
+  const date = new Date(parsedTimestamp);
+
+  return date.toLocaleDateString("en-US", {
+    month: "2-digit",
+    day: "2-digit",
+    year: "numeric",
+  });
+}
 
 export function copyLinkToClipboard(link: string, then: () => void): void {
   navigator.clipboard
@@ -128,5 +140,6 @@ export const getMessageString = ({
   userId: number;
   chatterName: string;
 }) => {
-  return senderId === userId ? `You: ${content}` : `${chatterName}: ${content}`;
+  const name = chatterName.slice(0, 8) + "...";
+  return senderId === userId ? `You: ${content}` : `${name}: ${content}`;
 };

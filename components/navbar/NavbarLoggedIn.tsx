@@ -19,7 +19,7 @@ import AvatarWrapper from "../common/AvatarWrapper";
 import GreyDiv from "../common/GreyDiv";
 import ChatTrigger from "../chat/ChatTrigger";
 import { useDispatch } from "react-redux";
-import { closeChat } from "@/lib/features/chatSlice";
+import { closeChat, setChats } from "@/lib/features/chatSlice";
 
 interface Props {
   user: User;
@@ -37,8 +37,9 @@ const NavbarLoggedIn = ({ user }: Props) => {
     await logoutMutation({
       refetchQueries: "all",
     });
-    // Close the chat window if it's open
+    // Clear chats and Close the chat window if it's open
     dispatch(closeChat());
+    dispatch(setChats([]));
   };
   if (logoutError) console.error(logoutError);
   return (
@@ -64,6 +65,13 @@ const NavbarLoggedIn = ({ user }: Props) => {
               <CreateIcon size={16} />
               <span>Create a post</span>
             </Link>
+          </DropdownMenuItem>
+          {/* Mobile Open Chat button */}
+          <DropdownMenuItem className="md:hidden">
+            <ChatTrigger className="flex flex-row items-center gap-2 py-2">
+              <ChatIcon size={16} />
+              <span>Open Chat</span>
+            </ChatTrigger>
           </DropdownMenuItem>
           {/* Profile link */}
           <DropdownMenuItem>

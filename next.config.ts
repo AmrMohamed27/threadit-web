@@ -6,7 +6,6 @@ const nextConfig: NextConfig = {
     domains: ["ui-avatars.com"],
     remotePatterns: [
       {
-        // https://flowbite.com/docs/images/examples/image-3@2x.jpg
         protocol: "https",
         hostname: "flowbite.com",
         port: "",
@@ -14,7 +13,6 @@ const nextConfig: NextConfig = {
         search: "",
       },
       {
-        // https://ui-avatars.com/api/?name=Music+u&background=7f96dc&color=ffffff
         protocol: "https",
         hostname: "ui-avatars.com",
         port: "",

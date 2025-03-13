@@ -32,3 +32,9 @@ subscription NewChat {
     ...SingleChatResponse
   }
 }
+
+subscription ChatUpdates {
+  chatUpdates {
+    ...FullChatConfirmResponse
+  }
+}

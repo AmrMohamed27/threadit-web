@@ -1,6 +1,7 @@
 import {
   UserResponse,
-  useGetChatByIdLazyQuery,
+  useChatUpdatesSubscription,
+  useCreateChatMutation,
   useGetChatMessagesLazyQuery,
   useGetChatParticipantsLazyQuery,
   useGetUserChatsQuery,
@@ -9,7 +10,8 @@ import {
 } from "@/generated/graphql";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import {
-  addMessage,
+  mergeMessages,
+  removeChat,
   setChats,
   setCurrentChatId,
 } from "@/lib/features/chatSlice";
@@ -29,6 +31,11 @@ export function useChatManager() {
   const [isLoading, setIsLoading] = useState(true);
   const [newChatIsOpen, setNewChatIsOpen] = useState(false);
   const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
+  useEffect(() => {
+    setInitialLoadCompleted(false);
+  }, []);
+
+  console.log(chatParticipants);
 
   // Get current user
   const { user } = useCurrentUser();
@@ -40,10 +47,9 @@ export function useChatManager() {
     error: userChatsError,
   } = useGetUserChatsQuery();
 
-  // const [getChatByIdQuery] = useGetChatByIdLazyQuery();
   const [getChatMessagesQuery] = useGetChatMessagesLazyQuery();
   const [getChatParticipantsQuery] = useGetChatParticipantsLazyQuery();
-  const [getChatByIdQuery] = useGetChatByIdLazyQuery();
+  const [createChatMutation] = useCreateChatMutation();
 
   useNewMessageSubscription({
     variables: { chatId: currentChatId },
@@ -51,11 +57,10 @@ export function useChatManager() {
     onData: ({ data }) => {
       if (!data?.data?.newMessage?.message) return;
       const newMessage = data.data.newMessage.message;
-      console.log("NEW MESSAGE: ", newMessage);
       dispatch(
-        addMessage({
+        mergeMessages({
           chatId: newMessage.chatId,
-          message: newMessage,
+          messages: [newMessage],
         })
       );
     },
@@ -70,16 +75,12 @@ export function useChatManager() {
 
       // Check if we already have this chat
       if (chats.some((chat) => chat.id === receivedChat.id)) {
+        console.log("Already here");
         return;
       }
-      // Fetch the new chat details
-      const { data: chatData } = await getChatByIdQuery({
-        variables: { chatId: receivedChat.id },
-      });
-      const chat = chatData?.getChatById.chat;
-      if (chat) {
+      if (receivedChat) {
         // Add the new chat to our list
-        dispatch(setChats([chat, ...chats]));
+        dispatch(setChats([receivedChat, ...chats]));
         // Get participants for this chat
         const { data: participantsData } = await getChatParticipantsQuery({
           variables: { chatId: receivedChat.id },
@@ -94,14 +95,32 @@ export function useChatManager() {
     },
   });
 
+  useChatUpdatesSubscription({
+    skip: !user,
+    onData: async ({ data, client }) => {
+      if (!data?.data?.chatUpdates?.operation) return;
+      const { operation, chatId } = data.data.chatUpdates;
+      if (operation.delete) {
+        client.cache.evict({
+          id: client.cache.identify({
+            __typename: "Chat",
+            id: chatId,
+          }),
+        });
+        client.cache.gc();
+        dispatch(removeChat(chatId));
+      }
+    },
+  });
+
   // Initialize chats
   useEffect(() => {
     async function loadInitialChats() {
-      if (initialLoadCompleted || !userChatsData?.getUserChats.chatsArray)
+      if (initialLoadCompleted || !userChatsData?.getUserChats.chatsArray) {
+        setIsLoading(false);
         return;
-
+      }
       setIsLoading(true);
-
       try {
         const chatsWithMessages = await Promise.all(
           userChatsData.getUserChats.chatsArray.map(async (chat) => {
@@ -114,7 +133,6 @@ export function useChatManager() {
             const { data: participantsData } = await getChatParticipantsQuery({
               variables: { chatId: chat.id },
             });
-
             // Store participants in our map
             if (participantsData?.getChatParticipants) {
               setChatParticipants((prev) => ({
@@ -146,14 +164,13 @@ export function useChatManager() {
             chatsWithMessages[0].id.toString()
           );
         }
-        setInitialLoadCompleted(true);
       } catch (error) {
         console.error("Error loading chats:", error);
       } finally {
         setIsLoading(false);
+        setInitialLoadCompleted(true);
       }
     }
-
     loadInitialChats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userChatsData, initialLoadCompleted]);
@@ -162,6 +179,38 @@ export function useChatManager() {
   const handleChatClick = (chatId: number) => {
     dispatch(setCurrentChatId(chatId));
     localStorage.setItem("currentChatId", chatId.toString());
+  };
+
+  const chatStarter = async (participantIds: number[], name: string) => {
+    console.log("Participant IDs: ", participantIds);
+    const { data: createResult, errors } = await createChatMutation({
+      variables: {
+        options: {
+          name: name,
+          participantIds: participantIds,
+          isGroupChat: participantIds.length > 2, // Make it a group chat if more than 2 people
+        },
+      },
+      // refetchQueries: ["GetUserChats", "GetChatParticipants"],
+    });
+    console.log(createResult, errors);
+    // If the chat exists, set the current chat id to it
+    if (createResult?.createChat.errors) {
+      const errorField = createResult.createChat.errors[0].field;
+      if (errorField === "chat_exists") {
+        const chatId = createResult.createChat.chat?.id;
+        if (chatId) {
+          dispatch(setCurrentChatId(chatId));
+        }
+      }
+    }
+    // Else, set the current chat id to the new chat
+    else {
+      const chatId = createResult?.createChat.chat?.id;
+      if (chatId) {
+        dispatch(setCurrentChatId(chatId));
+      }
+    }
   };
 
   const openNewChatWindow = () => setNewChatIsOpen(true);
@@ -185,5 +234,6 @@ export function useChatManager() {
     handleChatClick,
     openNewChatWindow,
     closeNewChatWindow,
+    chatStarter,
   };
 }

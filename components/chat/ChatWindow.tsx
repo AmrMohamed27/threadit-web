@@ -44,8 +44,6 @@ const ChatWindow = ({
     );
   }
 
-  console.log("Chat: ", chat);
-
   // Find other participant (if direct chat)
   const isGroupChat = chat.isGroupChat;
   const participantList = participants?.userArray || [];
@@ -55,7 +53,7 @@ const ChatWindow = ({
 
   return (
     <div
-      className="relative flex flex-col flex-1 gap-0 overflow-y-scroll"
+      className="relative flex flex-col flex-1 gap-0 max-md:max-h-[500px] overflow-y-scroll"
       ref={chatContainerRef}
     >
       {/* Header */}
@@ -87,11 +85,8 @@ const ChatWindow = ({
         {/* Messages */}
         <div className="flex flex-col items-start gap-4 px-4 py-2 w-full">
           {chat.messages && chat.messages.length > 0 ? (
-            chat.messages.map((message, index) => (
-              <div
-                key={index + message.id + message.content}
-                className="flex flex-col items-start gap-1"
-              >
+            chat.messages.map((message) => (
+              <div key={message.id} className="flex flex-col items-start gap-1">
                 {/* Image and name and time */}
                 <div className="flex flex-row items-center gap-2">
                   {/* Image */}
@@ -106,7 +101,7 @@ const ChatWindow = ({
                     className="size-8"
                   />
                   {/* Name and Time */}
-                  <div className="flex flex-row items-center gap-1">
+                  <div className="flex flex-row flex-wrap items-center gap-1">
                     {/* Name */}
                     <span>
                       {message.sender?.name === user?.name

@@ -6,7 +6,7 @@ mutation CreateChat($options: CreateChatInput!) {
 
 mutation DeleteChat($chatId: Float!) {
   deleteChat(chatId: $chatId) {
-    ...ConfirmResponse
+    ...FullChatConfirmResponse
   }
 }
 
@@ -18,12 +18,12 @@ mutation UpdateChat($options: UpdateChatInput!) {
 
 mutation AddChatParticipant($options: AddChatParticipantInput!) {
   addChatParticipant(options: $options) {
-    ...ConfirmResponse
+    ...FullChatConfirmResponse
   }
 }
 
 mutation RemoveChatParticipant($options: AddChatParticipantInput!) {
   removeChatParticipant(options: $options) {
-    ...ConfirmResponse
+    ...FullChatConfirmResponse
   }
 }
