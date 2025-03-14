@@ -1,19 +1,18 @@
-import type { Metadata } from "next";
-import { Funnel_Display } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "@/components/providers/theme-provider";
+import { AppSidebar } from "@/components/common/app-sidebar";
+import Footer from "@/components/common/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import ApolloProvider from "@/components/providers/apollo-provider";
-import { Toaster } from "@/components/ui/toaster";
-import ConfirmAlert from "@/components/common/ConfirmAlert";
-import ReduxProvider from "@/components/providers/redux-provider";
 import ReduxContextProvider from "@/components/providers/redux-context-provider";
+import ReduxProvider from "@/components/providers/redux-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/common/app-sidebar";
+import { Toaster } from "@/components/ui/toaster";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import type { Metadata } from "next";
+import { Funnel_Display } from "next/font/google";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
-import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
-import Footer from "@/components/common/Footer";
+import "./globals.css";
 
 const funnel_display = Funnel_Display({ subsets: ["latin"] });
 
@@ -54,7 +53,6 @@ export default function RootLayout({
                     <SidebarTrigger />
                     <Navbar />
                     <main className="flex flex-col flex-grow justify-center items-center mt-[56px]">
-                      <ConfirmAlert />
                       {children}
                     </main>
                     <Footer />

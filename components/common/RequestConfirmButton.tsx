@@ -1,13 +1,11 @@
 "use client";
-import React, { useState } from "react";
-import { Button } from "../ui/button";
 import { useRequestConfirmationCodeMutation } from "@/generated/graphql";
-import { Loader } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Loader } from "lucide-react";
+import { Button } from "../ui/button";
 
 const RequestConfirmButton = () => {
   // State to track number of sent emails
-  const [sentEmails, setSentEmails] = useState(0);
   const [requestMutation, { loading, error }] =
     useRequestConfirmationCodeMutation();
   // Toast
@@ -19,7 +17,6 @@ const RequestConfirmButton = () => {
           title: "Confirmation Email Sent",
           description: "Please check your email for the confirmation code.",
         });
-        setSentEmails((prev) => prev + 1);
       },
     });
   };
@@ -35,7 +32,7 @@ const RequestConfirmButton = () => {
       {loading ? (
         <Loader className="animate-spin" />
       ) : (
-        `${sentEmails === 0 ? "Request" : "Resend"} Confirmation Code`
+        `Resend Confirmation Code`
       )}
     </Button>
   );
