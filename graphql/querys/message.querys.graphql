@@ -1,5 +1,11 @@
-subscription NewMessage($chatId: Int) {
-  newMessage(chatId: $chatId) {
+subscription NewMessage {
+  newMessage {
     ...SingleMessageResponse
+  }
+}
+
+subscription DirectMessage {
+  directMessage {
+    ...Notification
   }
 }

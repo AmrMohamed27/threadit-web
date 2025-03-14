@@ -36,3 +36,16 @@ fragment ConfirmResponse on ConfirmResponse {
     ...FullErrorField
   }
 }
+
+fragment Notification on NotificationResponse {
+  id
+  type
+  userId
+  senderId
+  senderName
+  content
+  entityId
+  entityType
+  isRead
+  createdAt
+}

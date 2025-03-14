@@ -478,6 +478,27 @@ export type MutationUpdateVoteArgs = {
   options: UpdateVoteInput;
 };
 
+export type NotificationResponse = {
+  __typename?: 'NotificationResponse';
+  content: Scalars['String']['output'];
+  createdAt?: Maybe<Scalars['String']['output']>;
+  entityId: Scalars['Float']['output'];
+  entityType: Scalars['String']['output'];
+  id: Scalars['Float']['output'];
+  isRead: Scalars['Boolean']['output'];
+  senderId: Scalars['Float']['output'];
+  senderName: Scalars['String']['output'];
+  type: Notifications;
+  userId: Scalars['Float']['output'];
+};
+
+/** Represents the different types of notifications. */
+export enum Notifications {
+  DirectMessage = 'DIRECT_MESSAGE',
+  NewReply = 'NEW_REPLY',
+  PostActivity = 'POST_ACTIVITY'
+}
+
 export type Post = {
   __typename?: 'Post';
   author?: Maybe<User>;
@@ -667,13 +688,9 @@ export type ResetPasswordInput = {
 export type Subscription = {
   __typename?: 'Subscription';
   chatUpdates: ChatConfirmResponse;
+  directMessage: NotificationResponse;
   newChat: ChatResponse;
   newMessage: MessageResponse;
-};
-
-
-export type SubscriptionNewMessageArgs = {
-  chatId?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type UpdateChatInput = {
@@ -792,6 +809,8 @@ export type MessageArrayResponseFragment = { __typename?: 'MessageResponse', cou
 export type SingleMessageResponseFragment = { __typename?: 'MessageResponse', message?: { __typename?: 'Message', id: number, content: string, createdAt: string, updatedAt: string, senderId: number, chatId: number, media?: string | null, sender?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
 export type ConfirmResponseFragment = { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
+
+export type NotificationFragment = { __typename?: 'NotificationResponse', id: number, type: Notifications, userId: number, senderId: number, senderName: string, content: string, entityId: number, entityType: string, isRead: boolean, createdAt?: string | null };
 
 export type FullPostFragment = { __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, media?: Array<string> | null };
 
@@ -1143,12 +1162,15 @@ export type GetUserHiddenPostsQueryVariables = Exact<{
 
 export type GetUserHiddenPostsQuery = { __typename?: 'Query', getUserHiddenPosts: { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, media?: Array<string> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, isPrivate: boolean, creator?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
-export type NewMessageSubscriptionVariables = Exact<{
-  chatId?: InputMaybe<Scalars['Int']['input']>;
-}>;
+export type NewMessageSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
 export type NewMessageSubscription = { __typename?: 'Subscription', newMessage: { __typename?: 'MessageResponse', message?: { __typename?: 'Message', id: number, content: string, createdAt: string, updatedAt: string, senderId: number, chatId: number, media?: string | null, sender?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+
+export type DirectMessageSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DirectMessageSubscription = { __typename?: 'Subscription', directMessage: { __typename?: 'NotificationResponse', id: number, type: Notifications, userId: number, senderId: number, senderName: string, content: string, entityId: number, entityType: string, isRead: boolean, createdAt?: string | null } };
 
 export type GetAllPostsQueryVariables = Exact<{
   options: GetAllPostsInput;
@@ -1461,6 +1483,20 @@ export const ConfirmResponseFragmentDoc = gql`
   }
 }
     ${FullErrorFieldFragmentDoc}`;
+export const NotificationFragmentDoc = gql`
+    fragment Notification on NotificationResponse {
+  id
+  type
+  userId
+  senderId
+  senderName
+  content
+  entityId
+  entityType
+  isRead
+  createdAt
+}
+    `;
 export const FullPostFragmentDoc = gql`
     fragment FullPost on Post {
   id
@@ -3365,8 +3401,8 @@ export type GetUserHiddenPostsLazyQueryHookResult = ReturnType<typeof useGetUser
 export type GetUserHiddenPostsSuspenseQueryHookResult = ReturnType<typeof useGetUserHiddenPostsSuspenseQuery>;
 export type GetUserHiddenPostsQueryResult = Apollo.QueryResult<GetUserHiddenPostsQuery, GetUserHiddenPostsQueryVariables>;
 export const NewMessageDocument = gql`
-    subscription NewMessage($chatId: Int) {
-  newMessage(chatId: $chatId) {
+    subscription NewMessage {
+  newMessage {
     ...SingleMessageResponse
   }
 }
@@ -3384,7 +3420,6 @@ export const NewMessageDocument = gql`
  * @example
  * const { data, loading, error } = useNewMessageSubscription({
  *   variables: {
- *      chatId: // value for 'chatId'
  *   },
  * });
  */
@@ -3394,6 +3429,35 @@ export function useNewMessageSubscription(baseOptions?: Apollo.SubscriptionHookO
       }
 export type NewMessageSubscriptionHookResult = ReturnType<typeof useNewMessageSubscription>;
 export type NewMessageSubscriptionResult = Apollo.SubscriptionResult<NewMessageSubscription>;
+export const DirectMessageDocument = gql`
+    subscription DirectMessage {
+  directMessage {
+    ...Notification
+  }
+}
+    ${NotificationFragmentDoc}`;
+
+/**
+ * __useDirectMessageSubscription__
+ *
+ * To run a query within a React component, call `useDirectMessageSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useDirectMessageSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDirectMessageSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDirectMessageSubscription(baseOptions?: Apollo.SubscriptionHookOptions<DirectMessageSubscription, DirectMessageSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<DirectMessageSubscription, DirectMessageSubscriptionVariables>(DirectMessageDocument, options);
+      }
+export type DirectMessageSubscriptionHookResult = ReturnType<typeof useDirectMessageSubscription>;
+export type DirectMessageSubscriptionResult = Apollo.SubscriptionResult<DirectMessageSubscription>;
 export const GetAllPostsDocument = gql`
     query GetAllPosts($options: GetAllPostsInput!) {
   getAllPosts(options: $options) {

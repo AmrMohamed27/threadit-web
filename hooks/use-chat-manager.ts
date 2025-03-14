@@ -18,6 +18,7 @@ import {
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useTypedSelector } from "./use-typed-selector";
+import { useToast } from "./use-toast";
 
 export function useChatManager() {
   // State
@@ -40,6 +41,9 @@ export function useChatManager() {
   // Get current user
   const { user } = useCurrentUser();
 
+  // toast
+  const { toast } = useToast();
+
   // GraphQL queries and subscriptions
   const {
     data: userChatsData,
@@ -52,7 +56,6 @@ export function useChatManager() {
   const [createChatMutation] = useCreateChatMutation();
 
   useNewMessageSubscription({
-    variables: { chatId: currentChatId },
     skip: !user,
     onData: ({ data }) => {
       if (!data?.data?.newMessage?.message) return;
@@ -63,6 +66,12 @@ export function useChatManager() {
           messages: [newMessage],
         })
       );
+      if (newMessage.senderId !== user?.id) {
+        toast({
+          title: `New message from ${newMessage.sender?.name ?? "Sender"}`,
+          description: newMessage.content ?? "Message",
+        });
+      }
     },
   });
 
