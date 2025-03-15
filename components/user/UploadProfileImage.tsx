@@ -8,7 +8,7 @@ import {
 import { useUpdateUserImageMutation } from "@/generated/graphql";
 import { useToast } from "@/hooks/use-toast";
 import { Camera, Loader } from "lucide-react";
-import FileUpload from "../common/FileUpload";
+import MediaFileUpload from "../common/MediaFileUpload";
 import { Button } from "../ui/button";
 
 const UploadProfileImage = () => {
@@ -60,7 +60,7 @@ const UploadProfileImage = () => {
         <DialogHeader>
           <DialogTitle>Upload a new profile picture</DialogTitle>
         </DialogHeader>
-        <FileUpload onUploadComplete={handleUploadComplete} />
+        <MediaFileUpload onUploadComplete={handleUploadComplete} />
       </DialogContent>
     </Dialog>
   );

@@ -92,7 +92,7 @@ const CreateMessageForm = ({ chatId }: Props) => {
         )}
         <div className="flex flex-row items-center gap-2 px-4 py-2 w-full">
           {/* Media */}
-          <UploadDialog handleUploadComplete={handleUploadComplete}>
+          <UploadDialog handleUploadComplete={handleUploadComplete} isImage>
             <Button variant={"ghost"} size="icon">
               <Camera className="w-8 h-8" />
             </Button>

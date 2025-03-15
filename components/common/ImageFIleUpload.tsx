@@ -8,12 +8,15 @@ interface Props {
   className?: string;
 }
 
-export default function FileUpload({ onUploadComplete, className }: Props) {
+export default function ImageFileUpload({
+  onUploadComplete,
+  className,
+}: Props) {
   const { toast } = useToast();
   return (
     <UploadDropzone
       className={cn("", className)}
-      endpoint="mediaUploader"
+      endpoint="imageUploader"
       onClientUploadComplete={async (res) => {
         res.forEach(async (file) => {
           await onUploadComplete(file.ufsUrl);

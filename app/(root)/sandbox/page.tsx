@@ -1,6 +1,6 @@
 "use client";
 
-import FileUpload from "@/components/common/FileUpload";
+import MediaFileUpload from "@/components/common/MediaFileUpload";
 import { useState } from "react";
 
 const Sandbox = () => {
@@ -10,7 +10,7 @@ const Sandbox = () => {
   };
   return (
     <div className="flex flex-col">
-      <FileUpload onUploadComplete={handleUploadComplete} />
+      <MediaFileUpload onUploadComplete={handleUploadComplete} />
       <span>{imageUrl}</span>
     </div>
   );
