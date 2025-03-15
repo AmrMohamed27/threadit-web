@@ -1,12 +1,10 @@
 "use client";
-import React from "react";
-import CommentThread from "./CommentThread";
 import { MAX_REPLY_DEPTH } from "@/constants";
 import { useGetCommentQuery } from "@/generated/graphql";
 import GoBackButton from "../common/GoBackButton";
-import EditCommentForm from "../forms/EditCommentForm";
-import FormLoading from "../loading/FormLoading";
 import CommentFeedLoading from "../loading/CommentFeedLoading";
+import FormLoading from "../loading/FormLoading";
+import CommentThread from "./CommentThread";
 
 interface Props {
   commentId: number;
@@ -37,12 +35,7 @@ const CommentGetter = ({ commentId, postId, isEdit }: Props) => {
     return <div>Error 404 - No comment found</div>;
   const comment = comments[0];
 
-  return isEdit ? (
-    <div className="flex flex-col items-start gap-8 w-full">
-      <h1 className="text-lg">Edit comment</h1>
-      <EditCommentForm comment={comment} />
-    </div>
-  ) : (
+  return (
     <div className="flex flex-col gap-4 w-full">
       <div className="max-w-[90px]">
         <GoBackButton href={`/posts/${postId}`} label="post" />
