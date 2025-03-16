@@ -9,9 +9,9 @@ export const useCurrentUser = () => {
     data,
     error,
     loading: queryLoading,
+    refetch,
   } = useMeQuery({
-    fetchPolicy: "cache-first",
-    context: { credentials: "include" }, // Send opts
+    fetchPolicy: "network-only",
   });
   const [user, setUser] = useState<User | null>(data?.me.user ?? null);
   const [errorMap, setErrorMap] = useState<Record<string, string>>({});
@@ -29,5 +29,5 @@ export const useCurrentUser = () => {
     }
   }, [data, queryLoading]);
 
-  return { user, loading, error, errorMap };
+  return { user, loading, error, errorMap, refetch };
 };

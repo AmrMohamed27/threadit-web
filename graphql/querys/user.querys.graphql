@@ -1,53 +1,29 @@
 query Me {
   me {
-    errors {
-      ...FullErrorField
-    }
-    user {
-      ...FullUser
-    }
+    ...SingleUserResponse
   }
 }
 
 query CheckToken($options: CheckTokenInput!) {
   checkToken(options: $options) {
-    errors {
-      ...FullErrorField
-    }
-    success
+    ...ConfirmResponse
   }
 }
 
 query GetUserById($id: Int!) {
   getUserById(id: $id) {
-    user {
-      ...FullUser
-    }
-    errors {
-      ...FullErrorField
-    }
+    ...SingleUserResponse
   }
 }
 
 query GetUserByName($name: String!) {
   getUserByName(name: $name) {
-    user {
-      ...FullUser
-    }
-    errors {
-      ...FullErrorField
-    }
+    ...SingleUserResponse
   }
 }
 
 query SearchForUser($options: GetSearchResultInput!) {
   searchForUser(options: $options) {
-    userArray {
-      ...FullUser
-    }
-    errors {
-      ...FullErrorField
-    }
-    count
+    ...UserArrayResponse
   }
 }

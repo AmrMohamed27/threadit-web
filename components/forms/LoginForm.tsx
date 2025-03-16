@@ -11,13 +11,31 @@ import { useLoginMutation } from "@/generated/graphql";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { LoginErrorType } from "../../types";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 const LoginForm = () => {
   // Define graphql mutation
-  const [loginMutation, { data: loginResult, loading, error: loginError }] =
-    useLoginMutation();
+  const [loginMutation, { loading, error: loginError }] = useLoginMutation({
+    onCompleted: async (data) => {
+      if (data?.loginUser.errors) {
+        for (const error of data.loginUser.errors) {
+          form.setError(error.field as LoginErrorType, {
+            message: error.message,
+          });
+        }
+      }
+      if (data?.loginUser.user && data.loginUser.token) {
+        localStorage.setItem("auth_token", data.loginUser.token);
+        await refetch();
+        // Redirect to home page
+        router.push("/");
+      }
+    },
+  });
   // Router
   const router = useRouter();
+  // Refetch query for current user
+  const { refetch } = useCurrentUser();
   // 1. Define your form.
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -50,19 +68,7 @@ const LoginForm = () => {
     if (loginError) {
       console.error(loginError);
     }
-    if (loginResult?.loginUser.errors) {
-      for (const error of loginResult.loginUser.errors) {
-        form.setError(error.field as LoginErrorType, {
-          message: error.message,
-        });
-      }
-    }
-    if (loginResult?.loginUser.user) {
-      console.log("Document cookies:", document.cookie);
-      // Redirect to home page
-      router.push("/");
-    }
-  }, [loginError, loginResult, router, form]);
+  }, [loginError]);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">

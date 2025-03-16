@@ -1,14 +1,21 @@
 import { env } from "@/env";
 import { ApolloClient, InMemoryCache, HttpLink, split } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
+import { onError } from "@apollo/client/link/error";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { createClient } from "graphql-ws";
 
-// Function to get WebSocket auth token
+// Function to get JWT from localStorage
+const getToken = () => localStorage.getItem("auth_token");
+
+// Function to get WebSocket auth token dynamically
 const getWebSocketToken = async (): Promise<string | null> => {
   try {
     const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/ws-auth`, {
-      credentials: "include",
+      headers: {
+        Authorization: `Bearer ${getToken()}`, // Use latest JWT
+      },
     });
 
     if (response.ok) {
@@ -18,20 +25,39 @@ const getWebSocketToken = async (): Promise<string | null> => {
   } catch (err) {
     console.error("Failed to get WebSocket auth token:", err);
   }
-
   return null;
 };
 
+// Middleware to attach JWT token dynamically
+const authLink = setContext((_, { headers }) => {
+  const token = getToken();
+  return {
+    headers: {
+      ...headers,
+      Authorization: token ? `Bearer ${token}` : "",
+    },
+  };
+});
+
+// Error handling: Auto-remove invalid tokens
+const errorLink = onError(({ graphQLErrors }) => {
+  if (graphQLErrors) {
+    for (const err of graphQLErrors) {
+      if (err.extensions?.code === "UNAUTHENTICATED") {
+        localStorage.removeItem("auth_token");
+        window.location.href = "/login"; // Redirect to login
+      }
+    }
+  }
+});
+
+// HTTP link for queries and mutations
+const httpLink = new HttpLink({
+  uri: `${env.NEXT_PUBLIC_API_URL}/graphql`,
+});
+
 // Create the Apollo client with token
 export const createApolloClient = async () => {
-  // Get WebSocket auth token
-  const wsToken = await getWebSocketToken();
-
-  // HTTP link for queries and mutations
-  const httpLink = new HttpLink({
-    uri: `${env.NEXT_PUBLIC_API_URL}/graphql`,
-    credentials: "include",
-  });
 
   // WebSocket link for subscriptions
   const wsLink =
@@ -39,9 +65,9 @@ export const createApolloClient = async () => {
       ? new GraphQLWsLink(
           createClient({
             url: `${env.NEXT_PUBLIC_API_URL.replace(/^https?/, "ws")}/graphql`,
-            connectionParams: {
-              authToken: wsToken,
-            },
+            connectionParams: async () => ({
+              authToken: await getWebSocketToken(), // Ensure fresh token
+            }),
           })
         )
       : null;
@@ -58,20 +84,19 @@ export const createApolloClient = async () => {
             );
           },
           wsLink,
-          httpLink
+          authLink.concat(errorLink).concat(httpLink) // Apply auth & error handling
         )
-      : httpLink;
+      : authLink.concat(errorLink).concat(httpLink);
 
   // Create Apollo Client
   return new ApolloClient({
     link: splitLink,
     cache: new InMemoryCache(),
-    credentials: "include",
   });
 };
 
 // Export a basic client for SSR/initial rendering
 export const apolloClient = new ApolloClient({
-  uri: `${env.NEXT_PUBLIC_API_URL}/graphql`,
+  link: authLink.concat(errorLink).concat(httpLink),
   cache: new InMemoryCache(),
 });

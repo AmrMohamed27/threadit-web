@@ -27,4 +27,17 @@ fragment UserArrayResponse on UserResponse {
     ...FullErrorField
   }
   count
+  token
 }
+
+fragment SingleUserResponse on UserResponse {
+  user {
+    ...FullUser
+  }
+  errors {
+    ...FullErrorField
+  }
+  count
+  token
+}
+

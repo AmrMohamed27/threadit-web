@@ -3,9 +3,3 @@ subscription NewMessage {
     ...SingleMessageResponse
   }
 }
-
-subscription DirectMessage {
-  directMessage {
-    ...Notification
-  }
-}

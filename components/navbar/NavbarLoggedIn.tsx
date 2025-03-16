@@ -6,42 +6,41 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useLogoutMutation, User } from "@/generated/graphql";
+import { User } from "@/generated/graphql";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { closeChat, setChats } from "@/lib/features/chatSlice";
 import { cn, getDefaultAvatar } from "@/lib/utils";
 import {
+  MessageCircleMore as ChatIcon,
   Plus as CreateIcon,
   LogOut as LogOutIcon,
-  MessageCircleMore as ChatIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { Button } from "../ui/button";
+import { useDispatch } from "react-redux";
+import ChatTrigger from "../chat/ChatTrigger";
 import AvatarWrapper from "../common/AvatarWrapper";
 import GreyDiv from "../common/GreyDiv";
-import ChatTrigger from "../chat/ChatTrigger";
-import { useDispatch } from "react-redux";
-import { closeChat, setChats } from "@/lib/features/chatSlice";
+import { Button } from "../ui/button";
 
 interface Props {
   user: User;
 }
 
 const NavbarLoggedIn = ({ user }: Props) => {
-  // Logout mutation
-  const [logoutMutation, { loading: isLogoutLoading, error: logoutError }] =
-    useLogoutMutation();
   // dispatcher
   const dispatch = useDispatch();
+  // Refetch current user
+  const { refetch } = useCurrentUser();
   // Logout handler function
   const handleLogout = async () => {
-    // perform the logout mutation on the server
-    await logoutMutation({
-      refetchQueries: "all",
-    });
     // Clear chats and Close the chat window if it's open
     dispatch(closeChat());
     dispatch(setChats([]));
+    // Clear token from localStorage
+    localStorage.removeItem("auth_token");
+    // Redirect to login page
+    await refetch();
   };
-  if (logoutError) console.error(logoutError);
   return (
     <div className="flex flex-row-reverse items-center gap-2">
       {/* Avatar and dropdown menu */}
@@ -50,7 +49,6 @@ const NavbarLoggedIn = ({ user }: Props) => {
           <AvatarWrapper
             src={user.image ?? getDefaultAvatar({ name: user.name })}
             alt={`${user.name}'s profile picture`}
-            loading={isLogoutLoading}
           />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -83,7 +81,6 @@ const NavbarLoggedIn = ({ user }: Props) => {
               <AvatarWrapper
                 src={user.image ?? getDefaultAvatar({ name: user.name })}
                 alt={`${user.name}'s profile picture`}
-                loading={isLogoutLoading}
                 className="w-8 h-8"
               />
               {/* Name */}

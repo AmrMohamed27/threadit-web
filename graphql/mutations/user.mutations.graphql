@@ -1,22 +1,12 @@
 mutation Register($userData: RegisterInput!) {
   registerUser(userData: $userData) {
-    errors {
-      ...FullErrorField
-    }
-    user {
-      ...FullUser
-    }
+    ...SingleUserResponse
   }
 }
 
 mutation Login($userData: LoginInput!) {
   loginUser(userData: $userData) {
-    errors {
-      ...FullErrorField
-    }
-    user {
-      ...FullUser
-    }
+    ...SingleUserResponse
   }
 }
 
@@ -26,54 +16,36 @@ mutation Logout {
 
 mutation ConfirmUser($code: String!) {
   confirmUser(code: $code) {
-    success
-    errors {
-      ...FullErrorField
-    }
+    ...ConfirmResponse
   }
 }
 
 mutation RequestConfirmationCode {
   requestConfirmationCode {
-    success
-    errors {
-      ...FullErrorField
-    }
+    ...ConfirmResponse
   }
 }
 
 mutation RequestPasswordReset($email: String!) {
   requestPasswordReset(email: $email) {
-    success
-    errors {
-      ...FullErrorField
-    }
+    ...ConfirmResponse
   }
 }
 
 mutation ResetPassword($options: ResetPasswordInput!) {
   resetPassword(options: $options) {
-    success
-    errors {
-      ...FullErrorField
-    }
+    ...ConfirmResponse
   }
 }
 
 mutation UpdateUserImage($options: UpdateUserImageInput!) {
   updateUserImage(options: $options) {
-    success
-    errors {
-      ...FullErrorField
-    }
+    ...ConfirmResponse
   }
 }
 
 mutation UpdateUserName($options: UpdateUserNameInput!) {
   updateUserName(options: $options) {
-    success
-    errors {
-      ...FullErrorField
-    }
+    ...ConfirmResponse
   }
 }

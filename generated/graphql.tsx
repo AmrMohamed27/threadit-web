@@ -478,27 +478,6 @@ export type MutationUpdateVoteArgs = {
   options: UpdateVoteInput;
 };
 
-export type NotificationResponse = {
-  __typename?: 'NotificationResponse';
-  content: Scalars['String']['output'];
-  createdAt?: Maybe<Scalars['String']['output']>;
-  entityId: Scalars['Float']['output'];
-  entityType: Scalars['String']['output'];
-  id: Scalars['Float']['output'];
-  isRead: Scalars['Boolean']['output'];
-  senderId: Scalars['Float']['output'];
-  senderName: Scalars['String']['output'];
-  type: Notifications;
-  userId: Scalars['Float']['output'];
-};
-
-/** Represents the different types of notifications. */
-export enum Notifications {
-  DirectMessage = 'DIRECT_MESSAGE',
-  NewReply = 'NEW_REPLY',
-  PostActivity = 'POST_ACTIVITY'
-}
-
 export type Post = {
   __typename?: 'Post';
   author?: Maybe<User>;
@@ -688,7 +667,6 @@ export type ResetPasswordInput = {
 export type Subscription = {
   __typename?: 'Subscription';
   chatUpdates: ChatConfirmResponse;
-  directMessage: NotificationResponse;
   newChat: ChatResponse;
   newMessage: MessageResponse;
 };
@@ -751,6 +729,7 @@ export type UserResponse = {
   __typename?: 'UserResponse';
   count?: Maybe<Scalars['Int']['output']>;
   errors?: Maybe<Array<FieldError>>;
+  token?: Maybe<Scalars['String']['output']>;
   user?: Maybe<User>;
   userArray?: Maybe<Array<User>>;
 };
@@ -810,8 +789,6 @@ export type SingleMessageResponseFragment = { __typename?: 'MessageResponse', me
 
 export type ConfirmResponseFragment = { __typename?: 'ConfirmResponse', success: boolean, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
-export type NotificationFragment = { __typename?: 'NotificationResponse', id: number, type: Notifications, userId: number, senderId: number, senderName: string, content: string, entityId: number, entityType: string, isRead: boolean, createdAt?: string | null };
-
 export type FullPostFragment = { __typename?: 'Post', id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, media?: Array<string> | null };
 
 export type FullPostResponseFragment = { __typename?: 'PostResponse', count?: number | null, postsArray?: Array<{ __typename?: 'Post', upvotesCount?: number | null, isUpvoted?: VoteOptions | null, commentsCount?: number | null, id: number, title: string, content: string, createdAt: string, updatedAt: string, authorId: number, communityId: number, media?: Array<string> | null, author?: { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string } | null, community?: { __typename?: 'Community', id: number, name: string, description: string, image?: string | null, createdAt: string, updatedAt: string, creatorId: number, postsCount?: number | null, membersCount?: number | null, isJoined?: boolean | null, isPrivate: boolean, creator?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null } | null }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
@@ -822,7 +799,9 @@ export type FullUserFragment = { __typename?: 'User', id: number, name: string, 
 
 export type FullAuthorFragment = { __typename?: 'User', id: number, confirmed: boolean, createdAt: string, email: string, image?: string | null, name: string, updatedAt: string };
 
-export type UserArrayResponseFragment = { __typename?: 'UserResponse', count?: number | null, userArray?: Array<{ __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
+export type UserArrayResponseFragment = { __typename?: 'UserResponse', count?: number | null, token?: string | null, userArray?: Array<{ __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
+
+export type SingleUserResponseFragment = { __typename?: 'UserResponse', count?: number | null, token?: string | null, user?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
 
 export type FullVoteFragment = { __typename?: 'Vote', id: number, isUpvote: boolean, createdAt: string, updatedAt: string, userId: number, postId?: number | null, commentId?: number | null };
 
@@ -985,14 +964,14 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null } };
+export type RegisterMutation = { __typename?: 'Mutation', registerUser: { __typename?: 'UserResponse', count?: number | null, token?: string | null, user?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type LoginMutationVariables = Exact<{
   userData: LoginInput;
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', loginUser: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null } };
+export type LoginMutation = { __typename?: 'Mutation', loginUser: { __typename?: 'UserResponse', count?: number | null, token?: string | null, user?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -1077,7 +1056,7 @@ export type GetChatParticipantsQueryVariables = Exact<{
 }>;
 
 
-export type GetChatParticipantsQuery = { __typename?: 'Query', getChatParticipants: { __typename?: 'UserResponse', count?: number | null, userArray?: Array<{ __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetChatParticipantsQuery = { __typename?: 'Query', getChatParticipants: { __typename?: 'UserResponse', count?: number | null, token?: string | null, userArray?: Array<{ __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type CheckChatParticipantQueryVariables = Exact<{
   chatId: Scalars['Float']['input'];
@@ -1167,11 +1146,6 @@ export type NewMessageSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 export type NewMessageSubscription = { __typename?: 'Subscription', newMessage: { __typename?: 'MessageResponse', message?: { __typename?: 'Message', id: number, content: string, createdAt: string, updatedAt: string, senderId: number, chatId: number, media?: string | null, sender?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
-export type DirectMessageSubscriptionVariables = Exact<{ [key: string]: never; }>;
-
-
-export type DirectMessageSubscription = { __typename?: 'Subscription', directMessage: { __typename?: 'NotificationResponse', id: number, type: Notifications, userId: number, senderId: number, senderName: string, content: string, entityId: number, entityType: string, isRead: boolean, createdAt?: string | null } };
-
 export type GetAllPostsQueryVariables = Exact<{
   options: GetAllPostsInput;
 }>;
@@ -1236,7 +1210,7 @@ export type GetSavedPostsQuery = { __typename?: 'Query', getSavedPosts: { __type
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null } };
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'UserResponse', count?: number | null, token?: string | null, user?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type CheckTokenQueryVariables = Exact<{
   options: CheckTokenInput;
@@ -1250,21 +1224,21 @@ export type GetUserByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetUserByIdQuery = { __typename?: 'Query', getUserById: { __typename?: 'UserResponse', user?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetUserByIdQuery = { __typename?: 'Query', getUserById: { __typename?: 'UserResponse', count?: number | null, token?: string | null, user?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type GetUserByNameQueryVariables = Exact<{
   name: Scalars['String']['input'];
 }>;
 
 
-export type GetUserByNameQuery = { __typename?: 'Query', getUserByName: { __typename?: 'UserResponse', user?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type GetUserByNameQuery = { __typename?: 'Query', getUserByName: { __typename?: 'UserResponse', count?: number | null, token?: string | null, user?: { __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean } | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type SearchForUserQueryVariables = Exact<{
   options: GetSearchResultInput;
 }>;
 
 
-export type SearchForUserQuery = { __typename?: 'Query', searchForUser: { __typename?: 'UserResponse', count?: number | null, userArray?: Array<{ __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
+export type SearchForUserQuery = { __typename?: 'Query', searchForUser: { __typename?: 'UserResponse', count?: number | null, token?: string | null, userArray?: Array<{ __typename?: 'User', id: number, name: string, email: string, image?: string | null, createdAt: string, updatedAt: string, confirmed: boolean }> | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export const FullUserFragmentDoc = gql`
     fragment FullUser on User {
@@ -1483,20 +1457,6 @@ export const ConfirmResponseFragmentDoc = gql`
   }
 }
     ${FullErrorFieldFragmentDoc}`;
-export const NotificationFragmentDoc = gql`
-    fragment Notification on NotificationResponse {
-  id
-  type
-  userId
-  senderId
-  senderName
-  content
-  entityId
-  entityType
-  isRead
-  createdAt
-}
-    `;
 export const FullPostFragmentDoc = gql`
     fragment FullPost on Post {
   id
@@ -1563,6 +1523,20 @@ export const UserArrayResponseFragmentDoc = gql`
     ...FullErrorField
   }
   count
+  token
+}
+    ${FullUserFragmentDoc}
+${FullErrorFieldFragmentDoc}`;
+export const SingleUserResponseFragmentDoc = gql`
+    fragment SingleUserResponse on UserResponse {
+  user {
+    ...FullUser
+  }
+  errors {
+    ...FullErrorField
+  }
+  count
+  token
 }
     ${FullUserFragmentDoc}
 ${FullErrorFieldFragmentDoc}`;
@@ -2354,16 +2328,10 @@ export type UnsavePostMutationOptions = Apollo.BaseMutationOptions<UnsavePostMut
 export const RegisterDocument = gql`
     mutation Register($userData: RegisterInput!) {
   registerUser(userData: $userData) {
-    errors {
-      ...FullErrorField
-    }
-    user {
-      ...FullUser
-    }
+    ...SingleUserResponse
   }
 }
-    ${FullErrorFieldFragmentDoc}
-${FullUserFragmentDoc}`;
+    ${SingleUserResponseFragmentDoc}`;
 export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;
 
 /**
@@ -2393,16 +2361,10 @@ export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutatio
 export const LoginDocument = gql`
     mutation Login($userData: LoginInput!) {
   loginUser(userData: $userData) {
-    errors {
-      ...FullErrorField
-    }
-    user {
-      ...FullUser
-    }
+    ...SingleUserResponse
   }
 }
-    ${FullErrorFieldFragmentDoc}
-${FullUserFragmentDoc}`;
+    ${SingleUserResponseFragmentDoc}`;
 export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
 
 /**
@@ -2462,13 +2424,10 @@ export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, L
 export const ConfirmUserDocument = gql`
     mutation ConfirmUser($code: String!) {
   confirmUser(code: $code) {
-    success
-    errors {
-      ...FullErrorField
-    }
+    ...ConfirmResponse
   }
 }
-    ${FullErrorFieldFragmentDoc}`;
+    ${ConfirmResponseFragmentDoc}`;
 export type ConfirmUserMutationFn = Apollo.MutationFunction<ConfirmUserMutation, ConfirmUserMutationVariables>;
 
 /**
@@ -2498,13 +2457,10 @@ export type ConfirmUserMutationOptions = Apollo.BaseMutationOptions<ConfirmUserM
 export const RequestConfirmationCodeDocument = gql`
     mutation RequestConfirmationCode {
   requestConfirmationCode {
-    success
-    errors {
-      ...FullErrorField
-    }
+    ...ConfirmResponse
   }
 }
-    ${FullErrorFieldFragmentDoc}`;
+    ${ConfirmResponseFragmentDoc}`;
 export type RequestConfirmationCodeMutationFn = Apollo.MutationFunction<RequestConfirmationCodeMutation, RequestConfirmationCodeMutationVariables>;
 
 /**
@@ -2533,13 +2489,10 @@ export type RequestConfirmationCodeMutationOptions = Apollo.BaseMutationOptions<
 export const RequestPasswordResetDocument = gql`
     mutation RequestPasswordReset($email: String!) {
   requestPasswordReset(email: $email) {
-    success
-    errors {
-      ...FullErrorField
-    }
+    ...ConfirmResponse
   }
 }
-    ${FullErrorFieldFragmentDoc}`;
+    ${ConfirmResponseFragmentDoc}`;
 export type RequestPasswordResetMutationFn = Apollo.MutationFunction<RequestPasswordResetMutation, RequestPasswordResetMutationVariables>;
 
 /**
@@ -2569,13 +2522,10 @@ export type RequestPasswordResetMutationOptions = Apollo.BaseMutationOptions<Req
 export const ResetPasswordDocument = gql`
     mutation ResetPassword($options: ResetPasswordInput!) {
   resetPassword(options: $options) {
-    success
-    errors {
-      ...FullErrorField
-    }
+    ...ConfirmResponse
   }
 }
-    ${FullErrorFieldFragmentDoc}`;
+    ${ConfirmResponseFragmentDoc}`;
 export type ResetPasswordMutationFn = Apollo.MutationFunction<ResetPasswordMutation, ResetPasswordMutationVariables>;
 
 /**
@@ -2605,13 +2555,10 @@ export type ResetPasswordMutationOptions = Apollo.BaseMutationOptions<ResetPassw
 export const UpdateUserImageDocument = gql`
     mutation UpdateUserImage($options: UpdateUserImageInput!) {
   updateUserImage(options: $options) {
-    success
-    errors {
-      ...FullErrorField
-    }
+    ...ConfirmResponse
   }
 }
-    ${FullErrorFieldFragmentDoc}`;
+    ${ConfirmResponseFragmentDoc}`;
 export type UpdateUserImageMutationFn = Apollo.MutationFunction<UpdateUserImageMutation, UpdateUserImageMutationVariables>;
 
 /**
@@ -2641,13 +2588,10 @@ export type UpdateUserImageMutationOptions = Apollo.BaseMutationOptions<UpdateUs
 export const UpdateUserNameDocument = gql`
     mutation UpdateUserName($options: UpdateUserNameInput!) {
   updateUserName(options: $options) {
-    success
-    errors {
-      ...FullErrorField
-    }
+    ...ConfirmResponse
   }
 }
-    ${FullErrorFieldFragmentDoc}`;
+    ${ConfirmResponseFragmentDoc}`;
 export type UpdateUserNameMutationFn = Apollo.MutationFunction<UpdateUserNameMutation, UpdateUserNameMutationVariables>;
 
 /**
@@ -3429,35 +3373,6 @@ export function useNewMessageSubscription(baseOptions?: Apollo.SubscriptionHookO
       }
 export type NewMessageSubscriptionHookResult = ReturnType<typeof useNewMessageSubscription>;
 export type NewMessageSubscriptionResult = Apollo.SubscriptionResult<NewMessageSubscription>;
-export const DirectMessageDocument = gql`
-    subscription DirectMessage {
-  directMessage {
-    ...Notification
-  }
-}
-    ${NotificationFragmentDoc}`;
-
-/**
- * __useDirectMessageSubscription__
- *
- * To run a query within a React component, call `useDirectMessageSubscription` and pass it any options that fit your needs.
- * When your component renders, `useDirectMessageSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useDirectMessageSubscription({
- *   variables: {
- *   },
- * });
- */
-export function useDirectMessageSubscription(baseOptions?: Apollo.SubscriptionHookOptions<DirectMessageSubscription, DirectMessageSubscriptionVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<DirectMessageSubscription, DirectMessageSubscriptionVariables>(DirectMessageDocument, options);
-      }
-export type DirectMessageSubscriptionHookResult = ReturnType<typeof useDirectMessageSubscription>;
-export type DirectMessageSubscriptionResult = Apollo.SubscriptionResult<DirectMessageSubscription>;
 export const GetAllPostsDocument = gql`
     query GetAllPosts($options: GetAllPostsInput!) {
   getAllPosts(options: $options) {
@@ -3818,16 +3733,10 @@ export type GetSavedPostsQueryResult = Apollo.QueryResult<GetSavedPostsQuery, Ge
 export const MeDocument = gql`
     query Me {
   me {
-    errors {
-      ...FullErrorField
-    }
-    user {
-      ...FullUser
-    }
+    ...SingleUserResponse
   }
 }
-    ${FullErrorFieldFragmentDoc}
-${FullUserFragmentDoc}`;
+    ${SingleUserResponseFragmentDoc}`;
 
 /**
  * __useMeQuery__
@@ -3863,13 +3772,10 @@ export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const CheckTokenDocument = gql`
     query CheckToken($options: CheckTokenInput!) {
   checkToken(options: $options) {
-    errors {
-      ...FullErrorField
-    }
-    success
+    ...ConfirmResponse
   }
 }
-    ${FullErrorFieldFragmentDoc}`;
+    ${ConfirmResponseFragmentDoc}`;
 
 /**
  * __useCheckTokenQuery__
@@ -3906,16 +3812,10 @@ export type CheckTokenQueryResult = Apollo.QueryResult<CheckTokenQuery, CheckTok
 export const GetUserByIdDocument = gql`
     query GetUserById($id: Int!) {
   getUserById(id: $id) {
-    user {
-      ...FullUser
-    }
-    errors {
-      ...FullErrorField
-    }
+    ...SingleUserResponse
   }
 }
-    ${FullUserFragmentDoc}
-${FullErrorFieldFragmentDoc}`;
+    ${SingleUserResponseFragmentDoc}`;
 
 /**
  * __useGetUserByIdQuery__
@@ -3952,16 +3852,10 @@ export type GetUserByIdQueryResult = Apollo.QueryResult<GetUserByIdQuery, GetUse
 export const GetUserByNameDocument = gql`
     query GetUserByName($name: String!) {
   getUserByName(name: $name) {
-    user {
-      ...FullUser
-    }
-    errors {
-      ...FullErrorField
-    }
+    ...SingleUserResponse
   }
 }
-    ${FullUserFragmentDoc}
-${FullErrorFieldFragmentDoc}`;
+    ${SingleUserResponseFragmentDoc}`;
 
 /**
  * __useGetUserByNameQuery__
@@ -3998,17 +3892,10 @@ export type GetUserByNameQueryResult = Apollo.QueryResult<GetUserByNameQuery, Ge
 export const SearchForUserDocument = gql`
     query SearchForUser($options: GetSearchResultInput!) {
   searchForUser(options: $options) {
-    userArray {
-      ...FullUser
-    }
-    errors {
-      ...FullErrorField
-    }
-    count
+    ...UserArrayResponse
   }
 }
-    ${FullUserFragmentDoc}
-${FullErrorFieldFragmentDoc}`;
+    ${UserArrayResponseFragmentDoc}`;
 
 /**
  * __useSearchForUserQuery__

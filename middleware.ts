@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { env } from "./env";
 
 // Middleware to redirect users who are already logged in to the home page
 export function middleware(req: NextRequest) {
-  const sessionCookie = req.cookies.get(env.COOKIE_NAME);
+  const token = req.headers.get("token");
 
-  if (sessionCookie) {
+  if (token) {
     return NextResponse.redirect(new URL("/", req.url)); // Redirect to home
   }
 
