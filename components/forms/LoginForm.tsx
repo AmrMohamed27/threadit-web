@@ -58,6 +58,7 @@ const LoginForm = () => {
       }
     }
     if (loginResult?.loginUser.user) {
+      console.log("Document cookies:", document.cookie);
       // Redirect to home page
       router.push("/");
     }
