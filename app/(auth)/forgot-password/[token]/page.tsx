@@ -12,11 +12,14 @@ const ResetPassword = async ({
 }) => {
   const token = (await params).token;
   const email = (await searchParams).email;
+  console.log("Token: ", token);
+  console.log("Email: ", email);
   if (!email || Array.isArray(email)) {
     redirect("/login");
   }
 
   const success = await checkToken({ token, email });
+  console.log("Success: ", success);
   if (!success) {
     redirect("/login");
   }
