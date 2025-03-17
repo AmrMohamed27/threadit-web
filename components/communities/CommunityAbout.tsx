@@ -48,7 +48,7 @@ const CommunityAbout = ({ community, className = "" }: Props) => {
   return (
     <div
       className={cn(
-        "md:top-20 md:right-4 md:sticky flex flex-col gap-4 bg-muted dark:bg-black px-4 pt-4 pb-8 rounded-lg min-w-[300px] h-full max-h-[700px]",
+        "md:top-20 md:right-4 md:sticky flex flex-col gap-4 bg-muted dark:bg-black px-4 pt-4 pb-8 rounded-lg min-w-[300px] max-w-[350px] h-full max-h-[700px]",
         className
       )}
     >
