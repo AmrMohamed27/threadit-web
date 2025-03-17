@@ -28,11 +28,12 @@ const SearchUserPage = () => {
     count: 0,
   };
   return (
-    <>
+    <div className="flex flex-col gap-4 w-full">
       {/* Heading */}
       <h1 className="text-xl md:text-3xl">
         Search Results for {searchTerm} in Users
       </h1>
+      <SearchSwitch />
       {loading ? (
         <div>Loading...</div>
       ) : errors || !users || !count ? (
@@ -40,12 +41,11 @@ const SearchUserPage = () => {
       ) : error ? (
         <div> {error?.message ?? "An error occurred"}</div>
       ) : (
-        <div className="flex flex-col gap-4 w-full">
-          <SearchSwitch />
+        <>
           <UserSearchFeed users={users} count={count} hasPagination />
-        </div>
+        </>
       )}
-    </>
+    </div>
   );
 };
 

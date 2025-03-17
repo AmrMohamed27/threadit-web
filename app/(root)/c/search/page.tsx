@@ -29,11 +29,12 @@ const SearchCommunityPage = () => {
     count: 0,
   };
   return (
-    <>
+    <div className="flex flex-col gap-4 w-full">
       {/* Heading */}
       <h1 className="text-xl md:text-3xl">
         Search Results for {searchTerm} in Communities
       </h1>
+      <SearchSwitch />
       {loading ? (
         <CommunitySearchFeedLoading hasPagination />
       ) : errors || !communities || !count ? (
@@ -41,16 +42,15 @@ const SearchCommunityPage = () => {
       ) : error ? (
         <div> {error?.message ?? "An error occurred"}</div>
       ) : (
-        <div className="flex flex-col gap-4 w-full">
-          <SearchSwitch />
+        <>
           <CommunitySearchFeed
             communities={communities}
             count={count}
             hasPagination
           />
-        </div>
+        </>
       )}
-    </>
+    </div>
   );
 };
 

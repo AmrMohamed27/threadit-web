@@ -11,6 +11,7 @@ import CommentForm from "../forms/CommentForm";
 import CommentOptionsGetter from "../posts/CommentOptionsGetter";
 import { Button } from "../ui/button";
 import EditCommentForm from "../forms/EditCommentForm";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface Props {
   comment: Comment;
@@ -33,6 +34,8 @@ const CommentCard = ({ comment, depth = 0, maxDepth = 3 }: Props) => {
   const isArabicContent = isArabic(content);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
+  const { user } = useCurrentUser();
+  console.log("User: ", user);
 
   const showForm = () => {
     setIsFormVisible(true);
@@ -132,7 +135,7 @@ const CommentCard = ({ comment, depth = 0, maxDepth = 3 }: Props) => {
           </div>
         </div>
       )}
-      {isFormVisible && (
+      {isFormVisible && user && (
         <CommentForm
           postId={comment.postId}
           parentCommentId={

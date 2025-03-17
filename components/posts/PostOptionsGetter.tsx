@@ -56,9 +56,18 @@ const PostOptionsGetter = ({ authorId, postId, handleEdit }: Props) => {
       : []
   );
   const isHidden = hiddenSet.has(postId);
+  const dispatch = useDispatch();
+  const [hidePostMutation] = useHidePostMutation();
+  const [unhideMutation] = useUnhidePostMutation();
+  const [savePostMutation] = useSavePostMutation();
+  const [unsavePostMutation] = useUnsavePostMutation();
+  const router = useRouter();
+  const [deletePostMutation] = useDeletePostMutation();
 
   const options: PostOptions[] = [];
-  if (user) {
+  if (!user) {
+    return null;
+  } else {
     // Hidden options
     if (isHidden) {
       options.push(unhidePostOption);
@@ -81,12 +90,10 @@ const PostOptionsGetter = ({ authorId, postId, handleEdit }: Props) => {
     }
   }
 
-  const dispatch = useDispatch();
   const reduxToggleSavedPost = (postId: number) => {
     dispatch(toggleSavePost(postId));
   };
 
-  const [hidePostMutation] = useHidePostMutation();
   const handleHidePost = async () => {
     try {
       const { data } = await hidePostMutation({
@@ -115,7 +122,6 @@ const PostOptionsGetter = ({ authorId, postId, handleEdit }: Props) => {
       console.error(error);
     }
   };
-  const [unhideMutation] = useUnhidePostMutation();
 
   const handleUnhide = async () => {
     try {
@@ -140,7 +146,6 @@ const PostOptionsGetter = ({ authorId, postId, handleEdit }: Props) => {
       console.error(error);
     }
   };
-  const [savePostMutation] = useSavePostMutation();
   const handleSavePost = async () => {
     try {
       const { data } = await savePostMutation({
@@ -168,7 +173,6 @@ const PostOptionsGetter = ({ authorId, postId, handleEdit }: Props) => {
     }
   };
 
-  const [unsavePostMutation] = useUnsavePostMutation();
   const handleUnsavePost = async () => {
     try {
       const { data } = await unsavePostMutation({
@@ -195,9 +199,6 @@ const PostOptionsGetter = ({ authorId, postId, handleEdit }: Props) => {
       console.error("Error unsaving post: ", error);
     }
   };
-
-  const router = useRouter();
-  const [deletePostMutation] = useDeletePostMutation();
 
   const handleDeletePost = async () => {
     const { data } = await deletePostMutation({

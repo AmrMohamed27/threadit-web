@@ -1,14 +1,16 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { useSidebar } from "../ui/sidebar";
-import { DarkModeToggle } from "./DarkModeToggle";
+import ConfirmAlert from "../common/ConfirmAlert";
+import { SidebarTrigger, useSidebar } from "../ui/sidebar";
 import NavbarActions from "./NavbarActions";
 import NavbarLogo from "./NavbarLogo";
 import SearchBar from "./SearchBar";
-import ConfirmAlert from "../common/ConfirmAlert";
 
 export default function Navbar() {
-  const { open } = useSidebar();
+  const { open, openMobile } = useSidebar();
+  console.log("Open: ", open);
+  console.log("Open M: ", openMobile);
+
   return (
     <nav
       className={cn(
@@ -18,10 +20,13 @@ export default function Navbar() {
     >
       <ConfirmAlert />
       <div className="flex justify-between items-center gap-8 mx-auto px-4 h-16 container">
-        <NavbarLogo />
+        <div className="flex flex-row items-center gap-2">
+          <SidebarTrigger className={cn(open ? "hidden" : "max-md:hidden")} />
+          <SidebarTrigger className={cn(openMobile ? "hidden" : "md:hidden")} />
+          <NavbarLogo />
+        </div>
         <SearchBar hasPagination />
         <div className="flex items-center space-x-4">
-          <DarkModeToggle />
           <NavbarActions />
         </div>
       </div>

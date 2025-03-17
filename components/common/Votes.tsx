@@ -5,6 +5,7 @@ import {
   useUpdateVoteMutation,
   VoteOptions,
 } from "@/generated/graphql";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { cn } from "@/lib/utils";
 import {
   ArrowBigDown as DownvoteIcon,
@@ -22,6 +23,7 @@ interface Props {
 const Votes = ({ upvotesCount, isUpvoted, postId, commentId }: Props) => {
   const [vote, setVote] = useState<VoteOptions>(isUpvoted ?? VoteOptions.None);
   const [count, setCount] = useState(upvotesCount);
+  const { user } = useCurrentUser();
 
   //   UI Optimistic Update
   const handleClick = (newOption: VoteOptions) => {
@@ -122,6 +124,7 @@ const Votes = ({ upvotesCount, isUpvoted, postId, commentId }: Props) => {
       {/* Upvote Button */}
       <button
         className="hover:bg-muted-foreground/10 p-2 rounded-full"
+        disabled={user === null}
         onClick={async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
           e.stopPropagation();
           handleClick(VoteOptions.Upvote);
@@ -153,6 +156,7 @@ const Votes = ({ upvotesCount, isUpvoted, postId, commentId }: Props) => {
       {/* Downvote Button */}
       <button
         className="hover:bg-muted-foreground/10 p-2 rounded-full"
+        disabled={user === null}
         onClick={async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
           e.stopPropagation();
           handleClick(VoteOptions.Downvote);

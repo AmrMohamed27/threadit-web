@@ -27,9 +27,10 @@ const SearchPage = () => {
     count: 0,
   };
   return (
-    <>
+    <div className="flex flex-col gap-4 w-full">
       {/* Heading */}
       <h1 className="text-xl md:text-3xl">Search Results for {searchTerm}</h1>
+      <SearchSwitch />
       {loading ? (
         <PostsFeedLoading hasPagination />
       ) : errors || !posts || !count ? (
@@ -37,12 +38,11 @@ const SearchPage = () => {
       ) : error ? (
         <div> {error?.message ?? "An error occurred"}</div>
       ) : (
-        <div className="flex flex-col gap-4 w-full">
-          <SearchSwitch />
+        <>
           <PostsFeed posts={posts} count={count} hasPagination />
-        </div>
+        </>
       )}
-    </>
+    </div>
   );
 };
 

@@ -5,8 +5,9 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "../ui/skeleton";
 import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
-export function DarkModeToggle() {
+export function DarkModeToggle({ className }: { className: string }) {
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -21,7 +22,7 @@ export function DarkModeToggle() {
     <Button
       variant="outline"
       size="icon"
-      className="rounded-full"
+      className={cn("rounded-full", className)}
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
     >
       {resolvedTheme === "dark" ? (

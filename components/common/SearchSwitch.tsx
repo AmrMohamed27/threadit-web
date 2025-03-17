@@ -1,6 +1,7 @@
 import { useCurrentPage } from "@/hooks/use-current-page";
 import React from "react";
 import { Button } from "../ui/button";
+import { getCleanSearchTerm } from "@/lib/utils";
 
 const SearchSwitch = () => {
   const { searchTerm, router, createMultipleQueryStrings, pathname } =
@@ -10,24 +11,29 @@ const SearchSwitch = () => {
   const isPostSearch = !isCommunitySearch && !isUserSearch;
 
   const handleCommunitySearch = () => {
+    const newSearchTerm = getCleanSearchTerm(searchTerm);
     router.push(
       "/c/search" +
         "?" +
-        createMultipleQueryStrings(["q", "page"], [searchTerm, "1"])
+        createMultipleQueryStrings(["q", "page"], [newSearchTerm, "1"])
     );
   };
   const handleUserSearch = () => {
+    const newSearchTerm = getCleanSearchTerm(searchTerm);
+
     router.push(
       "/users/search" +
         "?" +
-        createMultipleQueryStrings(["q", "page"], [searchTerm, "1"])
+        createMultipleQueryStrings(["q", "page"], [newSearchTerm, "1"])
     );
   };
   const handlePostSearch = () => {
+    const newSearchTerm = getCleanSearchTerm(searchTerm);
+
     router.push(
       "/search" +
         "?" +
-        createMultipleQueryStrings(["q", "page"], [searchTerm, "1"])
+        createMultipleQueryStrings(["q", "page"], [newSearchTerm, "1"])
     );
   };
   return (

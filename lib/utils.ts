@@ -143,3 +143,9 @@ export const getMessageString = ({
   const name = chatterName.slice(0, 8) + "...";
   return senderId === userId ? `You: ${content}` : `${name}: ${content}`;
 };
+
+export const getCleanSearchTerm = (searchTerm: string) => {
+  return searchTerm.startsWith("u/") || searchTerm.startsWith("c/")
+    ? searchTerm.substring(2)
+    : searchTerm;
+};

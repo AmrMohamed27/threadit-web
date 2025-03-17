@@ -46,7 +46,7 @@ const PostsFeed = ({ posts, count, hasPagination }: HomePostsProps) => {
   return (
     <div className="flex flex-col items-start gap-8 container">
       {hasPagination && (
-        <div className="flex flex-row items-center gap-2 w-full">
+        <div className="flex flex-row items-center gap-2 px-4 w-full">
           <span className="text-sm">Sort by:</span>
           <SortBy />
         </div>

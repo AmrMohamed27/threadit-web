@@ -10,6 +10,7 @@ import PostsFeedLoading from "../loading/PostsFeedLoading";
 import HiddenPost from "./HiddenPost";
 import PostsFeed from "./PostsFeed";
 import CommunityAbout from "../communities/CommunityAbout";
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 interface Props {
   postId: number;
@@ -30,7 +31,7 @@ const PostGetter = ({ postId, commentId }: Props) => {
       },
     },
   });
-
+  const { user } = useCurrentUser();
   const hiddenSet = new Set(
     hiddenPosts?.getUserHiddenPosts?.postsArray
       ? hiddenPosts.getUserHiddenPosts.postsArray.map((p) => p.id)
@@ -72,7 +73,7 @@ const PostGetter = ({ postId, commentId }: Props) => {
     <div className="relative flex flex-row gap-8 w-full min-h-screen">
       <div className="flex flex-col gap-8 w-full">
         <PostsFeed posts={[post]} count={1} />
-        <CommentForm postId={postId} />
+        {user && <CommentForm postId={postId} />}
         <CommentsFeedGetter postId={postId} />
       </div>
       {community ? (

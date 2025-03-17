@@ -14,6 +14,8 @@ import {
   MessageCircleMore as ChatIcon,
   Plus as CreateIcon,
   LogOut as LogOutIcon,
+  Moon,
+  Sun,
 } from "lucide-react";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
@@ -21,6 +23,8 @@ import ChatTrigger from "../chat/ChatTrigger";
 import AvatarWrapper from "../common/AvatarWrapper";
 import GreyDiv from "../common/GreyDiv";
 import { Button } from "../ui/button";
+import { DarkModeToggle } from "./DarkModeToggle";
+import { useTheme } from "next-themes";
 
 interface Props {
   user: User;
@@ -31,6 +35,11 @@ const NavbarLoggedIn = ({ user }: Props) => {
   const dispatch = useDispatch();
   // Refetch current user
   const { refetch } = useCurrentUser();
+  // Dark mode resolver
+  const { resolvedTheme, setTheme } = useTheme();
+  const toggleTheme = () => {
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  };
   // Logout handler function
   const handleLogout = async () => {
     // Clear chats and Close the chat window if it's open
@@ -70,6 +79,20 @@ const NavbarLoggedIn = ({ user }: Props) => {
               <ChatIcon size={16} />
               <span>Open Chat</span>
             </ChatTrigger>
+          </DropdownMenuItem>
+          {/* Mobile Dark Mode toggle */}
+          <DropdownMenuItem className="md:hidden flex flex-row items-center gap-2 py-2">
+            <button
+              className="flex flex-row items-center gap-2 py-2 cursor-pointer"
+              onClick={toggleTheme}
+            >
+              {resolvedTheme === "dark" ? (
+                <Moon size={16} />
+              ) : (
+                <Sun size={16} />
+              )}
+              <span>Toggle Theme</span>
+            </button>
           </DropdownMenuItem>
           {/* Profile link */}
           <DropdownMenuItem>
@@ -123,6 +146,8 @@ const NavbarLoggedIn = ({ user }: Props) => {
           <ChatIcon size={20} />
         </ChatTrigger>
       </GreyDiv>
+      {/* Desktop Dark Mode Toggle */}
+      <DarkModeToggle className="max-md:hidden" />
     </div>
   );
 };

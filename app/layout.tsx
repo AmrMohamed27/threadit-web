@@ -5,7 +5,7 @@ import ApolloProvider from "@/components/providers/apollo-provider";
 import ReduxContextProvider from "@/components/providers/redux-context-provider";
 import ReduxProvider from "@/components/providers/redux-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/toaster";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import type { Metadata } from "next";
@@ -50,7 +50,6 @@ export default function RootLayout({
                   />
                   <AppSidebar />
                   <div className="relative flex flex-col flex-1 w-full min-h-screen">
-                    <SidebarTrigger />
                     <Navbar />
                     <main className="flex flex-col flex-grow justify-center items-center mt-[56px]">
                       {children}

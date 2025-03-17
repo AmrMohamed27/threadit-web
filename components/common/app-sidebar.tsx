@@ -18,6 +18,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import {
@@ -31,11 +33,12 @@ import {
   useGetUserCommunitiesQuery,
 } from "@/generated/graphql";
 import AvatarWrapper from "./AvatarWrapper";
-import { getDefaultAvatar } from "@/lib/utils";
+import { cn, getDefaultAvatar } from "@/lib/utils";
 import SidebarLoading from "../loading/SidebarLoading";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
+  const { open, openMobile } = useSidebar();
   const {
     data: userCommunities,
     loading: userCommunitiesLoading,
@@ -50,8 +53,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       limit: EXPLORE_COMMUNITIES_COUNT,
     },
   });
-  if (userCommunitiesLoading || exploreLoading)
-    return <SidebarLoading />;
+  if (userCommunitiesLoading || exploreLoading) return <SidebarLoading />;
   if (userCommunitiesError || exploreError)
     return (
       <div>
@@ -67,10 +69,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     exploreCommunitiesResult?.getExploreCommunities.communitiesArray ?? [];
   return (
     <Sidebar {...props} className="px-4">
-      <SidebarHeader>
+      <SidebarHeader className="flex flex-row justify-between items-center w-full">
         <Link href="/" className="font-bold text-2xl">
           Threadit
         </Link>
+        <SidebarTrigger className={cn(open || openMobile ? "" : "hidden")} />
       </SidebarHeader>
       <SidebarContent className="gap-0 mt-12">
         <SidebarGroupContent>
