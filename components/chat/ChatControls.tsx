@@ -1,17 +1,9 @@
-import React from "react";
-import { Button } from "../ui/button";
-import { X } from "lucide-react";
-import { useDispatch } from "react-redux";
-import { closeChat } from "@/lib/features/chatSlice";
-import DeleteChatButton from "./DeleteChatButton";
-import { useTypedSelector } from "@/hooks/use-typed-selector";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { useTypedSelector } from "@/hooks/use-typed-selector";
+import CloseChatButton from "./CloseChatButton";
+import DeleteChatButton from "./DeleteChatButton";
 
 const ChatControls = () => {
-  const dispatch = useDispatch();
-  const handleCloseWindow = () => {
-    dispatch(closeChat());
-  };
   const currentChatId = useTypedSelector((state) => state.chat.currentChatId);
   const currentChat = useTypedSelector((state) =>
     state.chat.chats.find((chat) => chat.id === currentChatId)
@@ -24,9 +16,7 @@ const ChatControls = () => {
         <DeleteChatButton chatId={currentChatId ?? 0} />
       )}
       {/* Close Button */}
-      <Button variant={"ghost"} size={"icon"} onClick={handleCloseWindow}>
-        <X size={20} />
-      </Button>
+      <CloseChatButton />
     </div>
   );
 };

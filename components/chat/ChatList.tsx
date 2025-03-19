@@ -1,5 +1,5 @@
 "use client";
-import { Chat, UserResponse } from "@/generated/graphql";
+import { useChatManager } from "@/hooks/use-chat-manager";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import {
   cn,
@@ -7,32 +7,22 @@ import {
   getDefaultAvatar,
   getMessageString,
 } from "@/lib/utils";
-import { ApolloError } from "@apollo/client";
 import { MessageCirclePlus as AddChatIcon } from "lucide-react";
 import AvatarWrapper from "../common/AvatarWrapper";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 
-interface Props {
-  handleChatClick: (chatId: number) => void;
-  openNewChatWindow: () => void;
-  loading: boolean;
-  error?: ApolloError;
-  chats: Chat[];
-  currentChatId?: number | null;
-  participants: Record<number, UserResponse>;
-}
-
-const ChatList = ({
-  handleChatClick,
-  openNewChatWindow,
-  loading,
-  chats,
-  error,
-  currentChatId,
-  participants,
-}: Props) => {
+const ChatList = () => {
   const { user } = useCurrentUser();
+  const {
+    handleChatClick,
+    openNewChatWindow,
+    isLoading: loading,
+    chats,
+    error,
+    currentChatId,
+    chatParticipants: participants,
+  } = useChatManager();
 
   if (error) {
     return <p>An error occurred: {error.message}</p>;
@@ -58,6 +48,7 @@ const ChatList = ({
           variant={"ghost"}
           className="rounded-full"
           onClick={openNewChatWindow}
+          aria-label="New Chat Button"
         >
           <AddChatIcon size={20} />
         </Button>

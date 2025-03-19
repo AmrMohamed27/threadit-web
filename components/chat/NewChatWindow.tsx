@@ -87,7 +87,7 @@ const NewChatWindow = ({ closeNewChatWindow }: Props) => {
   };
 
   return (
-    <div className="flex flex-col gap-0 w-full">
+    <div className="flex flex-col flex-1 gap-0">
       {/* Header */}
       <div className="top-0 z-50 sticky flex flex-row justify-between items-center bg-background dark:bg-black px-4 py-2 border-muted border-b-2 w-ful">
         <div className="flex flex-row flex-1 items-center gap-4">

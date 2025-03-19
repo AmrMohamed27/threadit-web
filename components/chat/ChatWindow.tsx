@@ -1,28 +1,27 @@
 "use client";
-import { Chat, UserResponse } from "@/generated/graphql";
+import { useChatManager } from "@/hooks/use-chat-manager";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { getDefaultAvatar, timeAgo } from "@/lib/utils";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import AvatarWrapper from "../common/AvatarWrapper";
 import CreateMessageForm from "../forms/CreateMessageForm";
+import { Button } from "../ui/button";
 import ChatControls from "./ChatControls";
+import CloseChatButton from "./CloseChatButton";
 import NewChatWindow from "./NewChatWindow";
 
-interface Props {
-  chat: Chat | null;
-  newChatIsOpen: boolean;
-  closeNewChatWindow: () => void;
-  participants?: UserResponse;
-}
-
-const ChatWindow = ({
-  chat,
-  newChatIsOpen,
-  closeNewChatWindow,
-  participants,
-}: Props) => {
+const ChatWindow = () => {
   const { user } = useCurrentUser();
+  const {
+    currentChat: chat,
+    currentChatId,
+    newChatIsOpen,
+    closeNewChatWindow,
+    chatParticipants,
+    openNewChatWindow,
+  } = useChatManager();
+  const participants = chatParticipants[currentChatId ?? 0];
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (chatContainerRef.current && chat?.messages?.length) {
@@ -38,8 +37,16 @@ const ChatWindow = ({
   // Handle no active chat
   if (!chat) {
     return (
-      <div className="flex flex-1 justify-center items-center text-muted-foreground">
-        Select a chat to start messaging
+      <div className="relative flex flex-col flex-1 gap-0 max-md:max-h-[500px] overflow-y-scroll">
+        <div className="top-0 z-50 sticky flex flex-row justify-end items-center bg-background dark:bg-black px-4 py-2 border-muted border-b-2 w-full">
+          <CloseChatButton />
+        </div>
+        <div className="flex flex-row flex-1 justify-center items-center gap-1 text-muted-foreground">
+          <span>Select a chat to start messaging, or</span>
+          <Button variant={"outline"} onClick={openNewChatWindow}>
+            Start a New Chat
+          </Button>
+        </div>
       </div>
     );
   }
