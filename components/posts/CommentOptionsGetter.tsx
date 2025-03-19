@@ -57,12 +57,6 @@ const CommentOptionsGetter = ({
         title: "Comment deleted successfully!",
       });
       router.push(`/posts/${postId}`);
-    } else if (data?.deleteComment.errors) {
-      toast({
-        title: "Error deleting post",
-        description: data.deleteComment.errors[0].message,
-        variant: "destructive",
-      });
     }
   };
   return (

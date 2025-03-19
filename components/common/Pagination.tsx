@@ -28,6 +28,8 @@ const PaginationComponent = ({ totalPages }: Props) => {
     [searchParams]
   );
 
+  if (totalPages <= 1) return null;
+
   return (
     <Pagination>
       <PaginationContent>

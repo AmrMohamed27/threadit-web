@@ -1,25 +1,25 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import RegisterSchema from "@/schema/RegisterSchema";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import InputField from "./InputField";
 import { useRegisterMutation } from "@/generated/graphql";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import RegisterSchema from "@/schema/RegisterSchema";
+import { ErrorField } from "@/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ErrorField } from "../../types/index";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import InputField from "./InputField";
 
 const RegisterForm = () => {
   // Define graphql mutation
-  const [
-    registerMutation,
-    { data: registerResult, loading, error: registerError },
-  ] = useRegisterMutation();
+  const [registerMutation, { loading }] = useRegisterMutation();
   // Router
   const router = useRouter();
+  // Refetch query for current user
+  const { refetch } = useCurrentUser();
   // 1. Define your form.
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -42,15 +42,20 @@ const RegisterForm = () => {
         },
       },
       refetchQueries: "all",
+      onCompleted: async (data) => {
+        console.log(data);
+        if (data.registerUser.user && data.registerUser.token) {
+          localStorage.setItem("auth_token", data.registerUser.token);
+          await refetch();
+          // Redirect to home page
+          router.push("/");
+        } else if (data.registerUser.errors) {
+          const error = data.registerUser.errors[0];
+          // Handle errors returned from resolver
+          form.setError(error.field as ErrorField, { message: error.message });
+        }
+      },
     });
-    // Handle graphql errors
-    if (registerError) {
-      console.error(registerError);
-    }
-    // Handle errors returned from resolver
-    if (registerResult?.registerUser.errors) {
-      form.setError("root", { message: "Invalid credentials" });
-    }
   }
   // Show password state
   const [showPassword, setShowPassword] = useState(false);
@@ -58,26 +63,6 @@ const RegisterForm = () => {
   const handleToggleShowPassword = () => {
     setShowPassword((prev) => !prev);
   };
-
-  useEffect(() => {
-    if (registerError) {
-      console.error(registerError);
-    }
-    if (registerResult?.registerUser.errors) {
-      for (const error of registerResult.registerUser.errors) {
-        form.setError(
-          error.field === "name" || "email" || "password"
-            ? (error.field as ErrorField)
-            : "root",
-          { message: error.message }
-        );
-      }
-    }
-    if (registerResult?.registerUser.user) {
-      // Redirect to home page
-      router.push("/");
-    }
-  }, [registerError, registerResult, form, router]);
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
