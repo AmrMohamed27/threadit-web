@@ -22,7 +22,6 @@ import { useDispatch } from "react-redux";
 import ChatTrigger from "../chat/ChatTrigger";
 import AvatarWrapper from "../common/AvatarWrapper";
 import GreyDiv from "../common/GreyDiv";
-import { Button } from "../ui/button";
 import { DarkModeToggle } from "./DarkModeToggle";
 import { useTheme } from "next-themes";
 
@@ -37,9 +36,11 @@ const NavbarLoggedIn = ({ user }: Props) => {
   const { refetch } = useCurrentUser();
   // Dark mode resolver
   const { resolvedTheme, setTheme } = useTheme();
+
   const toggleTheme = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
+
   // Logout handler function
   const handleLogout = async () => {
     // Clear chats and Close the chat window if it's open
@@ -50,6 +51,7 @@ const NavbarLoggedIn = ({ user }: Props) => {
     // Redirect to login page
     await refetch();
   };
+
   return (
     <div className="flex flex-row-reverse items-center gap-2">
       {/* Avatar and dropdown menu */}
@@ -64,10 +66,10 @@ const NavbarLoggedIn = ({ user }: Props) => {
           <DropdownMenuLabel>{`${user.name}'s Account`}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {/* Mobile Create Post button */}
-          <DropdownMenuItem className="md:hidden">
+          <DropdownMenuItem asChild>
             <Link
-              className="flex flex-row items-center gap-2 py-2"
-              href={"/posts/create"}
+              className="md:hidden flex flex-row items-center gap-2 py-4 cursor-pointer"
+              href="/posts/create"
             >
               <CreateIcon size={16} />
               <span>Create a post</span>
@@ -75,29 +77,32 @@ const NavbarLoggedIn = ({ user }: Props) => {
           </DropdownMenuItem>
           {/* Mobile Open Chat button */}
           <DropdownMenuItem className="md:hidden">
-            <ChatTrigger className="flex flex-row items-center gap-2 py-2">
+            <ChatTrigger className="flex flex-row items-center gap-2 py-2 w-full">
               <ChatIcon size={16} />
               <span>Open Chat</span>
             </ChatTrigger>
           </DropdownMenuItem>
           {/* Mobile Dark Mode toggle */}
-          <DropdownMenuItem className="md:hidden flex flex-row items-center gap-2 py-2">
-            <button
-              className="flex flex-row items-center gap-2 py-2 cursor-pointer"
-              onClick={toggleTheme}
-            >
+          <DropdownMenuItem
+            className="md:hidden"
+            onSelect={(e) => {
+              e.preventDefault();
+              toggleTheme();
+            }}
+          >
+            <div className="flex flex-row items-center gap-2 py-2 w-full cursor-pointer">
               {resolvedTheme === "dark" ? (
                 <Moon size={16} />
               ) : (
                 <Sun size={16} />
               )}
               <span>Toggle Theme</span>
-            </button>
+            </div>
           </DropdownMenuItem>
           {/* Profile link */}
-          <DropdownMenuItem>
+          <DropdownMenuItem asChild>
             <Link
-              className="flex flex-row items-center gap-2 py-2"
+              className="flex flex-row items-center gap-2 py-2 cursor-pointer"
               href={`/users/${user.name}`}
             >
               {/* Image */}
@@ -116,17 +121,11 @@ const NavbarLoggedIn = ({ user }: Props) => {
             </Link>
           </DropdownMenuItem>
           {/* Logout Button */}
-          <DropdownMenuItem>
-            <Button
-              className="p-0"
-              variant={"ghost"}
-              onClick={async () => {
-                await handleLogout();
-              }}
-            >
+          <DropdownMenuItem onSelect={async () => await handleLogout()}>
+            <div className="flex flex-row items-center gap-2 py-2 w-full cursor-pointer">
               <LogOutIcon size={16} aria-label="Logout Icon" />
-              Logout
-            </Button>
+              <span>Logout</span>
+            </div>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

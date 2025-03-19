@@ -47,7 +47,12 @@ const PostCard = ({ post }: Props) => {
   };
 
   return (
-    <div className="flex flex-col gap-2 p-4 border-muted border-t w-full">
+    <div
+      className={cn(
+        "flex flex-col gap-2 p-4 w-full",
+        isPostPage ? "" : "border-t border-muted"
+      )}
+    >
       {showEditForm ? (
         <EditPostForm post={post} toggleShowEditForm={toggleShowEditForm} />
       ) : (

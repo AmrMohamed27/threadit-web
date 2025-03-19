@@ -109,29 +109,23 @@ const CommentCard = ({ comment, depth = 0, maxDepth = 3 }: Props) => {
             commentId={commentId}
           />
           {/* Comment Buttons */}
-          <div>
-            <Button
-              className="flex flex-row items-center gap-2 px-4 py-2 text-foreground"
-              variant={"grey"}
-              onClick={showForm}
-            >
-              <CommentIcon size={20} aria-label="Comment Icon" />
-              {/* Comments Count */}
-              <span className="text-sm">Reply</span>
-            </Button>
-          </div>
-          <div>
-            <ShareButton commentId={comment.id} postId={comment.postId} />
-          </div>
-          <div>
-            <Link
-              href={commentLink}
-              className="flex flex-row items-center gap-2 bg-muted hover:bg-muted-foreground/30 px-4 py-2 rounded-full"
-            >
-              <GoToIcon size={20} aria-label="Go to comment" />
-              <span className="text-sm">Go to comment</span>
-            </Link>
-          </div>
+          <Button
+            className="flex flex-row items-center gap-2 p-0 sm:px-4 sm:py-2 w-auto max-sm:w-9 max-sm:h-9 text-foreground"
+            variant={"grey"}
+            onClick={showForm}
+          >
+            <CommentIcon size={20} aria-label="Comment Icon" />
+            {/* Comments Count */}
+            <span className="max-sm:hidden text-sm">Reply</span>
+          </Button>
+          <ShareButton commentId={comment.id} postId={comment.postId} />
+          <Link
+            href={commentLink}
+            className="flex flex-row justify-center items-center gap-2 bg-muted hover:bg-muted-foreground/30 sm:px-4 sm:py-2 rounded-full max-sm:w-9 max-sm:h-9"
+          >
+            <GoToIcon size={16} />
+            <span className="max-sm:hidden text-sm">Go to comment</span>
+          </Link>
         </div>
       )}
       {isFormVisible && user && (

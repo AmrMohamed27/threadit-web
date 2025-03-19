@@ -68,7 +68,10 @@ const CommentForm = ({ postId, parentCommentId, hideForm }: Props) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 w-full">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4 max-sm:px-2 w-full"
+      >
         {/* Content */}
         <InputField
           control={form.control}

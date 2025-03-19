@@ -24,9 +24,9 @@ const ShareButton = ({ postId, commentId }: Props) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <GreyDiv className="flex flex-row items-center gap-2 px-4 py-2">
-          <ShareIcon size={20} aria-label="Share Icon" />
-          <span className="text-sm">Share</span>
+        <GreyDiv className="flex flex-row justify-center items-center gap-2 sm:px-4 sm:py-2 max-sm:w-9 max-sm:h-9">
+          <ShareIcon size={16} aria-label="Share Button" />
+          <span className="max-sm:hidden text-sm">Share</span>
         </GreyDiv>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-muted">

@@ -24,7 +24,7 @@ const CommentsFeed = ({
 }: Props) => {
   const { pathname } = useCurrentPage();
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <div className="flex flex-col gap-4 max-sm:px-2 w-full">
       <div className="flex flex-row items-center gap-4">
         {!searchTerm && (
           <div className={cn("flex flex-row items-center gap-2 text-sm w-40")}>
