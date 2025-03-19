@@ -1,37 +1,26 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import LoginSchema from "@/schema/LoginSchema";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import InputField from "./InputField";
 import { useLoginMutation } from "@/generated/graphql";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { setChats } from "@/lib/features/chatSlice";
+import LoginSchema from "@/schema/LoginSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { z } from "zod";
 import { LoginErrorType } from "../../types";
-import { useCurrentUser } from "@/hooks/use-current-user";
+import InputField from "./InputField";
 
 const LoginForm = () => {
+  // dispatch
+  const dispatch = useDispatch();
+  // Refetch user chats
   // Define graphql mutation
-  const [loginMutation, { loading, error: loginError }] = useLoginMutation({
-    onCompleted: async (data) => {
-      if (data?.loginUser.errors) {
-        for (const error of data.loginUser.errors) {
-          form.setError(error.field as LoginErrorType, {
-            message: error.message,
-          });
-        }
-      }
-      if (data?.loginUser.user && data.loginUser.token) {
-        localStorage.setItem("auth_token", data.loginUser.token);
-        await refetch();
-        // Redirect to home page
-        router.push("/");
-      }
-    },
-  });
+  const [loginMutation, { loading, error: loginError }] = useLoginMutation();
   // Router
   const router = useRouter();
   // Refetch query for current user
@@ -55,6 +44,24 @@ const LoginForm = () => {
         },
       },
       refetchQueries: "all",
+      onCompleted: async (data, client) => {
+        if (data?.loginUser.errors) {
+          for (const error of data.loginUser.errors) {
+            form.setError(error.field as LoginErrorType, {
+              message: error.message,
+            });
+          }
+        }
+        if (data?.loginUser.user && data.loginUser.token) {
+          localStorage.setItem("auth_token", data.loginUser.token);
+          await refetch();
+          dispatch(setChats([]));
+          client?.client?.resetStore();
+          window.dispatchEvent(new Event("storage"));
+          // Redirect to home page
+          router.push("/");
+        }
+      },
     });
   }
   // Show password state

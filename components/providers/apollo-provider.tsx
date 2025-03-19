@@ -29,6 +29,17 @@ const ApolloProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     initClient();
+
+    // Set up a listener for auth token changes
+    const handleStorageChange = () => {
+      console.log("Storage Event");
+      initClient();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
 
   if (loading || !client) {

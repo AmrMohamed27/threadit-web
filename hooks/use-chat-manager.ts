@@ -47,7 +47,13 @@ export function useChatManager() {
     data: userChatsData,
     loading: userChatsLoading,
     error: userChatsError,
+    refetch,
   } = useGetUserChatsQuery();
+
+  const refetchUserChats = async () => {
+    await refetch();
+    setInitialLoadCompleted(false);
+  };
 
   const [getChatMessagesQuery] = useGetChatMessagesLazyQuery();
   const [getChatParticipantsQuery] = useGetChatParticipantsLazyQuery();
@@ -240,5 +246,6 @@ export function useChatManager() {
     openNewChatWindow,
     closeNewChatWindow,
     chatStarter,
+    refetchUserChats,
   };
 }

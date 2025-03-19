@@ -59,7 +59,6 @@ const httpLink = new HttpLink({
 
 // Create the Apollo client with token
 export const createApolloClient = async () => {
-
   // WebSocket link for subscriptions
   const wsLink =
     typeof window !== "undefined"
