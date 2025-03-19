@@ -50,6 +50,7 @@ const PostGetter = ({ postId, commentId }: Props) => {
 
   if (error) return <div>{error.message}</div>;
   const post = data?.getPost.post;
+  if (loading) return <PostsFeedLoading count={1} hasPagination={false} />;
   if (!post) return <div>Error 404 - No post found</div>;
   if (hiddenSet.has(postId)) {
     return <HiddenPost postId={postId} />;

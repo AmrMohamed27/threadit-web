@@ -7,7 +7,7 @@ const f = createUploadthing();
 export const ourFileRouter = {
   imageUploader: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } }) // Adjust size as needed
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log("File uploaded:", file.ufsUrl);
+      console.log("Image uploaded:", file.ufsUrl);
       return { fileUrl: file.ufsUrl, metadata };
     }),
   videoUploader: f({ video: { maxFileSize: "16MB", maxFileCount: 1 } }) // Adjust as needed

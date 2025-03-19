@@ -16,6 +16,7 @@ const getWebSocketToken = async (): Promise<string | null> => {
       headers: {
         Authorization: `Bearer ${getToken()}`, // Use latest JWT
       },
+      mode: "no-cors",
     });
 
     if (response.ok) {

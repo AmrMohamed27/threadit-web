@@ -35,7 +35,6 @@ const CommentCard = ({ comment, depth = 0, maxDepth = 3 }: Props) => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const { user } = useCurrentUser();
-  console.log("User: ", user);
 
   const showForm = () => {
     setIsFormVisible(true);

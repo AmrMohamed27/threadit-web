@@ -36,8 +36,6 @@ export function useChatManager() {
     setInitialLoadCompleted(false);
   }, []);
 
-  console.log(chatParticipants);
-
   // Get current user
   const { user } = useCurrentUser();
 
@@ -84,7 +82,6 @@ export function useChatManager() {
 
       // Check if we already have this chat
       if (chats.some((chat) => chat.id === receivedChat.id)) {
-        console.log("Already here");
         return;
       }
       if (receivedChat) {
@@ -107,6 +104,7 @@ export function useChatManager() {
   useChatUpdatesSubscription({
     skip: !user,
     onData: async ({ data, client }) => {
+      console.log(data);
       if (!data?.data?.chatUpdates?.operation) return;
       const { operation, chatId } = data.data.chatUpdates;
       if (operation.delete) {
@@ -191,8 +189,7 @@ export function useChatManager() {
   };
 
   const chatStarter = async (participantIds: number[], name: string) => {
-    console.log("Participant IDs: ", participantIds);
-    const { data: createResult, errors } = await createChatMutation({
+    const { data: createResult } = await createChatMutation({
       variables: {
         options: {
           name: name,
@@ -202,7 +199,6 @@ export function useChatManager() {
       },
       // refetchQueries: ["GetUserChats", "GetChatParticipants"],
     });
-    console.log(createResult, errors);
     // If the chat exists, set the current chat id to it
     if (createResult?.createChat.errors) {
       const errorField = createResult.createChat.errors[0].field;

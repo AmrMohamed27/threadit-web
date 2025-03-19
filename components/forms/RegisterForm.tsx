@@ -43,7 +43,6 @@ const RegisterForm = () => {
       },
       refetchQueries: "all",
       onCompleted: async (data) => {
-        console.log(data);
         if (data.registerUser.user && data.registerUser.token) {
           localStorage.setItem("auth_token", data.registerUser.token);
           await refetch();

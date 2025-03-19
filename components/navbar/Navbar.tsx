@@ -8,8 +8,6 @@ import SearchBar from "./SearchBar";
 
 export default function Navbar() {
   const { open, openMobile } = useSidebar();
-  console.log("Open: ", open);
-  console.log("Open M: ", openMobile);
 
   return (
     <nav

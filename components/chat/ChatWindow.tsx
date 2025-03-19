@@ -41,7 +41,7 @@ const ChatWindow = () => {
         <div className="top-0 z-50 sticky flex flex-row justify-end items-center bg-background dark:bg-black px-4 py-2 border-muted border-b-2 w-full">
           <CloseChatButton />
         </div>
-        <div className="flex flex-row flex-1 justify-center items-center gap-1 text-muted-foreground">
+        <div className="flex flex-row flex-wrap justify-center items-center gap-1 mt-4 text-muted-foreground">
           <span>Select a chat to start messaging, or</span>
           <Button variant={"outline"} onClick={openNewChatWindow}>
             Start a New Chat
