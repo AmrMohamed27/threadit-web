@@ -25,6 +25,8 @@ const NewChatWindow = ({ closeNewChatWindow }: Props) => {
 
   const { user: currentUser } = useCurrentUser();
 
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+
   const users = data?.searchForUser.userArray;
 
   let filteredUsers = users;
@@ -61,15 +63,12 @@ const NewChatWindow = ({ closeNewChatWindow }: Props) => {
       // Find the user IDs for selected usernames
       const participantIds = [currentUser.id];
 
-      tags.forEach((username) => {
-        const selectedUser = filteredUsers?.find(
-          (user) => user.name === username
-        );
-        if (selectedUser) {
-          participantIds.push(selectedUser.id);
-        }
+      selectedUsers.forEach((selectedUser) => {
+        participantIds.push(selectedUser.id);
       });
       const chatName = tags.join(", ");
+      console.log("Participant IDS: ", participantIds);
+      console.log("CREATOR: ", currentUser.id);
       await chatStarter(participantIds, chatName);
     }
     closeNewChatWindow();
@@ -83,6 +82,7 @@ const NewChatWindow = ({ closeNewChatWindow }: Props) => {
     // Add user to selected users if not already there
     if (!tags.includes(user.name)) {
       setTags((prev) => [...prev, user.name]);
+      setSelectedUsers((prev) => [...prev, user]);
     }
   };
 

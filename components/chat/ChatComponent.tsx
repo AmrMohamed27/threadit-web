@@ -8,8 +8,8 @@ import NewChatWindow from "./NewChatWindow";
 const ChatComponent = () => {
   // Get the chat's open state from the store
   const isOpen = useTypedSelector((state) => state.chat.isOpen);
-  const { openNewChatWindow, newChatIsOpen, closeNewChatWindow } =
-    useChatManager();
+  const { openNewChatWindow, closeNewChatWindow } = useChatManager();
+  const newChatIsOpen = useTypedSelector((state) => state.chat.newChatIsOpen);
   // Don't render if chat is closed
   if (!isOpen) return null;
 

@@ -11,15 +11,17 @@ import {
 import { useCurrentUser } from "@/hooks/use-current-user";
 import {
   addChat,
+  closeNewChat,
   mergeMessages,
+  openNewChat,
   removeChat,
   setChats,
   setCurrentChatId,
 } from "@/lib/features/chatSlice";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useTypedSelector } from "./use-typed-selector";
 import { useToast } from "./use-toast";
+import { useTypedSelector } from "./use-typed-selector";
 
 export function useChatManager() {
   // State
@@ -31,11 +33,7 @@ export function useChatManager() {
   // set current chat id from local storage
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
-  const [newChatIsOpen, setNewChatIsOpen] = useState(false);
   const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
-  useEffect(() => {
-    setInitialLoadCompleted(false);
-  }, []);
 
   // Get current user
   const { user } = useCurrentUser();
@@ -48,13 +46,7 @@ export function useChatManager() {
     data: userChatsData,
     loading: userChatsLoading,
     error: userChatsError,
-    refetch,
   } = useGetUserChatsQuery();
-
-  const refetchUserChats = async () => {
-    await refetch();
-    setInitialLoadCompleted(false);
-  };
 
   const [getChatMessagesQuery] = useGetChatMessagesLazyQuery();
   const [getChatParticipantsQuery] = useGetChatParticipantsLazyQuery();
@@ -87,23 +79,63 @@ export function useChatManager() {
 
       const receivedChat = data.data.newChat.chat;
 
-      // Check if we already have this chat
-      if (chats.some((chat) => chat.id === receivedChat.id)) {
+      // More robust check for existing chat
+      const chatExists = chats.some((chat) => chat.id === receivedChat.id);
+
+      if (chatExists) {
+        console.log(
+          "Chat already exists in state, skipping subscription update"
+        );
         return;
       }
-      if (receivedChat) {
-        // Add the new chat to our list
-        dispatch(setChats([receivedChat, ...chats]));
+
+      console.log("Received new chat from subscription:", receivedChat);
+
+      try {
+        // Add the new chat to our list with empty messages
+        dispatch(
+          addChat({
+            ...receivedChat,
+            messages: [],
+          })
+        );
+
+        // Get messages for this chat
+        const { data: messagesData } = await getChatMessagesQuery({
+          variables: { chatId: receivedChat.id },
+        });
+
+        if (messagesData?.getChatMessages?.messagesArray) {
+          dispatch(
+            mergeMessages({
+              chatId: receivedChat.id,
+              messages: messagesData.getChatMessages.messagesArray,
+            })
+          );
+        }
+
         // Get participants for this chat
         const { data: participantsData } = await getChatParticipantsQuery({
           variables: { chatId: receivedChat.id },
         });
+
         if (participantsData?.getChatParticipants) {
           setChatParticipants((prev) => ({
             ...prev,
             [receivedChat.id]: participantsData.getChatParticipants,
           }));
         }
+
+        // Notify user of new chat if they didn't create it
+        const creatorId = receivedChat.creatorId;
+        if (creatorId !== user?.id) {
+          toast({
+            title: "New conversation",
+            description: `${receivedChat.name || "New chat"} was created`,
+          });
+        }
+      } catch (error) {
+        console.error("Error processing new chat:", error);
       }
     },
   });
@@ -161,21 +193,62 @@ export function useChatManager() {
           })
         );
 
-        dispatch(setChats(chatsWithMessages));
+        // Preserve any new chats that might have been added via subscription
+        // while this initialization was running
+        const existingChats = chats || [];
+        const initializedChatIds = chatsWithMessages.map((chat) => chat.id);
+
+        // Find chats that exist in state but not in the fetched data
+        // (these would be new chats added via subscription)
+        const chatsMissingFromInitialization = existingChats.filter(
+          (chat) => !initializedChatIds.includes(chat.id)
+        );
+
+        // Add additional data to the missing chats
+        await Promise.all(
+          chatsMissingFromInitialization.map(async (chat) => {
+            // Get messages for this chat
+            const { data: messagesData } = await getChatMessagesQuery({
+              variables: { chatId: chat.id },
+            });
+
+            // Get participants for this chat
+            const { data: participantsData } = await getChatParticipantsQuery({
+              variables: { chatId: chat.id },
+            });
+            // Store participants in our map
+            if (participantsData?.getChatParticipants) {
+              setChatParticipants((prev) => ({
+                ...prev,
+                [chat.id]: participantsData.getChatParticipants,
+              }));
+            }
+
+            return {
+              ...chat,
+              messages: messagesData?.getChatMessages.messagesArray ?? [],
+            };
+          })
+        );
+
+        // Merge the initialized chats with any chats that were added via subscription
+        const mergedChats = [
+          ...chatsWithMessages,
+          ...chatsMissingFromInitialization,
+        ];
+
+        dispatch(setChats(mergedChats));
 
         // Set initial current chat
         const storedChatId = localStorage.getItem("currentChatId");
         if (
           storedChatId &&
-          chatsWithMessages.some((c) => c.id === parseInt(storedChatId))
+          mergedChats.some((c) => c.id === parseInt(storedChatId))
         ) {
           dispatch(setCurrentChatId(parseInt(storedChatId)));
-        } else if (chatsWithMessages.length > 0) {
-          dispatch(setCurrentChatId(chatsWithMessages[0].id));
-          localStorage.setItem(
-            "currentChatId",
-            chatsWithMessages[0].id.toString()
-          );
+        } else if (mergedChats.length > 0) {
+          dispatch(setCurrentChatId(mergedChats[0].id));
+          localStorage.setItem("currentChatId", mergedChats[0].id.toString());
         }
       } catch (error) {
         console.error("Error loading chats:", error);
@@ -195,30 +268,29 @@ export function useChatManager() {
   };
 
   const chatStarter = async (participantIds: number[], name: string) => {
-    await createChatMutation({
-      variables: {
-        options: {
-          name,
-          participantIds,
-          isGroupChat: participantIds.length > 2, // Make it a group chat if more than 2 people
+    try {
+      await createChatMutation({
+        variables: {
+          options: {
+            name,
+            participantIds,
+            isGroupChat: participantIds.length > 2,
+          },
         },
-      },
-      // refetchQueries: ["GetUserChats", "GetChatParticipants"],
-      onCompleted: (data) => {
-        //  add chat to state
-        const chat = data.createChat.chat;
-        if (chat) {
-          dispatch(addChat(chat));
-          dispatch(setCurrentChatId(chat.id));
-        }
-      },
-    });
+      });
+    } catch (error) {
+      console.error("Failed to create chat:", error);
+      toast({
+        title: "Error creating chat",
+        description: "Failed to create new conversation. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const openNewChatWindow = () => {
-    setNewChatIsOpen(true);
-  };
-  const closeNewChatWindow = () => setNewChatIsOpen(false);
+  const openNewChatWindow = () => dispatch(openNewChat());
+
+  const closeNewChatWindow = () => dispatch(closeNewChat());
 
   // Get current chat
   const currentChat = chats.find((chat) => chat.id === currentChatId) || null;
@@ -234,11 +306,9 @@ export function useChatManager() {
     chatParticipants,
     isLoading,
     error: userChatsError,
-    newChatIsOpen,
     handleChatClick,
     openNewChatWindow,
     closeNewChatWindow,
     chatStarter,
-    refetchUserChats,
   };
 }

@@ -6,28 +6,18 @@ import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { createClient } from "graphql-ws";
 
-// Function to get JWT from localStorage
-const getToken = () => localStorage.getItem("auth_token");
-
-// Function to get WebSocket auth token dynamically
-const getWebSocketToken = async (): Promise<string | null> => {
-  try {
-    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/ws-auth`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`, // Use latest JWT
-      },
-      mode: "no-cors",
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      return data.token;
-    }
-  } catch (err) {
-    console.error("Failed to get WebSocket auth token:", err);
+// Safe localStorage access that works with SSR
+const getToken = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("auth_token");
   }
   return null;
 };
+
+// HTTP link for queries and mutations
+const httpLink = new HttpLink({
+  uri: `${env.NEXT_PUBLIC_API_URL}/graphql`,
+});
 
 // Middleware to attach JWT token dynamically
 const authLink = setContext((_, { headers }) => {
@@ -45,21 +35,18 @@ const errorLink = onError(({ graphQLErrors }) => {
   if (graphQLErrors) {
     for (const err of graphQLErrors) {
       if (err.extensions?.code === "UNAUTHENTICATED") {
-        localStorage.removeItem("auth_token");
-        window.location.href = "/login"; // Redirect to login
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("auth_token");
+          window.location.href = "/login"; // Redirect to login
+        }
       }
     }
   }
 });
 
-// HTTP link for queries and mutations
-const httpLink = new HttpLink({
-  uri: `${env.NEXT_PUBLIC_API_URL}/graphql`,
-});
-
-// Create the Apollo client with token
-export const createApolloClient = async () => {
-  // WebSocket link for subscriptions
+// Create the Apollo client
+export const createApolloClient = () => {
+  // WebSocket link for subscriptions - created during client initialization
   const wsLink =
     typeof window !== "undefined"
       ? new GraphQLWsLink(
@@ -68,9 +55,12 @@ export const createApolloClient = async () => {
               /^https?/,
               env.NEXT_PUBLIC_NODE_ENV === "development" ? "ws" : "wss"
             )}/graphql`,
-            connectionParams: async () => ({
-              authToken: await getWebSocketToken(), // Ensure fresh token
-            }),
+            connectionParams: () => {
+              //   Get token directly from localStorage at connection time, it will be available because the connection params function
+              //  only executes when the connection is established and we are already on the client
+              const token = getToken();
+              return token ? { Authorization: `Bearer ${token}` } : {};
+            },
           })
         )
       : null;
@@ -102,4 +92,5 @@ export const createApolloClient = async () => {
 export const apolloClient = new ApolloClient({
   link: authLink.concat(errorLink).concat(httpLink),
   cache: new InMemoryCache(),
+  ssrMode: typeof window === "undefined",
 });

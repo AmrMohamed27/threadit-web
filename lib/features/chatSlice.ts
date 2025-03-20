@@ -114,5 +114,7 @@ export const {
   mergeMessages,
   removeChat,
   addChat,
+  openNewChat,
+  closeNewChat,
 } = chatSlice.actions;
 export default chatSlice.reducer;
