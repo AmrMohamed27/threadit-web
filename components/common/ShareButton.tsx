@@ -10,6 +10,7 @@ import { copyLinkToClipboard } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { env } from "@/env";
 import GreyDiv from "./GreyDiv";
+import { Button } from "../ui/button";
 
 interface Props {
   postId: number;
@@ -21,16 +22,23 @@ const ShareButton = ({ postId, commentId }: Props) => {
   const link = commentId
     ? `${env.NEXT_PUBLIC_HOME_URL}/posts/${postId}/comment/${commentId}`
     : `${env.NEXT_PUBLIC_HOME_URL}/posts/${postId}`;
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        <GreyDiv className="flex flex-row justify-center items-center gap-2 sm:px-4 sm:py-2 max-sm:w-9 max-sm:h-9">
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild>
+        <Button
+          className="flex flex-row justify-center items-center gap-2 w-auto max-sm:w-9 max-sm:h-9"
+          variant={"grey"}
+        >
           <ShareIcon size={16} aria-label="Share Button" />
           <span className="max-sm:hidden text-sm">Share</span>
-        </GreyDiv>
+        </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="bg-muted">
-        <DropdownMenuItem className="px-4 py-2">
+      <DropdownMenuContent className="bg-muted" sideOffset={5} align="start">
+        <DropdownMenuItem
+          className="px-4 py-2"
+          onTouchStart={(e) => e.stopPropagation()}
+        >
           <button
             className="flex flex-row justify-center items-center gap-2"
             onClick={() => {
