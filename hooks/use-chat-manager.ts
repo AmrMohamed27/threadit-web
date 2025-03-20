@@ -205,7 +205,7 @@ export function useChatManager() {
         );
 
         // Add additional data to the missing chats
-        await Promise.all(
+        const chatsMissingFromInitializationWithData = await Promise.all(
           chatsMissingFromInitialization.map(async (chat) => {
             // Get messages for this chat
             const { data: messagesData } = await getChatMessagesQuery({
@@ -234,7 +234,7 @@ export function useChatManager() {
         // Merge the initialized chats with any chats that were added via subscription
         const mergedChats = [
           ...chatsWithMessages,
-          ...chatsMissingFromInitialization,
+          ...chatsMissingFromInitializationWithData,
         ];
 
         dispatch(setChats(mergedChats));
