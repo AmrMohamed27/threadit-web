@@ -64,7 +64,7 @@ export const createApolloClient = async () => {
     typeof window !== "undefined"
       ? new GraphQLWsLink(
           createClient({
-            url: `${env.NEXT_PUBLIC_API_URL.replace(/^https?/, "ws")}/graphql`,
+            url: `${env.NEXT_PUBLIC_API_URL.replace(/^https?/, "wss")}/graphql`,
             connectionParams: async () => ({
               authToken: await getWebSocketToken(), // Ensure fresh token
             }),
