@@ -10,6 +10,8 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useState } from "react";
 import { Input } from "../ui/input";
+import { DEFAULT_SEARCH_URL } from "@/constants";
+import { useCurrentPage } from "@/hooks/use-current-page";
 
 interface Props {
   origin?: string;
@@ -18,11 +20,12 @@ interface Props {
 }
 
 const SearchBar = ({
-  origin = "/search",
+  origin = DEFAULT_SEARCH_URL,
   placeholder = "Search",
   hasPagination = false,
 }: Props) => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const { searchTerm: initialSearchTerm } = useCurrentPage();
+  const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
   const [isOpen, setIsOpen] = useState(false); // Manually control popover state
 
   const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,12 +98,14 @@ const SearchBar = ({
             className="z-50 relative flex flex-col flex-1 gap-4 hover:bg-muted w-[300px] md:w-[400px]"
             onOpenAutoFocus={(e) => e.preventDefault()}
           >
-            <div className="flex flex-wrap w-full">
-              <p className="text-muted-foreground text-xs">
-                Prefix your search with c/ to search for communities or u/ to
-                search for users.
-              </p>
-            </div>
+            {origin === DEFAULT_SEARCH_URL && (
+              <div className="flex flex-wrap w-full">
+                <p className="text-muted-foreground text-xs">
+                  Prefix your search with c/ to search for communities or u/ to
+                  search for users.
+                </p>
+              </div>
+            )}
             <Link href={searchURL} className="flex flex-col gap-4 w-full">
               <div className="flex flex-row flex-wrap justify-between items-start gap-2">
                 <SearchIcon className="mt-1 text-muted-foreground" size={18} />

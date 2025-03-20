@@ -201,3 +201,5 @@ export const profileFeeds = [
   { id: 5, value: "Upvoted", component: UserVotedFeed },
   { id: 6, value: "Downvoted", component: UserVotedFeed },
 ];
+
+export const DEFAULT_SEARCH_URL = "/search";

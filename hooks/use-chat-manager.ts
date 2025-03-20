@@ -1,4 +1,5 @@
 import {
+  Chat,
   UserResponse,
   useChatUpdatesSubscription,
   useCreateChatMutation,
@@ -18,7 +19,7 @@ import {
   setChats,
   setCurrentChatId,
 } from "@/lib/features/chatSlice";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useToast } from "./use-toast";
 import { useTypedSelector } from "./use-typed-selector";
@@ -30,10 +31,9 @@ export function useChatManager() {
     Record<number, UserResponse>
   >({});
   const currentChatId = useTypedSelector((state) => state.chat.currentChatId);
-  // set current chat id from local storage
+  const chatIsOpen = useTypedSelector((state) => state.chat.isOpen);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
-  const [initialLoadCompleted, setInitialLoadCompleted] = useState(false);
 
   // Get current user
   const { user } = useCurrentUser();
@@ -41,17 +41,83 @@ export function useChatManager() {
   // toast
   const { toast } = useToast();
 
-  // GraphQL queries and subscriptions
-  const {
-    data: userChatsData,
-    loading: userChatsLoading,
-    error: userChatsError,
-  } = useGetUserChatsQuery();
+  // GraphQL queries and mutations
+  const { loading: userChatsLoading, error: userChatsError } =
+    useGetUserChatsQuery({
+      onCompleted: (data) => {
+        if (data?.getUserChats?.chatsArray) {
+          handleInitialChatsLoad(data.getUserChats.chatsArray);
+        }
+      },
+      fetchPolicy: "network-only",
+    });
 
-  const [getChatMessagesQuery] = useGetChatMessagesLazyQuery();
+  const [getChatMessagesQuery] = useGetChatMessagesLazyQuery({
+    fetchPolicy: "network-only",
+  });
   const [getChatParticipantsQuery] = useGetChatParticipantsLazyQuery();
   const [createChatMutation] = useCreateChatMutation();
 
+  // Function to load messages and participants for a chat
+  const loadChatData = useCallback(
+    async (chat: Chat) => {
+      // Get messages for this chat
+      const { data: messagesData } = await getChatMessagesQuery({
+        variables: { chatId: chat.id },
+      });
+
+      // Get participants for this chat
+      const { data: participantsData } = await getChatParticipantsQuery({
+        variables: { chatId: chat.id },
+      });
+
+      // Store participants in our map
+      if (participantsData?.getChatParticipants) {
+        setChatParticipants((prev) => ({
+          ...prev,
+          [chat.id]: participantsData.getChatParticipants,
+        }));
+      }
+
+      return {
+        ...chat,
+        messages: messagesData?.getChatMessages.messagesArray ?? [],
+      };
+    },
+    [getChatMessagesQuery, getChatParticipantsQuery]
+  );
+
+  // Handler to process initial chats from the query
+  const handleInitialChatsLoad = useCallback(
+    async (initialChats: Chat[]) => {
+      setIsLoading(true);
+      try {
+        // Load messages and participants for each chat
+        const chatsWithData = await Promise.all(initialChats.map(loadChatData));
+
+        dispatch(setChats(chatsWithData));
+
+        // Set initial current chat
+        const storedChatId = localStorage.getItem("currentChatId");
+        if (
+          storedChatId &&
+          chatsWithData.some((c) => c.id === parseInt(storedChatId))
+        ) {
+          dispatch(setCurrentChatId(parseInt(storedChatId)));
+        } else if (chatsWithData.length > 0) {
+          dispatch(setCurrentChatId(chatsWithData[0].id));
+          localStorage.setItem("currentChatId", chatsWithData[0].id.toString());
+        }
+      } catch (error) {
+        console.error("Error loading chats:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [dispatch, loadChatData]
+  );
+
+  // Subscriptions
   useNewMessageSubscription({
     skip: !user,
     onData: ({ data }) => {
@@ -63,7 +129,7 @@ export function useChatManager() {
           messages: [newMessage],
         })
       );
-      if (newMessage.senderId !== user?.id) {
+      if (newMessage.senderId !== user?.id && !chatIsOpen) {
         toast({
           title: `New message from ${newMessage.sender?.name ?? "Sender"}`,
           description: newMessage.content ?? "Message",
@@ -79,9 +145,8 @@ export function useChatManager() {
 
       const receivedChat = data.data.newChat.chat;
 
-      // More robust check for existing chat
+      // Check for existing chat
       const chatExists = chats.some((chat) => chat.id === receivedChat.id);
-
       if (chatExists) {
         console.log(
           "Chat already exists in state, skipping subscription update"
@@ -100,31 +165,16 @@ export function useChatManager() {
           })
         );
 
-        // Get messages for this chat
-        const { data: messagesData } = await getChatMessagesQuery({
-          variables: { chatId: receivedChat.id },
-        });
+        // Load chat data (messages and participants)
+        const chatWithData = await loadChatData(receivedChat);
 
-        if (messagesData?.getChatMessages?.messagesArray) {
-          dispatch(
-            mergeMessages({
-              chatId: receivedChat.id,
-              messages: messagesData.getChatMessages.messagesArray,
-            })
-          );
-        }
-
-        // Get participants for this chat
-        const { data: participantsData } = await getChatParticipantsQuery({
-          variables: { chatId: receivedChat.id },
-        });
-
-        if (participantsData?.getChatParticipants) {
-          setChatParticipants((prev) => ({
-            ...prev,
-            [receivedChat.id]: participantsData.getChatParticipants,
-          }));
-        }
+        // Update messages
+        dispatch(
+          mergeMessages({
+            chatId: chatWithData.id,
+            messages: chatWithData.messages,
+          })
+        );
 
         // Notify user of new chat if they didn't create it
         const creatorId = receivedChat.creatorId;
@@ -158,108 +208,10 @@ export function useChatManager() {
     },
   });
 
-  // Initialize chats
+  // Track loading state
   useEffect(() => {
-    async function loadInitialChats() {
-      if (initialLoadCompleted || !userChatsData?.getUserChats.chatsArray) {
-        setIsLoading(false);
-        return;
-      }
-      setIsLoading(true);
-      try {
-        const chatsWithMessages = await Promise.all(
-          userChatsData.getUserChats.chatsArray.map(async (chat) => {
-            // Get messages for this chat
-            const { data: messagesData } = await getChatMessagesQuery({
-              variables: { chatId: chat.id },
-            });
-
-            // Get participants for this chat
-            const { data: participantsData } = await getChatParticipantsQuery({
-              variables: { chatId: chat.id },
-            });
-            // Store participants in our map
-            if (participantsData?.getChatParticipants) {
-              setChatParticipants((prev) => ({
-                ...prev,
-                [chat.id]: participantsData.getChatParticipants,
-              }));
-            }
-
-            return {
-              ...chat,
-              messages: messagesData?.getChatMessages.messagesArray ?? [],
-            };
-          })
-        );
-
-        // Preserve any new chats that might have been added via subscription
-        // while this initialization was running
-        const existingChats = chats || [];
-        const initializedChatIds = chatsWithMessages.map((chat) => chat.id);
-
-        // Find chats that exist in state but not in the fetched data
-        // (these would be new chats added via subscription)
-        const chatsMissingFromInitialization = existingChats.filter(
-          (chat) => !initializedChatIds.includes(chat.id)
-        );
-
-        // Add additional data to the missing chats
-        const chatsMissingFromInitializationWithData = await Promise.all(
-          chatsMissingFromInitialization.map(async (chat) => {
-            // Get messages for this chat
-            const { data: messagesData } = await getChatMessagesQuery({
-              variables: { chatId: chat.id },
-            });
-
-            // Get participants for this chat
-            const { data: participantsData } = await getChatParticipantsQuery({
-              variables: { chatId: chat.id },
-            });
-            // Store participants in our map
-            if (participantsData?.getChatParticipants) {
-              setChatParticipants((prev) => ({
-                ...prev,
-                [chat.id]: participantsData.getChatParticipants,
-              }));
-            }
-
-            return {
-              ...chat,
-              messages: messagesData?.getChatMessages.messagesArray ?? [],
-            };
-          })
-        );
-
-        // Merge the initialized chats with any chats that were added via subscription
-        const mergedChats = [
-          ...chatsWithMessages,
-          ...chatsMissingFromInitializationWithData,
-        ];
-
-        dispatch(setChats(mergedChats));
-
-        // Set initial current chat
-        const storedChatId = localStorage.getItem("currentChatId");
-        if (
-          storedChatId &&
-          mergedChats.some((c) => c.id === parseInt(storedChatId))
-        ) {
-          dispatch(setCurrentChatId(parseInt(storedChatId)));
-        } else if (mergedChats.length > 0) {
-          dispatch(setCurrentChatId(mergedChats[0].id));
-          localStorage.setItem("currentChatId", mergedChats[0].id.toString());
-        }
-      } catch (error) {
-        console.error("Error loading chats:", error);
-      } finally {
-        setIsLoading(false);
-        setInitialLoadCompleted(true);
-      }
-    }
-    loadInitialChats();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userChatsData, initialLoadCompleted]);
+    setIsLoading(userChatsLoading);
+  }, [userChatsLoading]);
 
   // Handler functions
   const handleChatClick = (chatId: number) => {
@@ -289,15 +241,10 @@ export function useChatManager() {
   };
 
   const openNewChatWindow = () => dispatch(openNewChat());
-
   const closeNewChatWindow = () => dispatch(closeNewChat());
 
   // Get current chat
   const currentChat = chats.find((chat) => chat.id === currentChatId) || null;
-
-  useEffect(() => {
-    setIsLoading((prev) => (userChatsLoading === true ? true : prev));
-  }, [userChatsLoading]);
 
   return {
     chats,

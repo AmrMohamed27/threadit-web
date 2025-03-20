@@ -30,6 +30,12 @@ export const useCurrentPage = () => {
     },
     [searchParams]
   );
+
+  const resetSearchTerm = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("q");
+    return params.toString();
+  }, [searchParams]);
   return {
     currentPage,
     createQueryString,
@@ -40,5 +46,6 @@ export const useCurrentPage = () => {
     sortBy,
     searchTerm,
     communityId,
+    resetSearchTerm,
   };
 };

@@ -14,6 +14,7 @@ interface Props {
   count: number;
   hasPagination?: boolean;
   searchTerm?: string;
+  refetchPostComments: () => Promise<void>;
 }
 
 const CommentsFeed = ({
@@ -21,6 +22,7 @@ const CommentsFeed = ({
   count,
   hasPagination,
   searchTerm,
+  refetchPostComments,
 }: Props) => {
   const { pathname } = useCurrentPage();
   return (
@@ -36,7 +38,7 @@ const CommentsFeed = ({
           <SearchBar origin={pathname} placeholder="Search comments" />
         )}
       </div>
-      {searchTerm && <GoBackButton href={pathname} label="all comments" />}
+      {searchTerm && <GoBackButton href={pathname} label="all comments" onClick={refetchPostComments} />}
       {searchTerm && <span>{count} results found</span>}
       <div className="flex flex-col gap-0">
         {comments.map((comment) => (
