@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import sanitizeHtml from "sanitize-html";
 import { z } from "zod";
 import { CreatePostErrorType } from "../../types";
+import MediaPreview from "../common/MediaPreview";
 import UploadDialog from "../common/UploadDialog";
 import ChooseCommunity from "../communities/ChooseCommunity";
 import InputField from "./InputField";
@@ -39,15 +40,31 @@ const CreatePostForm = ({ communities }: Props) => {
     },
   });
   // Handle upload
-  async function handleUploadComplete(url: string) {
+  async function handleUploadMediaComplete(url: string) {
     form.setValue(
       "media",
       form.getValues("media") ? [...form.getValues("media")!, url] : [url]
     );
   }
+  async function handleUploadVideoComplete(url: string) {
+    form.setValue("video", url);
+  }
+  // Handle Remove image and video
+  function handleRemoveImage(currentUrl: string) {
+    form.setValue(
+      "media",
+      form.getValues("media")!.filter((url) => url !== currentUrl)
+    );
+  }
+  function handleRemoveVideo() {
+    form.setValue("video", undefined);
+  }
+  // Watch variables
+  const media = form.watch("media");
+  const video = form.watch("video");
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof CreatePostSchema>) {
-    const { title, content, communityId, media } = values;
+    const { title, content, communityId, media, video } = values;
     // Sanitize html to prevent xss attacks
     const safeContent = sanitizeHtml(content, {
       allowedTags: [],
@@ -59,6 +76,7 @@ const CreatePostForm = ({ communities }: Props) => {
           content: safeContent,
           communityId,
           media,
+          video,
         },
       },
       refetchQueries: [
@@ -102,11 +120,43 @@ const CreatePostForm = ({ communities }: Props) => {
           label="Content"
           isMarkdown
         />
-        <div className="flex flex-row items-center gap-4">
-          {/* Add media */}
-          <UploadDialog handleUploadComplete={handleUploadComplete}>
-            <Button variant={"default"}>Add media</Button>
-          </UploadDialog>
+        {/* Preview */}
+        {media ? (
+          <div className="flex flex-row items-center gap-4">
+            {media.map((image) => (
+              <MediaPreview
+                key={image}
+                imageSrc={image}
+                handleRemove={() => {
+                  handleRemoveImage(image);
+                }}
+              />
+            ))}
+          </div>
+        ) : video ? (
+          <MediaPreview videoSrc={video} handleRemove={handleRemoveVideo} />
+        ) : null}
+        <div className="flex flex-row justify-between items-center w-full">
+          <div className="flex flex-row items-center gap-4">
+            {/* Add media */}
+            <UploadDialog
+              handleUploadComplete={handleUploadMediaComplete}
+              type="media"
+            >
+              <Button variant={"default"} disabled={video !== undefined}>
+                Add images
+              </Button>
+            </UploadDialog>
+            {/* Add a video */}
+            <UploadDialog
+              handleUploadComplete={handleUploadVideoComplete}
+              type="video"
+            >
+              <Button variant={"default"} disabled={media !== undefined}>
+                {video === undefined ? "Add video" : "Change video"}
+              </Button>
+            </UploadDialog>
+          </div>
           <Button type="submit" variant={"red"} className="w-auto">
             {loading ? <Loader className="animate-spin" /> : <span>Post</span>}
           </Button>

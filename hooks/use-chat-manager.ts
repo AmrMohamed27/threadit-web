@@ -10,6 +10,7 @@ import {
 } from "@/generated/graphql";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import {
+  addChat,
   mergeMessages,
   removeChat,
   setChats,
@@ -110,7 +111,6 @@ export function useChatManager() {
   useChatUpdatesSubscription({
     skip: !user,
     onData: async ({ data, client }) => {
-      console.log(data);
       if (!data?.data?.chatUpdates?.operation) return;
       const { operation, chatId } = data.data.chatUpdates;
       if (operation.delete) {
@@ -195,36 +195,29 @@ export function useChatManager() {
   };
 
   const chatStarter = async (participantIds: number[], name: string) => {
-    const { data: createResult } = await createChatMutation({
+    await createChatMutation({
       variables: {
         options: {
-          name: name,
-          participantIds: participantIds,
+          name,
+          participantIds,
           isGroupChat: participantIds.length > 2, // Make it a group chat if more than 2 people
         },
       },
       // refetchQueries: ["GetUserChats", "GetChatParticipants"],
-    });
-    // If the chat exists, set the current chat id to it
-    if (createResult?.createChat.errors) {
-      const errorField = createResult.createChat.errors[0].field;
-      if (errorField === "chat_exists") {
-        const chatId = createResult.createChat.chat?.id;
-        if (chatId) {
-          dispatch(setCurrentChatId(chatId));
+      onCompleted: (data) => {
+        //  add chat to state
+        const chat = data.createChat.chat;
+        if (chat) {
+          dispatch(addChat(chat));
+          dispatch(setCurrentChatId(chat.id));
         }
-      }
-    }
-    // Else, set the current chat id to the new chat
-    else {
-      const chatId = createResult?.createChat.chat?.id;
-      if (chatId) {
-        dispatch(setCurrentChatId(chatId));
-      }
-    }
+      },
+    });
   };
 
-  const openNewChatWindow = () => setNewChatIsOpen(true);
+  const openNewChatWindow = () => {
+    setNewChatIsOpen(true);
+  };
   const closeNewChatWindow = () => setNewChatIsOpen(false);
 
   // Get current chat

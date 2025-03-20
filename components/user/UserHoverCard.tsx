@@ -4,19 +4,14 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { User } from "@/generated/graphql";
-import { useChatManager } from "@/hooks/use-chat-manager";
-import { useCurrentUser } from "@/hooks/use-current-user";
-import { openChat } from "@/lib/features/chatSlice";
 import { formatDate, getDefaultAvatar } from "@/lib/utils";
 import {
-  MessageCircleMore as ChatIcon,
   CakeSlice as CreatedAtIcon
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { useDispatch } from "react-redux";
+import StartChatButton from "../chat/StartChatButton";
 import AvatarWrapper from "../common/AvatarWrapper";
-import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 
 type Props = {
@@ -25,17 +20,6 @@ type Props = {
 };
 
 const UserHoverCard = ({ user, children }: Props) => {
-  const { user: currentUser } = useCurrentUser();
-  const { chatStarter } = useChatManager();
-  const dispatch = useDispatch();
-  const handleStartChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const participantIds = currentUser && user ? [currentUser.id, user.id] : [];
-    const chatName = user ? user.name : "Chat";
-    await chatStarter(participantIds, chatName);
-    dispatch(openChat());
-  };
-
   return (
     <HoverCard>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
@@ -75,18 +59,9 @@ const UserHoverCard = ({ user, children }: Props) => {
               </div>
               <Separator />
               {/* Chat Buttons */}
-              {currentUser && user && user.id !== currentUser.id && (
                 <div className="flex flex-row items-center gap-4">
-                  <Button
-                    className="flex flex-row items-center gap-2 w-auto"
-                    variant={"grey"}
-                    onClick={handleStartChat}
-                  >
-                    <ChatIcon size={20} />
-                    <span className="">Start Chat</span>
-                  </Button>
+                  <StartChatButton user={user} />
                 </div>
-              )}
             </div>
           </div>
         </Link>

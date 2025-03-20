@@ -159,9 +159,12 @@ const PostCard = ({ post }: Props) => {
               ) : (
                 <></>
               )
-            ) : (
-              <></>
-            )}
+            ) : null}
+            {post.video ? (
+              <video className="rounded-md w-full h-full object-cover" controls>
+                <source src={post.video} type="video/mp4" />
+              </video>
+            ) : null}
           </div>
           {/* Interactions */}
           <div className="flex flex-row items-center gap-4">

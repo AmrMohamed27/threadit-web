@@ -43,7 +43,7 @@ export function ImageCarousel({ media }: Props) {
                 alt="Post Media"
                 width={128}
                 height={128}
-                className="rounded-md w-full h-full object-cover"
+                className="rounded-md w-full h-full object-center"
               />
             </CarouselItem>
           ))}

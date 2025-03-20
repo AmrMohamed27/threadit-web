@@ -12,11 +12,10 @@ import AvatarWrapper from "../common/AvatarWrapper";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 
-const ChatList = () => {
+const ChatList = ({ openNewChatWindow }: { openNewChatWindow: () => void }) => {
   const { user } = useCurrentUser();
   const {
     handleChatClick,
-    openNewChatWindow,
     isLoading: loading,
     chats,
     error,
@@ -47,7 +46,9 @@ const ChatList = () => {
           size={"icon"}
           variant={"ghost"}
           className="rounded-full"
-          onClick={openNewChatWindow}
+          onClick={() => {
+            openNewChatWindow();
+          }}
           aria-label="New Chat Button"
         >
           <AddChatIcon size={20} />

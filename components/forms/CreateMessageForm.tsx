@@ -4,13 +4,13 @@ import { Form } from "@/components/ui/form";
 import { useCreateMessageMutation } from "@/generated/graphql";
 import MessageSchema from "@/schema/MessageSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Camera, Loader, SendHorizontal as SendIcon, X } from "lucide-react";
+import { Camera, Loader, SendHorizontal as SendIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { MessageErrorType } from "../../types";
+import MediaPreview from "../common/MediaPreview";
 import UploadDialog from "../common/UploadDialog";
 import InputField from "./InputField";
-import Image from "next/image";
 
 type Props = {
   chatId: number;
@@ -72,27 +72,18 @@ const CreateMessageForm = ({ chatId }: Props) => {
         className="bottom-0 z-50 sticky space-y-0 bg-background dark:bg-black w-full"
       >
         {formMedia && (
-          <div className="relative pl-4 rounded-lg max-w-[64px]">
-            <Button
-              variant={"ghost"}
-              size={"icon"}
-              className="top-0 right-0 absolute hover:bg-transparent w-4 h-4"
-              onClick={handleRemoveImage}
-            >
-              <X className="w-2 h-2" />
-            </Button>
-            <Image
-              src={formMedia}
-              alt="Image uploaded to message"
-              width={64}
-              height={64}
-              className="rounded-lg w-full h-full object-cover"
-            />
-          </div>
+          <MediaPreview
+            imageSrc={formMedia}
+            handleRemove={handleRemoveImage}
+            className="pl-4"
+          />
         )}
         <div className="flex flex-row items-center gap-2 px-4 py-2 w-full">
           {/* Media */}
-          <UploadDialog handleUploadComplete={handleUploadComplete} isImage>
+          <UploadDialog
+            handleUploadComplete={handleUploadComplete}
+            type="image"
+          >
             <Button variant={"ghost"} size="icon">
               <Camera className="w-8 h-8" />
             </Button>

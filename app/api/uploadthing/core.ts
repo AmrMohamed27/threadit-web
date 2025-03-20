@@ -17,7 +17,6 @@ export const ourFileRouter = {
     }),
   mediaUploader: f({
     image: { maxFileSize: "4MB", maxFileCount: 24 },
-    video: { maxFileSize: "16MB", maxFileCount: 1 },
   }).onUploadComplete(async ({ metadata, file }) => {
     console.log("File uploaded:", file.ufsUrl);
     return { fileUrl: file.ufsUrl, metadata };

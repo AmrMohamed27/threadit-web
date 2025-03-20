@@ -4,6 +4,7 @@ import AvatarWrapper from "../common/AvatarWrapper";
 import UploadProfileImage from "./UploadProfileImage";
 
 import EditUsernameDialog from "./EditUsernameDialog";
+import StartChatButton from "../chat/StartChatButton";
 
 type Props = {
   user: User;
@@ -25,15 +26,17 @@ const UserHeader = ({ user, isMe }: Props) => {
         {isMe && <UploadProfileImage />}
       </div>
       {/* Name */}
-      <div className="flex flex-col gap-0 w-full">
+      <div className="flex flex-col gap-0">
         <div className="flex flex-row items-center gap-4">
           <span className="font-bold text-xl md:text-2xl lg:text-3xl">
             {name}
           </span>
-          <EditUsernameDialog />
+          {isMe && <EditUsernameDialog />}
+          {!isMe && <StartChatButton user={user} />}
         </div>
         <span className="text-muted-foreground">u/{name}</span>
       </div>
+      {/* Chat button */}
     </div>
   );
 };

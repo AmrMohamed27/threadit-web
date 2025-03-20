@@ -9,15 +9,12 @@ import CreateMessageForm from "../forms/CreateMessageForm";
 import { Button } from "../ui/button";
 import ChatControls from "./ChatControls";
 import CloseChatButton from "./CloseChatButton";
-import NewChatWindow from "./NewChatWindow";
 
 const ChatWindow = () => {
   const { user } = useCurrentUser();
   const {
     currentChat: chat,
     currentChatId,
-    newChatIsOpen,
-    closeNewChatWindow,
     chatParticipants,
     openNewChatWindow,
   } = useChatManager();
@@ -29,15 +26,11 @@ const ChatWindow = () => {
         chatContainerRef.current.scrollHeight;
     }
   }, [chat?.messages]);
-  // Handle new chat window
-  if (newChatIsOpen) {
-    return <NewChatWindow closeNewChatWindow={closeNewChatWindow} />;
-  }
 
   // Handle no active chat
   if (!chat) {
     return (
-      <div className="relative flex flex-col flex-1 gap-0 rounded-t-xl max-md:max-h-[500px] overflow-y-scroll">
+      <div className="relative flex flex-col flex-1 gap-0 max-md:max-h-[500px] overflow-y-scroll">
         <div className="top-0 z-50 sticky flex flex-row justify-end items-center bg-background dark:bg-black px-4 py-2 border-muted border-b-2 w-full">
           <CloseChatButton />
         </div>
@@ -60,7 +53,7 @@ const ChatWindow = () => {
 
   return (
     <div
-      className="relative flex flex-col flex-1 gap-0 rounded-t-xl max-md:max-h-[500px] overflow-y-scroll"
+      className="relative flex flex-col flex-1 gap-0 max-md:max-h-[500px] overflow-y-scroll"
       ref={chatContainerRef}
     >
       {/* Header */}

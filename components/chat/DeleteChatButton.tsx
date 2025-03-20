@@ -3,17 +3,25 @@ import React from "react";
 import { Button } from "../ui/button";
 import { Loader, Trash } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useDispatch } from "react-redux";
+import { removeChat } from "@/lib/features/chatSlice";
 
 type Props = {
   chatId: number;
 };
 
 const DeleteChatButton = ({ chatId }: Props) => {
+  const dispatch = useDispatch();
   const [deleteChatMutation, { loading }] = useDeleteChatMutation({
     variables: {
       chatId,
     },
-    // refetchQueries: ["GetUserChats", "GetChatParticipants"],
+    refetchQueries: ["GetUserChats", "GetChatParticipants"],
+    onCompleted: (data) => {
+      if (data.deleteChat.operation.delete && data.deleteChat.chatId) {
+        dispatch(removeChat(data.deleteChat.chatId));
+      }
+    },
   });
   const { toast } = useToast();
   const handleDeleteChat = async () => {
