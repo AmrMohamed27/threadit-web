@@ -13,7 +13,6 @@ A full-stack Reddit clone built with Node.js, GraphQL, Apollo for the backend, a
   - [🚀 Project Overview](#-project-overview)
   - [📝 Why I built this?](#-why-i-built-this)
   - [🏗️ Architecture](#️-architecture)
-    - [Frontend](#frontend)
   - [✨ Features](#-features)
     - [Prerequisites](#prerequisites)
     - [Frontend Setup](#frontend-setup)
