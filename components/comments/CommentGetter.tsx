@@ -13,13 +13,17 @@ interface Props {
 }
 
 const CommentGetter = ({ commentId, postId, isEdit }: Props) => {
-  const { data, loading, error } = useGetCommentQuery({
+  const { data, loading, error, refetch } = useGetCommentQuery({
     variables: {
       options: {
         commentId,
       },
     },
   });
+
+  const refetchComment = async () => {
+    await refetch();
+  };
 
   if (loading)
     return isEdit ? (
@@ -38,9 +42,13 @@ const CommentGetter = ({ commentId, postId, isEdit }: Props) => {
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="max-w-[90px]">
-        <GoBackButton href={`/posts/${postId}`} label="post" />
+        <GoBackButton
+          href={`/posts/${postId}`}
+          label="post"
+          onClick={refetchComment}
+        />
       </div>
-      <CommentThread comment={comment} depth={0} maxDepth={MAX_REPLY_DEPTH} />
+      <CommentThread comment={comment} depth={0} maxDepth={MAX_REPLY_DEPTH}  />
     </div>
   );
 };

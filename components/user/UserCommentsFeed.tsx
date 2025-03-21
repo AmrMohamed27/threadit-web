@@ -15,7 +15,7 @@ const UserCommentsFeed = ({ user }: Props) => {
   // Get current page
   const { currentPage, sortBy } = useCurrentPage();
   // Get comments from the user
-  const { data, loading, error } = useGetUserCommentsQuery({
+  const { data, loading, error, refetch } = useGetUserCommentsQuery({
     variables: {
       options: {
         userId,
@@ -25,6 +25,16 @@ const UserCommentsFeed = ({ user }: Props) => {
       },
     },
   });
+  const refetchUserComments = async () => {
+    await refetch({
+      options: {
+        userId,
+        limit: POSTS_PER_PAGE,
+        page: currentPage,
+        sortBy,
+      },
+    });
+  };
   if (loading) return <CommentFeedLoading />;
   if (error) return <div> {error.message}</div>;
   if (data?.getUserComments.errors)
@@ -33,7 +43,12 @@ const UserCommentsFeed = ({ user }: Props) => {
   const count = data?.getUserComments.count ?? 0;
   if (comments.length === 0) return <div>No comments found</div>;
   return (
-    <CommentsFeed comments={comments} count={count} hasPagination={true} />
+    <CommentsFeed
+      comments={comments}
+      count={count}
+      hasPagination={true}
+      refetchPostComments={refetchUserComments}
+    />
   );
 };
 
