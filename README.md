@@ -34,10 +34,6 @@ I wanted to create a full-stack project using technologies that I am not familia
 
 ## 🏗️ Architecture
 
-This project is split into two main components:
-
-### Frontend
-
 -**Tech Stack**:
 
 - React v19 and Next.js v15 using the App Router
