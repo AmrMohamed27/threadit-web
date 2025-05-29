@@ -73,5 +73,6 @@ export default withUt({
       },
     },
   },
-  plugins: [tailwindAnimate],
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  plugins: [tailwindAnimate, require("@tailwindcss/typography")],
 }) satisfies Config;
